@@ -18,6 +18,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by bon on 2017-05-18.
@@ -155,10 +157,13 @@ public class NetworkAsync extends AsyncTask<String, Integer, String> {
             byte[] byteData = null;
             int currentLength = 0;
             Log.i(TAG, "start read");
+            // 자료 읽기 시작
             while((currentLength = is.read(byteBuffer, 0, byteBuffer.length)) != -1) {
                 baos.write(byteBuffer, 0, currentLength);
             }
             byteData = baos.toByteArray();
+
+            // byte로 읽어들인 것을 string으로 변환
             stringData = new String(byteData);
             Log.i(TAG, "DATA response = "+stringData);
         } catch (IOException e) {
