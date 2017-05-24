@@ -19,14 +19,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity"></activity>
-        <activity android:name=".TeacherMainActivity">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".TeacherMainActivity" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -50,7 +50,10 @@
         <activity
             android:name=".RecommendActivity"
             android:label="@string/title_activity_recommend" />
-        <activity android:name=".SelectColorActivity"></activity>
+        <activity android:name=".SelectColorActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ParentsMainActivity" />
+        <activity android:name=".StudentMainActivity"></activity>
     </application>
 
 </manifest>
