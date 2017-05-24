@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">LEARnFUN</string>
+    <string name="go_to_today">체험학습 바로가기</string>
+    <string name="go_to_plantable">학습 일정</string>
+    <string name="go_to_studentlist">학생 관리</string>
+    <string name="go_to_contents">콘텐츠 실행</string>
+    <string name="go_to_checklist">체크리스트</string>
+    <string name="go_to_recommend">주변장소</string>
+    <string name="title_activity_today">Map</string>
+    <string name="title_activity_recommend">Map</string>
+    <string name="close">닫기</string>
+
+    <string name="prompt">반을 선택하세요</string>
+    <string-array name="class_Name">
+        <item>1반</item>
+        <item>2반</item>
+        <item>3반</item>
+    </string-array>
+
+
+
 </resources>
