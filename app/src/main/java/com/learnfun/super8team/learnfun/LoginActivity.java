@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity {
     final static String TAG = "LoginActivity";
-    static String LOGINURI = "applogin";
+    static String LOGINURI = "login";
 
     // 서버와의 통신을 위한 객체
     NetworkAsync requestNetwork;
@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     // 네트워크 통신 후 json 획득
                     returnString = requestNetwork.execute().get();
+                    Log.e(TAG, "result is "+returnString);
                     user = new JSONObject(returnString);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -82,11 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         user = userPreferences.getUser();
 
         // 로그인 상태를 검사, 자동로그인하며 액티비티 이동
-        try {
-            if (!user.getString(UserPreferences.USERID).equals("")) { login(); }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        if (!userPreferences.getUserId().equals("")) { login(); }
 
         // 로그인 하지 않은 경우, 로그인 UI를 보여줌
         idEdit = (EditText)findViewById(R.id.idEdit);
@@ -131,19 +128,26 @@ public class LoginActivity extends AppCompatActivity {
         // 유저 설정, 무조건 자동로그인
         userPreferences.setUser(user);
         user = userPreferences.getUser();
-        Toast.makeText(LoginActivity.this, userPreferences.getUserId()+"님, 환영합니다!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(LoginActivity.this, userPreferences.getUserId()+"님, 환영합니다!", Toast.LENGTH_SHORT).show();
         Intent intent = null;
         switch(userPreferences.getUserType()) {
             case "parents":
-                intent = new Intent(LoginActivity.this, ParentsMainActivity.class);
+                    intent = new Intent(LoginActivity.this, ParentsMainActivity.class);
+                Toast.makeText(LoginActivity.this, user+"("+userPreferences.getUserType()+") 님, 환영합니다!", Toast.LENGTH_SHORT).show();
+                startActivity(intent);
                 break;
             case "student":
-                intent = new Intent(LoginActivity.this, StudentMainActivity.class);
+                    intent = new Intent(LoginActivity.this, StudentMainActivity.class);
+                Toast.makeText(LoginActivity.this, user+"("+userPreferences.getUserType()+") 님, 환영합니다!", Toast.LENGTH_SHORT).show();
+                startActivity(intent);
                 break;
             case "teacher":
-                intent = new Intent(LoginActivity.this, TeacherMainActivity.class);
+                    intent = new Intent(LoginActivity.this, TeacherMainActivity.class);
+                Toast.makeText(LoginActivity.this, user+"("+userPreferences.getUserType()+") 님, 환영합니다!", Toast.LENGTH_SHORT).show();
+                startActivity(intent);
                 break;
             default:
+
                 /*
                  다른 유저 예외처리
                  */
