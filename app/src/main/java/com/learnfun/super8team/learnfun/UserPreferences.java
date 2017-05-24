@@ -95,5 +95,10 @@ public class UserPreferences {
         editor.commit();
         // user객체초기화
         user = new JSONObject();
+        try {
+            user.put(USERID, "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
