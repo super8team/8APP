@@ -54,6 +54,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".ParentsMainActivity" />
         <activity android:name=".StudentMainActivity"></activity>
+        <activity android:name=".ContentActivity"></activity>
+        <activity android:name=".Dialog" android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
     </application>
 
 </manifest>

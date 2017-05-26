@@ -1,0 +1,82 @@
+[{
+    "name" : "테스트용컨텐츠명",
+
+    "vertical" : "center",
+    "horizontal" : "center",
+    "latitude" : 35.896753,
+  "longitude" : 128.620918,
+    "visionable" : true,
+    "clickable" : false,
+    "disable" : false,
+    "script" : [
+      {
+        "type" : "CLICK",
+        "name" : "예",
+        "action" : {
+          "out_txt" : "예버튼입니다."
+        }
+      },
+      {
+        "type" : "CLICK",
+        "name" : "아니오",
+        "action" : {
+          "out_txt" : "아니오버튼입니다."
+        }
+      },
+      {
+        "type" : "CHECKEDIT",
+        "name" : "9S",
+        "answer" : "정답",
+        "true" : {
+            "out_txt" : "정답입니다."
+        },
+        "false" :{
+            "out_txt" : "오답입니다."
+        }
+      }
+    ],
+    "image" : [
+        {
+          "id" : 1,
+          "name": "9S",
+          "src" : "http://nierautomata.wiki.fextralife.com/file/Nier-Automata/yorha_2S_character.png",
+          "width" : 200,
+          "height" : 200
+        }
+      ],
+    "text"  : [
+
+        {
+          "id" : 2,
+          "name": "하단텍스트",
+          "description" : "우아아아아아아앙",
+          "size": 30,
+          "color": "#742442"
+        }
+      ],
+      "edit"  : {
+        "text" : "",
+        "hint" : "정답을 입력하세요",
+        "size" : 20
+      },
+    "button" : [
+        {
+          "id"   : 1,
+          "name" : "예",
+          "fill" : "#da65e4",
+          "color": "#7732dd",
+          "size" : 30,
+          "width": 400,
+          "height": 400
+        },
+        {
+          "id"   : 2,
+          "name" : "아니오",
+          "fill" : "#dad132",
+          "color": "#7732dd",
+          "size" : 30,
+          "width": 400,
+          "height": 400
+        }
+    ]
+}]
