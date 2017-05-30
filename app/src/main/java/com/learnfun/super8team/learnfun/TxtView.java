@@ -49,68 +49,37 @@ public class TxtView extends ContentView{
 
     @Override
     public void unsetContentView() {
-
+        textView.setVisibility(View.GONE);
     }
 
     @Override
-    public void setClickAction(final JSONObject code, final ContentActivity contentActivity) {
+    public void setClickAction(final JSONObject code, final ContentActivity contentActivity,final String name) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("리스너 클릭","버튼 클릭");
                 Intent intent = new Intent(contentActivity,Dialog.class);
-                try {
-                    if(code.has("out_txt")){
-                        //해당 액션 코드가 있는지 검사후 있으면 추출후 인텐트에 넣음
-                        String text = code.getString("out_txt");
-                        intent.putExtra("text",text);
-                    }
-                    if (code.has("out_img")){
-                        String image= code.getString("out_img");
-                        intent.putExtra("image",image);
-                    }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                contentActivity.startActivity(intent);
+                contentActivity.startActivityForResult(setActionScript(code,intent,name),3203);
             }
         });
     }
 
     @Override
-    public void setCheckEditAction(final EditText editview, final String answer, final JSONObject ooo, final JSONObject xxx, final ContentActivity contentActivity) {
+    public void setCheckEditAction(final EditText editview, final String answer, final JSONObject ooo, final JSONObject xxx, final ContentActivity contentActivity,final String name) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(contentActivity,Dialog.class);
 
-                try{
-
-                    if (editview.getText().equals(answer)){
-                        if(ooo.has("out_txt")){
-                            String text = ooo.getString("out_txt");
-                            intent.putExtra("text",text);
-                        }
-                        if (ooo.has("out_img")){
-                            String image= ooo.getString("out_img");
-                            intent.putExtra("image",image);
-                        }
-                    }else {
-                        if(xxx.has("out_txt")){
-                            String text = xxx.getString("out_txt");
-                            intent.putExtra("text",text);
-                        }
-                        if (xxx.has("out_img")){
-                            String image= xxx.getString("out_img");
-                            intent.putExtra("image",image);
-                        }
-                    }
-                }catch (JSONException e){
-                    e.printStackTrace();
+                //정답을 맞췄을경우 출력화면
+                if (editview.getText().toString().equals(answer)){
+                    intent = setActionScript(ooo,intent,name);
+                }else { //틀렷을경우 출력화면
+                    intent = setActionScript(xxx,intent,name);
                 }
 
-                contentActivity.startActivity(intent);
+                contentActivity.startActivityForResult(intent,3203);
             }
         });
     }

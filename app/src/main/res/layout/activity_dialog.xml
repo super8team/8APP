@@ -5,18 +5,8 @@
     android:layout_height="300dp"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context="practice1.kim.parsingtest1.Dialog">
-    <Button
-        android:id="@+id/dialog_exit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="#eee"
+    tools:context="com.learnfun.super8team.learnfun.Dialog">
 
-        android:text="quit"
-        />
     <ImageView
         android:id="@+id/dialog_img"
         android:layout_width="match_parent"

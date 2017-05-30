@@ -3,8 +3,8 @@
 
     "vertical" : "center",
     "horizontal" : "center",
-    "latitude" : 35.896753,
-  "longitude" : 128.620918,
+    "latitude" : 35.896480,
+  "longitude" : 128.620723,
     "visionable" : true,
     "clickable" : false,
     "disable" : false,
@@ -20,7 +20,7 @@
         "type" : "CLICK",
         "name" : "아니오",
         "action" : {
-          "out_txt" : "아니오버튼입니다."
+          "out_img" : "http://nierautomata.wiki.fextralife.com/file/Nier-Automata/yorha_2S_character.png"
         }
       },
       {
@@ -28,7 +28,8 @@
         "name" : "9S",
         "answer" : "정답",
         "true" : {
-            "out_txt" : "정답입니다."
+            "out_txt" : "정답입니다.",
+            "end" : "end"
         },
         "false" :{
             "out_txt" : "오답입니다."

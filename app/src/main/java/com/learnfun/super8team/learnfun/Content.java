@@ -47,8 +47,8 @@ public class Content {
         this.visionable = jobj.getBoolean("visionable");
         this.clickable  = jobj.getBoolean("clickable");
         this.disable    = jobj.getBoolean("disable");
-        this.latitude   = jobj.getInt("latitude");
-        this.longitude  = jobj.getInt("longitude");
+        this.latitude   = jobj.getDouble("latitude");
+        this.longitude  = jobj.getDouble("longitude");
 
         Log.i("컨텐츠 멤버 값 입력완료 -----", this.name);
         //컨텐츠 배열들을 ArrayList에 저장
@@ -157,7 +157,7 @@ public class Content {
                             if(name.equals(views.get(j).name)){
                                 //이름이 같은 컨텐츠 발견시 액션코드를 해당 컨텐츠에 삽입
                                 //반복종료
-                                views.get(j).setClickAction(action, contentActivity);
+                                views.get(j).setClickAction(action, contentActivity, this.name);
 
                                 break;
                             }
@@ -172,7 +172,7 @@ public class Content {
                             Log.i("체크1-------",views.get(j).name);
                             Log.i("체크1-------",views.get(j).name);
                             if(name.equals(views.get(j).name)){
-                                views.get(j).setCheckEditAction(editview,answer,ooo,xxx,contentActivity);
+                                views.get(j).setCheckEditAction(editview,answer,ooo,xxx,contentActivity, this.name);
 
                                 break;
                             }
@@ -190,8 +190,14 @@ public class Content {
 
     //컨텐츠 실행 조건체크-쓰레드로 체크될 것
     public boolean checkCondition(double lat, double lng){
-        double val = 0.000100;
-        if(lat+val > latitude && lng-val < longitude && lat-val < latitude && lng-val > longitude){
+        double val = 0.000050;
+        //컨텐츠 반경안에 접근하면 참 반환 but 컨텐츠가 살아있어야함
+//        Log.i("위도      ", String.valueOf(latitude+val > lat && latitude-val < lat));
+//        Log.i("나의 위도      ", String.valueOf(lat));
+//        Log.i("위도 큰값     ", String.valueOf(latitude+val));
+//        Log.i("위도 작은값     ", String.valueOf(latitude-val));
+//        Log.i("경도      ", String.valueOf(latitude-val < lat && longitude+val > lng));
+        if( (latitude+val > lat && latitude-val < lat) && (longitude-val < lng && longitude+val > lng) ){
             return true;
         }else{
             return false;
@@ -215,12 +221,18 @@ public class Content {
         for(int i=0;i<views.size();i++){
             views.get(i).unsetContentView();
         }
-        if (hasEditview) editview.setVisibility(View.VISIBLE);
+        if (hasEditview) editview.setVisibility(View.GONE);
         CONTENT_USED = false;
+        disable = true;
     }
-    //컨텐츠 스크립트
-    private void runScript(){
+    //컨텐츠 이름 받아오기
+    public String getContentName(){
+        return this.name;
+    }
 
+    //컨텐츠 생명여부 받아오기
+    public boolean getContentDisable(){
+        return this.disable;
     }
     //컨텐츠 지우기
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.location.Location;
@@ -68,14 +69,16 @@ public class ContentActivity extends AppCompatActivity {
         LocationListener ll = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.i("리스너 작동하는가","작동함");
+//                Log.i("리스너 작동하는가","작동함");
                 double lat = location.getLatitude();
                 double lng = location.getLongitude();
 
                 //이곳에서 각컨텐츠 조건함수 호출
                 for (int i=0;i<contents.size();i++){
                     try {
-                        if(contents.get(i).checkCondition(lat,lng) && !Content.CONTENT_USED){
+                        //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
+//                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
+                        if(contents.get(i).checkCondition(lat,lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()){
                             contents.get(i).setContentView();
                         }
                     } catch (InterruptedException e) {
@@ -185,6 +188,25 @@ public class ContentActivity extends AppCompatActivity {
                             }).create().show();
                 }else {
                     context.requestPermissions(new String[]{permission}, 20000);
+                }
+            }
+        }
+    }
+
+//    콘텐츠 종료 확인 코드, 액션스크립트에 end블록을 사용했을경우 리절트 반환
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i("리절트 실행", "===================================");
+        if(resultCode == 3203){
+            Log.i("코드 일치", String.valueOf(resultCode));
+            String contentName = data.getStringExtra("name");
+
+            for(int i=0;i<contents.size();i++){
+                //반환값의 이름과 같은 이름의 컨텐츠를 찾는다.
+                if(contents.get(i).getContentName().equals(contentName)){
+                    //찾아서 종료
+                    contents.get(i).unsetContentView();
                 }
             }
         }
