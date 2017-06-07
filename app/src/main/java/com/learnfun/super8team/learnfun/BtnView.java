@@ -23,8 +23,9 @@ public class BtnView extends ContentView{
     private int size;
     private Button btnView;
 
-    BtnView(JSONObject jobj,View view) throws JSONException {
+    BtnView(JSONObject jobj,View view,String name) throws JSONException {
         this.id     = jobj.getInt("id");
+        this.ContentName = name;
         this.name   = jobj.getString("name");
         this.fill   = jobj.getString("fill");
         this.color  = jobj.getString("color");
@@ -67,7 +68,7 @@ public class BtnView extends ContentView{
     }
 
     @Override
-    public void setClickAction(final JSONObject code, final ContentActivity contentActivity,final String name) {
+    public void setClickAction(final JSONObject code, final ContentActivity contentActivity) {
         //클릭리스너 달고 인텐트로 코드값들 넘기기
         Log.i("리스너 생성","리스너 생성");
         btnView.setOnClickListener(new View.OnClickListener() {
@@ -76,22 +77,22 @@ public class BtnView extends ContentView{
                 Log.i("리스너 클릭","버튼 클릭");
                 Intent intent = new Intent(contentActivity,Dialog.class);
 
-                contentActivity.startActivityForResult(setActionScript(code,intent,name),3203);
+                contentActivity.startActivityForResult(setActionScript(code,intent,ContentName),3203);
             }
         });
     }
 
     @Override
-    public void setCheckEditAction(final EditText editview, final String answer, final JSONObject ooo, final JSONObject xxx, final ContentActivity contentActivity,final String name) {
+    public void setCheckEditAction(final EditText editview, final String answer, final JSONObject ooo, final JSONObject xxx, final ContentActivity contentActivity) {
         btnView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(contentActivity,Dialog.class);
                     //정답을 맞췄을경우 출력화면
                     if (editview.getText().toString().equals(answer)){
-                        intent = setActionScript(ooo,intent,name);
+                        intent = setActionScript(ooo,intent,ContentName);
                     }else { //틀렷을경우 출력화면
-                        intent = setActionScript(xxx,intent,name);
+                        intent = setActionScript(xxx,intent,ContentName);
                     }
 
                 contentActivity.startActivityForResult(intent,3203);

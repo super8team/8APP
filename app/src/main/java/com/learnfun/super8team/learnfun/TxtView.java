@@ -20,8 +20,9 @@ public class TxtView extends ContentView{
     private String color;
     private TextView textView;
 
-    TxtView(JSONObject jobj,View view) throws JSONException {
+    TxtView(JSONObject jobj,View view,String name) throws JSONException {
         this.id           = jobj.getInt("id");
+        this.ContentName = name;
         this.name         = jobj.getString("name");
         this.description = jobj.getString("description");
         this.size         = jobj.getInt("size");
@@ -53,20 +54,20 @@ public class TxtView extends ContentView{
     }
 
     @Override
-    public void setClickAction(final JSONObject code, final ContentActivity contentActivity,final String name) {
+    public void setClickAction(final JSONObject code, final ContentActivity contentActivity) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("리스너 클릭","버튼 클릭");
                 Intent intent = new Intent(contentActivity,Dialog.class);
 
-                contentActivity.startActivityForResult(setActionScript(code,intent,name),3203);
+                contentActivity.startActivityForResult(setActionScript(code,intent,ContentName),3203);
             }
         });
     }
 
     @Override
-    public void setCheckEditAction(final EditText editview, final String answer, final JSONObject ooo, final JSONObject xxx, final ContentActivity contentActivity,final String name) {
+    public void setCheckEditAction(final EditText editview, final String answer, final JSONObject ooo, final JSONObject xxx, final ContentActivity contentActivity) {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,9 +75,9 @@ public class TxtView extends ContentView{
 
                 //정답을 맞췄을경우 출력화면
                 if (editview.getText().toString().equals(answer)){
-                    intent = setActionScript(ooo,intent,name);
+                    intent = setActionScript(ooo,intent,ContentName);
                 }else { //틀렷을경우 출력화면
-                    intent = setActionScript(xxx,intent,name);
+                    intent = setActionScript(xxx,intent,ContentName);
                 }
 
                 contentActivity.startActivityForResult(intent,3203);

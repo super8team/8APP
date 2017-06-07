@@ -39,17 +39,20 @@ public class ContentActivity extends AppCompatActivity {
         permissionCheck(Manifest.permission.ACCESS_FINE_LOCATION);
         permissionCheck(Manifest.permission.ACCESS_COARSE_LOCATION);
 
-        json = call();
+        json = call(); //컨텐츠 명세 불러오기
+        //DB에서 명세 뽑아오는 걸로 수정할 것 - 메인 액티비티에서 명세 찾을 조건을 받아야됨
 
+        Log.i("컨텐츠 길이","asdadsads"+String.valueOf(json.length()));
 
         try {
             for (int i = 0; i < json.length(); i++) {
                 //전체 컨텐츠 갯수 뽑아내고 분리
                 jsons.add(json.getJSONObject(i));
+                Log.i("컨텐츠 명",jsons.get(i).getString("name"));
                 Content con = new Content(jsons.get(i), this);
                 contents.add(con);
             }
-
+//        Log.i("컨텐츠 길이","asdadsads"+String.valueOf(contents.size()));
             //테스트용 실행
 //            contents.get(0).setContentView();
         } catch (JSONException e) {
@@ -60,9 +63,9 @@ public class ContentActivity extends AppCompatActivity {
 
         //GPS 값 받아오기
 
-        final TextView tv = (TextView) findViewById(R.id.bottom_text);
-
-        tv.setText("GPS가 잡혀야 좌표가 구해짐");
+//        final TextView tv = (TextView) findViewById(R.id.bottom_text);
+//
+//        tv.setText("GPS가 잡혀야 좌표가 구해짐");
 
         LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -72,21 +75,23 @@ public class ContentActivity extends AppCompatActivity {
 //                Log.i("리스너 작동하는가","작동함");
                 double lat = location.getLatitude();
                 double lng = location.getLongitude();
-
+//                double lat = 35.896497;
+//                double lng = 128.620664;
                 //이곳에서 각컨텐츠 조건함수 호출
                 for (int i=0;i<contents.size();i++){
                     try {
                         //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
-//                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
+                        Log.i(contents.get(i).getContentName()+"디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
                         if(contents.get(i).checkCondition(lat,lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()){
                             contents.get(i).setContentView();
+                            //AR 화면 끄는 코드 추가할 것
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
 
-                tv.setText("latitude: " + lat + ", longitude: " + lng);
+//                tv.setText("latitude: " + lat + ", longitude: " + lng);
             }
 
             @Override
@@ -205,8 +210,10 @@ public class ContentActivity extends AppCompatActivity {
             for(int i=0;i<contents.size();i++){
                 //반환값의 이름과 같은 이름의 컨텐츠를 찾는다.
                 if(contents.get(i).getContentName().equals(contentName)){
-                    //찾아서 종료
+                    //찾아서 종료,
                     contents.get(i).unsetContentView();
+
+                    //AR 다시 작동 추가할 것
                 }
             }
         }
