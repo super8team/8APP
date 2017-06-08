@@ -1,10 +1,71 @@
 [{
-    "name" : "테스트용컨텐츠명",
+    "name" : "영진바위",
 
     "vertical" : "center",
     "horizontal" : "center",
-    "latitude" : 35.8965911,
-  "longitude" : 128.620251,
+    "location" : "35.896480,128.620723",
+    "visionable" : true,
+    "clickable" : false,
+    "disable" : false,
+    "script" : [
+      {
+        "type" : "CLICK",
+        "name" : "9S",
+        "action" : {
+          "out_txt" : "정답입니다.1",
+          "end" : "end"
+        }
+      },
+      {
+        "type" : "CLICK",
+        "name" : "A2",
+        "action" : {
+          "out_txt" : "오답입니다.1"
+        }
+      }
+    ],
+    "image" : [
+        {
+          "id" : 1,
+          "name": "9S",
+          "src" : "http://nierautomata.wiki.fextralife.com/file/Nier-Automata/yorha_2S_character.png",
+          "width" : 200,
+          "height" : 200
+        },
+        {
+          "id" : 2,
+          "name": "A2",
+          "src" : "https://vignette1.wikia.nocookie.net/nier/images/f/fe/YoRHa_No.2A.png",
+          "width" : 200,
+          "height" : 200
+        }
+      ],
+    "text"  : [
+        {
+          "id" : 1,
+          "name": "영진문제",
+          "description" : "영진문제1",
+          "size": 30,
+          "color": "#000000"
+        },
+        {
+          "id" : 2,
+          "name": "문제",
+          "description" : "who is 9S",
+          "size": 30,
+          "color": "#15088e"
+        }
+      ],
+    "button" : [
+
+    ]
+},
+{
+    "name" : "주차장",
+
+    "vertical" : "center",
+    "horizontal" : "center",
+    "location" : "35.896380,128.620380",
     "visionable" : true,
     "clickable" : false,
     "disable" : false,
@@ -28,11 +89,11 @@
         "name" : "9S",
         "answer" : "정답",
         "true" : {
-            "out_txt" : "정답입니다.",
+            "out_txt" : "정답입니다.2",
             "end" : "end"
         },
         "false" :{
-            "out_txt" : "오답입니다."
+            "out_txt" : "오답입니다.2"
         }
       }
     ],
@@ -43,6 +104,13 @@
           "src" : "http://nierautomata.wiki.fextralife.com/file/Nier-Automata/yorha_2S_character.png",
           "width" : 200,
           "height" : 200
+        },
+        {
+          "id" : 2,
+          "name": "A2",
+          "src" : "https://vignette1.wikia.nocookie.net/nier/images/f/fe/YoRHa_No.2A.png",
+          "width" : 200,
+          "height" : 200
         }
       ],
     "text"  : [
@@ -50,7 +118,7 @@
         {
           "id" : 2,
           "name": "하단텍스트",
-          "description" : "우아아아아아아앙",
+          "description" : "주차장 문제",
           "size": 30,
           "color": "#742442"
         }
@@ -80,4 +148,5 @@
           "height": 400
         }
     ]
-}]
+}
+]

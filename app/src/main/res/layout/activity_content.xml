@@ -24,6 +24,7 @@
             android:id="@+id/vertical_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_gravity="center"
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
@@ -53,7 +54,7 @@
                     android:layout_height="150dp"
                     android:layout_margin="5dp"
                     android:src="@mipmap/ic_launcher_round"
-                    android:visibility="gone"/>
+                    android:visibility="invisible"/>
 
                 <ImageView
                     android:id="@+id/img_2"
@@ -88,7 +89,7 @@
                 android:textAlignment="center"
                 android:textSize="20dp"
                 android:textColor="#772399"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
             <EditText
                 android:id="@+id/edit_text"
                 android:layout_width="wrap_content"

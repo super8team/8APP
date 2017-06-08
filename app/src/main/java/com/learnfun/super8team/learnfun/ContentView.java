@@ -11,9 +11,10 @@ import org.json.JSONObject;
  */
 
 abstract public class ContentView {
-    final static boolean used_interface = false;
+//    protected
     protected int id;
     protected String name;
+    protected String ContentName;
 
 
 
@@ -24,10 +25,10 @@ abstract public class ContentView {
     abstract public void unsetContentView();
 
     //클릭 액션 코드 등록
-    abstract public void setClickAction(final JSONObject code,final ContentActivity contentActivity,final String name);
+    abstract public void setClickAction(final JSONObject code,final ContentActivity contentActivity);
 
     //에디트 검사 액션 코드 등록
-    abstract public void setCheckEditAction(final EditText editview,final String answer,final JSONObject ooo, final JSONObject xxx,final ContentActivity contentActivity,final String name);
+    abstract public void setCheckEditAction(final EditText editview,final String answer,final JSONObject ooo, final JSONObject xxx,final ContentActivity contentActivity);
 
     //액션코드 구분 코드
     public Intent setActionScript(JSONObject code , Intent intent, String name){

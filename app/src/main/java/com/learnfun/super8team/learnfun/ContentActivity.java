@@ -146,16 +146,20 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
 
     private void initContents() {
-        json = call();
+        json = call(); //컨텐츠 명세 불러오기
+        //DB에서 명세 뽑아오는 걸로 수정할 것 - 메인 액티비티에서 명세 찾을 조건을 받아야됨
+
+        Log.i("컨텐츠 길이","asdadsads"+String.valueOf(json.length()));
 
         try {
             for (int i = 0; i < json.length(); i++) {
                 //전체 컨텐츠 갯수 뽑아내고 분리
                 jsons.add(json.getJSONObject(i));
+                Log.i("컨텐츠 명",jsons.get(i).getString("name"));
                 Content con = new Content(jsons.get(i), this);
                 contents.add(con);
             }
-
+//        Log.i("컨텐츠 길이","asdadsads"+String.valueOf(contents.size()));
             //테스트용 실행
 //            contents.get(0).setContentView();
         } catch (JSONException e) {
@@ -178,6 +182,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             // Get GPS and network status
             this.isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             this.isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+//        final TextView tv = (TextView) findViewById(R.id.bottom_text);
+//
+//        tv.setText("GPS가 잡혀야 좌표가 구해짐");
 
             if (!isNetworkEnabled && !isGPSEnabled)    {
                 // cannot get location
@@ -327,8 +335,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             for(int i=0;i<contents.size();i++){
                 //반환값의 이름과 같은 이름의 컨텐츠를 찾는다.
                 if(contents.get(i).getContentName().equals(contentName)){
-                    //찾아서 종료
+                    //찾아서 종료,
                     contents.get(i).unsetContentView();
+
+                    //AR 다시 작동 추가할 것
                 }
             }
         }
