@@ -41,6 +41,7 @@ public class ContentActivity extends AppCompatActivity {
 
         json = call(); //컨텐츠 명세 불러오기
         //DB에서 명세 뽑아오는 걸로 수정할 것 - 메인 액티비티에서 명세 찾을 조건을 받아야됨
+        //로컬 디비에 명세가 없으면 명세를 저장, 명세가 있으면 로컬명세를 읽음
 
         Log.i("컨텐츠 길이","asdadsads"+String.valueOf(json.length()));
 
@@ -212,6 +213,8 @@ public class ContentActivity extends AppCompatActivity {
                 if(contents.get(i).getContentName().equals(contentName)){
                     //찾아서 종료,
                     contents.get(i).unsetContentView();
+
+                    //종료된 컨텐츠 명세 수정해서 로컬디비에 저장
 
                     //AR 다시 작동 추가할 것
                 }
