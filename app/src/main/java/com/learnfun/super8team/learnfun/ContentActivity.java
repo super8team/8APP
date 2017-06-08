@@ -7,16 +7,30 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.opengl.Matrix;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.SurfaceView;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.learnfun.super8team.learnfun.AR.ARCamera;
+import com.learnfun.super8team.learnfun.AR.AROverlayView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,21 +40,113 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class ContentActivity extends AppCompatActivity {
+public class ContentActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
+    final static String TAG = "ContentActivity";
+
+    private SurfaceView surfaceView;
+    private TextView tv;
+    private LinearLayout cameraContainerLayout;
+    private AROverlayView arOverlayView;
+    private Camera camera;
+    private ARCamera arCamera;
+
+    private SensorManager sensorManager;
+    private final static int REQUEST_CAMERA_PERMISSIONS_CODE = 11;
+    public static final int REQUEST_LOCATION_PERMISSIONS_CODE = 0;
+
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 10 meters
+    private static final long MIN_TIME_BW_UPDATES = 0;//1000 * 60 * 1; // 1 minute
+
+    private LocationManager locationManager;
+    private Location location;
+    boolean isGPSEnabled;
+    boolean isNetworkEnabled;
+    boolean locationServiceAvailable;
+
     private ArrayList<JSONObject> jsons = new ArrayList();
     private ArrayList<Content> contents = new ArrayList();
     private JSONArray json;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
-        //권한받기
-        permissionCheck(Manifest.permission.ACCESS_FINE_LOCATION);
-        permissionCheck(Manifest.permission.ACCESS_COARSE_LOCATION);
 
+        Log.e(TAG, "oncreated");
+
+        // AR카메라를 위한 초기 설정
+        sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+        cameraContainerLayout = (LinearLayout) findViewById(R.id.camera_container_layout);
+        surfaceView = (SurfaceView) findViewById(R.id.surface_view);
+        arOverlayView = new AROverlayView(this);
+
+        // 0607 22:00 여기 있던 권한 설정은 onResume으로 옮겼습니다 ㅎ.ㅎ 카메라 권한 따고 초기화 하는 거랑 같이 하기 위해서!
+        // 0607 23:53 권한 획득에 자꾸 실패해서 진아코드로 대체
+
+        // 여기 있던 json->call()은 onResume의 initContents()로 옮겼습니다! oncreate보다 resume이 늦게 시작하기 때문!
+
+        // GPS 값 받아오기
+
+        tv = (TextView) findViewById(R.id.bottom_text);
+        tv.setText("GPS가 잡혀야 좌표가 구해짐");
+
+        // 여기 있던 locationListener는 밑에 있는 리스너 함수들로 옮김!
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 권한 획득
+        Log.d(TAG, "onResume");
+        requestLocationPermission();
+        requestCameraPermission();
+        registerSensors();
+        initContents();
+        initAROverlayView();
+    }
+
+    public void onPause() {
+        releaseCamera();
+        super.onPause();
+    }
+
+    private void releaseCamera() {
+        if(camera != null) {
+            camera.setPreviewCallback(null);
+            camera.stopPreview();
+            arCamera.setCamera(null);
+            camera.release();
+            camera = null;
+        }
+    }
+
+    public void requestCameraPermission() {
+        Log.e(TAG, "requestCameraPermission");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "시무룩");
+            this.requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSIONS_CODE);
+        } else {
+            Log.e(TAG, "camera_permission_OK");
+            initARCameraView();
+        }
+    }
+
+    public void requestLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS_CODE);
+        } else {
+            Log.e(TAG, "퍼미셔너어넌ㄴㄴ");
+            initLocationService();
+        }
+    }
+
+    private void initContents() {
         json = call();
-
 
         try {
             for (int i = 0; i < json.length(); i++) {
@@ -57,62 +163,114 @@ public class ContentActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
 
-        //GPS 값 받아오기
+    private void initLocationService() {
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
+            return  ;
+        }
+        Log.i(TAG, "locationService initial");
 
-        final TextView tv = (TextView) findViewById(R.id.bottom_text);
+        try   {
+            this.locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
 
-        tv.setText("GPS가 잡혀야 좌표가 구해짐");
+            // Get GPS and network status
+            this.isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            this.isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            if (!isNetworkEnabled && !isGPSEnabled)    {
+                // cannot get location
+                this.locationServiceAvailable = false;
+            }
 
-        LocationListener ll = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-//                Log.i("리스너 작동하는가","작동함");
-                double lat = location.getLatitude();
-                double lng = location.getLongitude();
+            this.locationServiceAvailable = true;
 
-                //이곳에서 각컨텐츠 조건함수 호출
-                for (int i=0;i<contents.size();i++){
-                    try {
-                        //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
-//                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
-                        if(contents.get(i).checkCondition(lat,lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()){
-                            contents.get(i).setContentView();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            if (isNetworkEnabled) {
+                Log.i(TAG, "네트워크 가능");
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                if (locationManager != null)   {
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if (location != null) updateLatestLocation(location);
                 }
-
-                tv.setText("latitude: " + lat + ", longitude: " + lng);
             }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-//                tv.setText("onStatusChanged :"+provider);
-            }
+            if (isGPSEnabled)  {
+                Log.i(TAG, "GPS 가능");
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 
-            @Override
-            public void onProviderEnabled(String provider) {
-//                tv.setText("onProviderEnabled :"+provider);
+                if (locationManager != null)  {
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) updateLatestLocation(location);
+                }
             }
+        } catch (Exception ex)  {
+            Log.e(TAG, ex.getMessage());
 
-            @Override
-            public void onProviderDisabled(String provider) {
-//                tv.setText("onProviderDisabled :"+provider);
-            }
-        };
+        }
+    }
 
-        Log.i("정상작동 하는가", ": 한다");
-        try{
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,ll);
-        }catch (SecurityException se){
-            se.printStackTrace();
+    private void updateLatestLocation(Location curLocation) {
+        Log.e(TAG, "updating..."+String.valueOf(curLocation.getLongitude()));
+        if (arOverlayView !=null) {
+            Log.i(TAG, "location update");
+            arOverlayView.updateCurrentLocation(curLocation);
+        }
+    }
+
+    private void initARCameraView() {
+        Log.e(TAG, "initARCameraView");
+        reloadSurfaceView();
+
+        if (arCamera == null) {
+            arCamera = new ARCamera(this, surfaceView);
+        }
+        if (arCamera.getParent() != null) {
+            ((ViewGroup) arCamera.getParent()).removeView(arCamera);
+        }
+        cameraContainerLayout.addView(arCamera);
+        arCamera.setKeepScreenOn(true);
+        initCamera();
+    }
+
+    private void reloadSurfaceView() {
+        Log.e(TAG, "reloadSurfaceView");
+        if (surfaceView.getParent() != null) {
+            ((ViewGroup) surfaceView.getParent()).removeView(surfaceView);
         }
 
+        cameraContainerLayout.addView(surfaceView);
+    }
+
+    private void initCamera() {
+        int numCams = Camera.getNumberOfCameras();
+        if(numCams > 0){
+            try{
+                camera = Camera.open();
+                camera.startPreview();
+                arCamera.setCamera(camera);
+            } catch (RuntimeException ex){
+                Toast.makeText(this, "Camera not found", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void registerSensors() {
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
+                SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    public void initAROverlayView() {
+        Log.i(TAG, "initAROverlayView");
+        if (arOverlayView.getParent() != null) {
+            ((ViewGroup) arOverlayView.getParent()).removeView(arOverlayView);
+        }
+        cameraContainerLayout.addView(arOverlayView);
     }
 
     //제이슨 파일을 읽어오는 코드
@@ -145,7 +303,7 @@ public class ContentActivity extends AppCompatActivity {
 
             String jString = sb.toString();
 
-             jobj = new JSONArray(jString);
+            jobj = new JSONArray(jString);
 
 
         }catch (JSONException je){
@@ -156,44 +314,8 @@ public class ContentActivity extends AppCompatActivity {
         return jobj;
     }
 
-    //권한 받는 코드
-    public void permissionCheck(final String permission) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
 
-            final Activity context = this;
-
-            int permissionCheck = ContextCompat.checkSelfPermission(context, permission);
-
-            if(permissionCheck == PackageManager.PERMISSION_DENIED){
-
-                //권한이 없을경우
-                if(context.shouldShowRequestPermissionRationale(permission)){
-                    Log.i("권한이 없다 ", permission);
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-                    dialog.setTitle("Permission Request")
-                            .setMessage("Permission to use features is required")
-                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                                        context.requestPermissions(new String[]{permission},20000);
-                                    }
-                                }
-                            })
-                            .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            }).create().show();
-                }else {
-                    context.requestPermissions(new String[]{permission}, 20000);
-                }
-            }
-        }
-    }
-
-//    콘텐츠 종료 확인 코드, 액션스크립트에 end블록을 사용했을경우 리절트 반환
+    //    콘텐츠 종료 확인 코드, 액션스크립트에 end블록을 사용했을경우 리절트 반환
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -210,5 +332,79 @@ public class ContentActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            float[] rotationMatrixFromVector = new float[16];
+            float[] projectionMatrix = new float[16];
+            float[] rotatedProjectionMatrix = new float[16];
+
+            SensorManager.getRotationMatrixFromVector(rotationMatrixFromVector, sensorEvent.values);
+
+            if (arCamera != null) {
+                projectionMatrix = arCamera.getProjectionMatrix();
+            }
+
+            Matrix.multiplyMM(rotatedProjectionMatrix, 0, projectionMatrix, 0, rotationMatrixFromVector, 0);
+            this.arOverlayView.updateRotatedProjectionMatrix(rotatedProjectionMatrix);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+
+        //이곳에서 각컨텐츠 조건함수 호출
+        for (int i=0;i<contents.size();i++){
+            try {
+                //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
+//                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
+                if(contents.get(i).checkCondition(lat,lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()){
+                    contents.get(i).setContentView();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        tv.setText("latitude: " + lat + ", longitude: " + lng);
+
+        if (arOverlayView !=null) {
+            Log.i(TAG, "location update");
+            arOverlayView.updateCurrentLocation(location);
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int x = (int)event.getX();
+        int y = (int)event.getY();
+
+
+
+        return super.onTouchEvent(event);
     }
 }

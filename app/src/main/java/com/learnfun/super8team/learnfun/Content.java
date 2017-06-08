@@ -1,5 +1,6 @@
 package com.learnfun.super8team.learnfun;
 
+import android.location.Location;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,7 +25,7 @@ public class Content {
     private boolean visionable;
     private boolean clickable;
     private boolean disable;
-    private double latitude, longitude;
+    private Location location; // 위경도 데이터를 가지고 있을 객체
     private JSONArray scriptCode;
     private EditText editview;
     private boolean hasEditview = false;
@@ -47,8 +48,11 @@ public class Content {
         this.visionable = jobj.getBoolean("visionable");
         this.clickable  = jobj.getBoolean("clickable");
         this.disable    = jobj.getBoolean("disable");
-        this.latitude   = jobj.getDouble("latitude");
-        this.longitude  = jobj.getDouble("longitude");
+
+        // 현재 입력된 위경도 데이터로 로케이션 객체 생성
+        this.location = new Location("Content");
+        this.location.setLatitude(jobj.getDouble("latitude"));
+        this.location.setLongitude(jobj.getDouble("longitude"));
 
         Log.i("컨텐츠 멤버 값 입력완료 -----", this.name);
         //컨텐츠 배열들을 ArrayList에 저장
@@ -197,7 +201,7 @@ public class Content {
 //        Log.i("위도 큰값     ", String.valueOf(latitude+val));
 //        Log.i("위도 작은값     ", String.valueOf(latitude-val));
 //        Log.i("경도      ", String.valueOf(latitude-val < lat && longitude+val > lng));
-        if( (latitude+val > lat && latitude-val < lat) && (longitude-val < lng && longitude+val > lng) ){
+        if( (location.getLatitude()+val > lat && location.getLatitude()-val < lat) && (location.getLongitude()-val < lng && location.getLongitude()+val > lng) ){
             return true;
         }else{
             return false;
@@ -235,5 +239,13 @@ public class Content {
         return this.disable;
     }
     //컨텐츠 지우기
+
+//    //컨텐츠 위도 반환
+//    public double getContentLatitude() { return this.latitude; }
+//    //컨텐츠 경도 반환
+//    public double getContentLongitude() { return this.longitude; }
+    public Location getContentLocation() {
+        return location;
+    }
 }
 
