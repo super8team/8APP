@@ -82,6 +82,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         arOverlayView = new AROverlayView(this);
 
+        initContents();
         // 0607 22:00 여기 있던 권한 설정은 onResume으로 옮겼습니다 ㅎ.ㅎ 카메라 권한 따고 초기화 하는 거랑 같이 하기 위해서!
         // 0607 23:53 권한 획득에 자꾸 실패해서 진아코드로 대체
 
@@ -89,8 +90,8 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
         // GPS 값 받아오기
 
-        tv = (TextView) findViewById(R.id.bottom_text);
-        tv.setText("GPS가 잡혀야 좌표가 구해짐");
+//        tv = (TextView) findViewById(R.id.bottom_text);
+//        tv.setText("GPS가 잡혀야 좌표가 구해짐");
 
         // 여기 있던 locationListener는 밑에 있는 리스너 함수들로 옮김!
 
@@ -104,7 +105,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         requestLocationPermission();
         requestCameraPermission();
         registerSensors();
-        initContents();
         initAROverlayView();
     }
 
@@ -159,6 +159,9 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                 Log.i("컨텐츠 명",jsons.get(i).getString("name"));
                 Content con = new Content(jsons.get(i), this);
                 contents.add(con);
+
+                //진아 request  오버레이뷰에 컨텐츠 객체 추가
+                arOverlayView.addOverlayContent(con);
             }
 //        Log.i("컨텐츠 길이","asdadsads"+String.valueOf(contents.size()));
             //테스트용 실행
@@ -374,21 +377,12 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public void onLocationChanged(Location location) {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
-
+        Log.i("위치위취취췿", "location updatelocation updatelocation updatelocation update");
+        Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
         //이곳에서 각컨텐츠 조건함수 호출
-        for (int i=0;i<contents.size();i++){
-            try {
-                //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
-//                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
-                if(contents.get(i).checkCondition(lat,lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()){
-                    contents.get(i).setContentView();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        contentsCheck(35.896480,128.620723);
 
-        tv.setText("latitude: " + lat + ", longitude: " + lng);
+//        tv.setText("latitude: " + lat + ", longitude: " + lng);
 
         if (arOverlayView !=null) {
             Log.i(TAG, "location update");
@@ -416,8 +410,26 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         int x = (int)event.getX();
         int y = (int)event.getY();
 
-
+        //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
 
         return super.onTouchEvent(event);
+    }
+
+    private void contentsCheck(double lat, double lng){
+        for (int i=0;i<contents.size();i++){
+            try {
+                //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
+//                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
+                if(contents.get(i).checkCondition(lat,lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()){
+                    Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
+                    Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
+                    contents.get(i).setContentView();
+
+                    //AR 비활성화
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

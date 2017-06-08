@@ -54,10 +54,11 @@ public class Content {
         this.visionable = jobj.getBoolean("visionable");
         this.clickable  = jobj.getBoolean("clickable");
         this.disable    = jobj.getBoolean("disable");
+        String temp[] = jobj.getString("location").split(",");
         // 현재 입력된 위경도 데이터로 로케이션 객체 생성
         this.location = new Location("Content");
-        this.location.setLatitude(jobj.getDouble("latitude"));
-        this.location.setLongitude(jobj.getDouble("longitude"));
+        this.location.setLatitude(Double.parseDouble(temp[0]));
+        this.location.setLongitude(Double.parseDouble(temp[1]));
 
 //        Log.i("컨텐츠 멤버 값 입력완료 -----", this.name);
         //컨텐츠 배열들을 ArrayList에 저장
