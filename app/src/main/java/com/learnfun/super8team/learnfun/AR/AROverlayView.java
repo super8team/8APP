@@ -52,6 +52,26 @@ public class AROverlayView extends View {
         arPoints.add(content);
     }
 
+    public List<Float> getNavigationPoint (Location location, int i) {
+        float[] currentLocationInECEF = LocationHelper.WSG84toECEF(currentLocation);
+        float[] pointInECEF = LocationHelper.WSG84toECEF(arPoints.get(i).getContentLocation());
+        float[] pointInENU = LocationHelper.ECEFtoENU(currentLocation, currentLocationInECEF, pointInECEF);
+
+        float[] cameraCoordinateVector = new float[4];
+        Matrix.multiplyMV(cameraCoordinateVector, 0, rotatedProjectionMatrix, 0, pointInENU, 0);
+
+        // cameraCoordinateVector[2] is z, that always less than 0 to display on right position
+        // if z > 0, the point will display on the opposite
+
+            final float changeX  = (0.5f + cameraCoordinateVector[0]/cameraCoordinateVector[3]) * this.getWidth();
+            final float changeY = (0.5f - cameraCoordinateVector[1]/cameraCoordinateVector[3]) * this.getHeight();
+
+        return new ArrayList<Float>() {{
+            add(changeX);
+            add(changeY);
+        }};
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

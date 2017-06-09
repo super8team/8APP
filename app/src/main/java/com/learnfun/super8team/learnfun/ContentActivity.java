@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.learnfun.super8team.learnfun.AR.ARCamera;
 import com.learnfun.super8team.learnfun.AR.AROverlayView;
+import com.learnfun.super8team.learnfun.AR.LocationHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +40,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContentActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
     final static String TAG = "ContentActivity";
@@ -405,14 +407,38 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
     }
 
+    private void stopAROverlay () {
+        if (arOverlayView.getParent() != null) {
+            ((ViewGroup) arOverlayView.getParent()).removeView(arOverlayView);
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int x = (int)event.getX();
         int y = (int)event.getY();
+        Location contentsLocation;
 
         //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
+        for (int i=0;i<contents.size();i++) {
+            try {
+                contentsLocation = contents.get(i).getContentLocation();
+                List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
+                if (x == points.get(0) && y == points.get(1)) { // 터치한 객체가 정확히 맞아야 함!
 
-        return super.onTouchEvent(event);
+                    Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
+                    Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
+                    contents.get(i).setContentView();
+
+                    //AR 비활성화
+                    stopAROverlay();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+            return super.onTouchEvent(event);
     }
 
     private void contentsCheck(double lat, double lng){
@@ -426,6 +452,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                     contents.get(i).setContentView();
 
                     //AR 비활성화
+                    stopAROverlay();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
