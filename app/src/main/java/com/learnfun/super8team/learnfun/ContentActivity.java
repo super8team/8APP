@@ -72,12 +72,16 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     private ArrayList<Content> contents = new ArrayList();
     private JSONArray json;
 
-
+    private DBManager dbManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
+
+        //DB생성
+        dbManager = new DBManager(getApplicationContext(),"content",null,1);
+        Log.i("db???",dbManager.toString());
 
         // AR카메라를 위한 초기 설정
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
@@ -146,13 +150,20 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
 
     private void initContents() {
-        json = call(); //컨텐츠 명세 불러오기
-        //DB에서 명세 뽑아오는 걸로 수정할 것 - 메인 액티비티에서 명세 찾을 조건을 받아야됨
-        //로컬 디비에 명세가 없으면 명세를 저장, 명세가 있으면 로컬명세를 읽음
 
-        Log.i("컨텐츠 길이","asdadsads"+String.valueOf(json.length()));
+
+//        json = call(); //컨텐츠 명세 불러오기
+        //DB에서 명세 뽑아오는 걸로 수정할 것 - 메인 액티비티에서 명세 찾을 조건을 받아야됨 or 메인 엑티비티에서 명세만 넘겨받음(스트링으로)
+        //로컬 디비에 명세가 없으면 명세를 저장, 명세가 있으면 로컬명세를 읽음
+        String data = dbManager.init(call().toString());
+
+
 
         try {
+            //문자열을 제이슨 배열로 변환
+            json = new JSONArray(data);
+
+            Log.i("컨텐츠 길이","asdadsads"+String.valueOf(json.length()));
             for (int i = 0; i < json.length(); i++) {
                 //전체 컨텐츠 갯수 뽑아내고 분리
                 jsons.add(json.getJSONObject(i));
@@ -347,8 +358,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
                     //종료된 컨텐츠 명세 수정해서 로컬디비에 저장
 
-                    //AR 다시 작동 추가할 것
-
                 }
             }
         }
@@ -424,7 +433,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         int x = (int)event.getX();
         int y = (int)event.getY()-200;
         Location contentsLocation;
-        Log.e(TAG, "onTouch");
+        Log.e(TAG, "onTouch: "+x+", "+y);
 
         //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
         for (int i=0;i<contents.size();i++) {
@@ -436,16 +445,17 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
                     Float targetX = points.get(0);
                     Float targetY = points.get(1);
+                    Log.i("contents", targetX+", "+targetY);
 
-                    if (targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY + 100) {
-                        Log.e(TAG, contents.get(i).getContentName());
-//                      Toast.makeText(ContentActivity.this, contents.get(i).getContentName(), Toast.LENGTH_SHORT).show();
-                        Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
-                        Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
 
-//                    //AR 비활성화
-                        stopAROverlay();
-                        contents.get(i).setContentView();
+                    if(targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY +100) {
+                          if (!Content.CONTENT_USED && !contents.get(i).getContentDisable()) {
+                              Log.e(TAG, contents.get(i).getContentName());
+
+                              //AR 비활성화
+                              stopAROverlay();
+                              contents.get(i).setContentView();
+                          }
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -464,8 +474,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 //                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
 
                     if (contents.get(i).checkCondition(lat, lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()) {
-                        Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
-                        Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
 
                         //AR 비활성화
                         stopAROverlay();
