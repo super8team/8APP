@@ -169,6 +169,7 @@ public class Content {
             ONLINE_CONTENT_NAME = this.name;
             //컨텐츠 뷰 활성화
             for(int i=0;i<views.size();i++){
+                Log.e("Content", "visible");
                 views.get(i).setContentView();
             }
             addScript();

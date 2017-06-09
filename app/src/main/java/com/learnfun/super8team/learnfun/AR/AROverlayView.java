@@ -45,6 +45,7 @@ public class AROverlayView extends View {
 
     public void updateCurrentLocation(Location currentLocation){
         this.currentLocation = currentLocation;
+//        Log.e(TAG, "updateCurrentLocation!");
         this.invalidate();
     }
 
@@ -86,6 +87,7 @@ public class AROverlayView extends View {
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
         paint.setTextSize(60);
         for (int i = 0; i < arPoints.size(); i ++) {
+
             float[] currentLocationInECEF = LocationHelper.WSG84toECEF(currentLocation);
             float[] pointInECEF = LocationHelper.WSG84toECEF(arPoints.get(i).getContentLocation());
             float[] pointInENU = LocationHelper.ECEFtoENU(currentLocation, currentLocationInECEF, pointInECEF);

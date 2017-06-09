@@ -24,8 +24,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +50,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     private SurfaceView surfaceView;
     private TextView tv;
     private LinearLayout cameraContainerLayout;
+    private RelativeLayout OverlayLayout;
     private AROverlayView arOverlayView;
     private Camera camera;
     private ARCamera arCamera;
@@ -76,13 +79,12 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
 
-        Log.e(TAG, "oncreated");
-
         // AR카메라를 위한 초기 설정
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         cameraContainerLayout = (LinearLayout) findViewById(R.id.camera_container_layout);
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         arOverlayView = new AROverlayView(this);
+        OverlayLayout = (RelativeLayout) findViewById(R.id.overlay_layout);
 
         initContents();
         // 0607 22:00 여기 있던 권한 설정은 onResume으로 옮겼습니다 ㅎ.ㅎ 카메라 권한 따고 초기화 하는 거랑 같이 하기 위해서!
@@ -103,7 +105,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     protected void onResume() {
         super.onResume();
         // 권한 획득
-        Log.d(TAG, "onResume");
         requestLocationPermission();
         requestCameraPermission();
         registerSensors();
@@ -129,10 +130,8 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         Log.e(TAG, "requestCameraPermission");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG, "시무룩");
             this.requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSIONS_CODE);
         } else {
-            Log.e(TAG, "camera_permission_OK");
             initARCameraView();
         }
     }
@@ -142,7 +141,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                 this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS_CODE);
         } else {
-            Log.e(TAG, "퍼미셔너어넌ㄴㄴ");
             initLocationService();
         }
     }
@@ -180,7 +178,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                 ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
             return  ;
         }
-        Log.i(TAG, "locationService initial");
 
         try   {
             this.locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
@@ -201,7 +198,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             this.locationServiceAvailable = true;
 
             if (isNetworkEnabled) {
-                Log.i(TAG, "네트워크 가능");
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                         MIN_TIME_BW_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
@@ -212,7 +208,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             }
 
             if (isGPSEnabled)  {
-                Log.i(TAG, "GPS 가능");
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         MIN_TIME_BW_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
@@ -231,9 +226,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     private void updateLatestLocation(Location curLocation) {
         Log.e(TAG, "updating..."+String.valueOf(curLocation.getLongitude()));
         if (arOverlayView !=null) {
-            Log.i(TAG, "location update");
+            Log.i(TAG, "initial location update");
             arOverlayView.updateCurrentLocation(curLocation);
         }
+        Log.e(TAG, String.valueOf(arOverlayView.getVisibility()));
     }
 
     private void initARCameraView() {
@@ -280,11 +276,16 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
 
     public void initAROverlayView() {
-        Log.i(TAG, "initAROverlayView");
-        if (arOverlayView.getParent() != null) {
-            ((ViewGroup) arOverlayView.getParent()).removeView(arOverlayView);
+//        contentView.setVisibility(View.GONE);
+        Log.i("CONTENT_USED", String.valueOf(Content.CONTENT_USED));
+        if (!Content.CONTENT_USED) {
+            Log.i(TAG, "initAROverlayView");
+
+            if (arOverlayView.getParent() != null) {
+                ((ViewGroup) arOverlayView.getParent()).removeView(arOverlayView);
+            }
+            OverlayLayout.addView(arOverlayView);
         }
-        cameraContainerLayout.addView(arOverlayView);
     }
 
     //제이슨 파일을 읽어오는 코드
@@ -347,6 +348,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                     //종료된 컨텐츠 명세 수정해서 로컬디비에 저장
 
                     //AR 다시 작동 추가할 것
+
                 }
             }
         }
@@ -379,16 +381,19 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public void onLocationChanged(Location location) {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
-        Log.i("위치위취취췿", "location updatelocation updatelocation updatelocation update");
-        Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
+//        Log.i("위치위취취췿", "location updatelocation updatelocation updatelocation update");
+//        Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
         //이곳에서 각컨텐츠 조건함수 호출
-        contentsCheck(35.896480,128.620723);
+//        contentsCheck(35.896480,128.620723);
+        contentsCheck(lat,lng);
 
 //        tv.setText("latitude: " + lat + ", longitude: " + lng);
 
         if (arOverlayView !=null) {
-            Log.i(TAG, "location update");
+//            Log.i(TAG, "location update");
             arOverlayView.updateCurrentLocation(location);
+//            Log.e(TAG, String.valueOf(arOverlayView.getVisibility()));
+
         }
     }
 
@@ -408,6 +413,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
 
     private void stopAROverlay () {
+        Log.e(TAG, "stop overlay!");
         if (arOverlayView.getParent() != null) {
             ((ViewGroup) arOverlayView.getParent()).removeView(arOverlayView);
         }
@@ -416,22 +422,28 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int x = (int)event.getX();
-        int y = (int)event.getY();
+        int y = (int)event.getY()-200;
         Location contentsLocation;
+        Log.e(TAG, "onTouch");
 
         //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
         for (int i=0;i<contents.size();i++) {
             try {
                 contentsLocation = contents.get(i).getContentLocation();
                 List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
-                if (x == points.get(0) && y == points.get(1)) { // 터치한 객체가 정확히 맞아야 함!
 
+                    Float targetX = points.get(0);
+                    Float targetY = points.get(1);
+
+                  if(targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY +100){
+                    Log.e(TAG, contents.get(i).getContentName());
+//                      Toast.makeText(ContentActivity.this, contents.get(i).getContentName(), Toast.LENGTH_SHORT).show();
                     Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
                     Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
-                    contents.get(i).setContentView();
 
-                    //AR 비활성화
-                    stopAROverlay();
+//                    //AR 비활성화
+                      stopAROverlay();
+                      contents.get(i).setContentView();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -442,20 +454,23 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
 
     private void contentsCheck(double lat, double lng){
-        for (int i=0;i<contents.size();i++){
-            try {
-                //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
+        if(!Content.CONTENT_USED) {
+            for (int i = 0; i < contents.size(); i++) {
+                try {
+                    //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
 //                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
-                if(contents.get(i).checkCondition(lat,lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()){
-                    Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
-                    Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
-                    contents.get(i).setContentView();
 
-                    //AR 비활성화
-                    stopAROverlay();
+                    if (contents.get(i).checkCondition(lat, lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()) {
+                        Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
+                        Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
+
+                        //AR 비활성화
+                        stopAROverlay();
+                        contents.get(i).setContentView();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }
