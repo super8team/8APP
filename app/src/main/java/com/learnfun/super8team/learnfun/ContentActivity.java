@@ -428,25 +428,28 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
         //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
         for (int i=0;i<contents.size();i++) {
-            try {
-                contentsLocation = contents.get(i).getContentLocation();
-                List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
+
+            if(contents.get(i).getClickable()) {
+                try {
+                    contentsLocation = contents.get(i).getContentLocation();
+                    List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
 
                     Float targetX = points.get(0);
                     Float targetY = points.get(1);
 
-                  if(targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY +100){
-                    Log.e(TAG, contents.get(i).getContentName());
+                    if (targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY + 100) {
+                        Log.e(TAG, contents.get(i).getContentName());
 //                      Toast.makeText(ContentActivity.this, contents.get(i).getContentName(), Toast.LENGTH_SHORT).show();
-                    Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
-                    Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
+                        Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
+                        Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
 
 //                    //AR 비활성화
-                      stopAROverlay();
-                      contents.get(i).setContentView();
+                        stopAROverlay();
+                        contents.get(i).setContentView();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
 

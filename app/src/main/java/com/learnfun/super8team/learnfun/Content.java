@@ -199,6 +199,10 @@ public class Content {
         return this.disable;
     }
 
+    public boolean getClickable() { return this.clickable; }
+
+    public boolean getVisionable() { return this.visionable; }
+
     //컨텐츠 지우기
 
 //    //컨텐츠 위도 반환
