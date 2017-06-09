@@ -60,7 +60,7 @@ public class TeacherMainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.goToContens:
-                    intent = new Intent(TeacherMainActivity.this, ContentViewActivity.class);
+                    intent = new Intent(TeacherMainActivity.this, ContentActivity.class);
                     startActivity(intent);
 
                     break;
