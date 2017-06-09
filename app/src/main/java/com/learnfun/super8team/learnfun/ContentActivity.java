@@ -382,7 +382,8 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         Log.i("위치위취취췿", "location updatelocation updatelocation updatelocation update");
         Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
         //이곳에서 각컨텐츠 조건함수 호출
-        contentsCheck(35.896480,128.620723);
+//        contentsCheck(35.896480,128.620723);
+        contentsCheck(lat,lng);
 
 //        tv.setText("latitude: " + lat + ", longitude: " + lng);
 
@@ -426,8 +427,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                 List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
                 if (x == points.get(0) && y == points.get(1)) { // 터치한 객체가 정확히 맞아야 함!
 
-                    Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
-                    Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
                     contents.get(i).setContentView();
 
                     //AR 비활성화
@@ -447,8 +446,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                 //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
 //                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
                 if(contents.get(i).checkCondition(lat,lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()){
-                    Log.i("컨텐츠 디새블", String.valueOf(!contents.get(i).getContentDisable()));
-                    Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
                     contents.get(i).setContentView();
 
                     //AR 비활성화
