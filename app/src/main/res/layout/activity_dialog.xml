@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context="com.learnfun.super8team.learnfun.Dialog">
+
+    <ImageView
+        android:id="@+id/dialog_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_launcher_round"
+        android:visibility="gone"
+        />
+    <TextView
+        android:id="@+id/dialog_txt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:textAlignment="center"
+        android:text="Test Text output "
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -15,52 +15,62 @@
         android:weightSum="1">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="0.13">
+            android:layout_width="367dp"
+            android:layout_height="139dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/goToToday"
                 android:layout_width="wrap_content"
-                android:layout_height="118dp"
+                android:layout_height="131dp"
                 android:layout_weight="1"
-                android:text="@string/go_to_today" />
+                android:background="@color/colorPrimary"
+                android:text="@string/go_to_today"
+                android:textColor="@color/colorWrite"
+                android:textSize="20dp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_weight="0.14">
+            android:layout_weight="0.08">
 
             <Button
                 android:id="@+id/goToPlanTable"
                 android:layout_width="wrap_content"
-                android:layout_height="75dp"
-                android:layout_weight="1"
+                android:layout_height="86dp"
+                android:layout_weight="1.00"
+                android:background="@color/colorAccent"
+                android:textColor="@color/colorWrite"
+                android:textSize="20dp"
                 android:text="@string/go_to_plantable" />
 
             <Button
                 android:id="@+id/goToStudentList"
                 android:layout_width="wrap_content"
-                android:layout_height="73dp"
+                android:layout_height="86dp"
+                android:layout_weight="1.03"
+                android:background="@color/colorPurple"
                 android:text="@string/go_to_studentlist"
-                android:layout_weight="1.03" />
+                android:textColor="@color/colorWrite"
+                android:textSize="20dp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="0.13">
+            android:layout_width="367dp"
+            android:layout_height="105dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/goToContens"
                 android:layout_width="wrap_content"
                 android:layout_height="97dp"
                 android:layout_weight="1"
+                android:background="@color/colorSky"
+                android:textColor="@color/colorWrite"
+                android:textSize="20dp"
                 android:text="@string/go_to_contents" />
         </LinearLayout>
 
@@ -76,6 +86,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="78dp"
                 android:layout_weight="1"
+                android:background="@color/colorGreen"
+                android:textColor="@color/colorWrite"
+                android:textSize="20dp"
                 android:text="@string/go_to_checklist" />
 
             <Button
@@ -83,6 +96,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="77dp"
                 android:text="@string/go_to_recommend"
+                android:background="@color/colorOrange"
+                android:textColor="@color/colorWrite"
+                android:textSize="20dp"
                 android:layout_weight="0.93" />
         </LinearLayout>
 

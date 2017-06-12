@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,7 +92,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     Switch histroySwitch;
     boolean mSwc = true;    // 스위치 상태를 기억할 변수
 
-
+    TextView contentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +112,8 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         ImageView image =(ImageView)this.findViewById(R.id.imageView2);
         image.setImageResource(R.drawable.onebin);
 
+        contentView = (TextView)this.findViewById(R.id.contentView);
+
 
         translateLeftAnim = AnimationUtils.loadAnimation(this,R.anim.translate_left);
         translateRightAnim = AnimationUtils.loadAnimation(this,R.anim.translate_right);
@@ -123,6 +127,8 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         histroySwitch = (Switch)findViewById(R.id.historySwitch);
         histroySwitch.setOnCheckedChangeListener(SWITCH);
 
+        userPreferences = UserPreferences.getUserPreferences(this);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.class_Name,android.R.layout.simple_spinner_item
         );
@@ -130,6 +136,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -264,6 +271,53 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                                     slidingPage01.startAnimation(translateLeftAnim);
                                     scrollPage.setVisibility(View.VISIBLE);
                                     scrollPage.startAnimation(translateLeftAnim);
+
+
+                                    //디비에서 히스토리 정보를 가져와서 슬라이드창에 글을 뿌려준다
+                                    sendData = new JSONObject();
+
+                                    try {
+
+                                        //recentDate.put("date",getDate());
+                                        sendData.put("userId",userPreferences.getUserId());
+                                        sendData.put("placeNum",placeNum);
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    requestNetwork = new NetworkAsync(TodayActivity.this, "getHistoryContent",  NetworkAsync.POST, sendData);
+
+                                    try {
+                                        // 네트워크 통신 후 json 획득
+                                        String returnString = requestNetwork.execute().get();
+                                        Log.e("planResult", "result is "+returnString);
+                                        JSONObject place = new JSONObject(returnString);
+
+                                        //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
+                                        JSONObject contentList = new JSONObject(place.getString("place"));
+
+
+                                        for(int i = 0 ; i < contentList.length();i++){
+
+                                            //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+                                            String contentNum = "content" + (i+1);
+                                            JSONObject dataJsonObject = contentList.getJSONObject(contentNum);
+                                            //JSONObject placeData = new JSONObject(dataJsonObject);
+
+                                            contentView.setText("content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather"));
+
+
+
+                                        }
+
+
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
                                 }
                             }
                             return false;
@@ -393,6 +447,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         //String userid = userPreferences.getUserId();
 
         sendData = new JSONObject();
+
         try {
 
             //recentDate.put("date",getDate());
@@ -401,6 +456,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         requestNetwork = new NetworkAsync(this, "getPlan",  NetworkAsync.POST, sendData);
 
         try {
@@ -408,16 +464,19 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             String returnString = requestNetwork.execute().get();
             Log.e("planResult", "result is "+returnString);
             planGPS = new JSONObject(returnString);
-            JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
-            PolygonOptions rectOptions = new PolygonOptions();
 
-            for(int i = 0 ; i < planGPSArray.length();i++){
+            //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
+            JSONObject placeGPS = new JSONObject(planGPS.getString("gps"));
+            PolygonOptions rectOptions = new PolygonOptions();
+            Log.e("planResult", "result is "+placeGPS);
+            for(int i = 0 ; i < placeGPS.length();i++){
 
                 //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
-                String dataJsonObject = planGPSArray.getJSONObject(i).getString("place");
-                JSONObject placeData = new JSONObject(dataJsonObject);
-                Log.d("TAG", placeData.getString("name"));
-                LatLng planGPS = new LatLng(placeData.getDouble("lat"), placeData.getDouble("lng"));
+                String placeNum = "place" + (i+1);
+                JSONObject dataJsonObject = placeGPS.getJSONObject(placeNum);
+                //JSONObject placeData = new JSONObject(dataJsonObject);
+                Log.d("TAG", dataJsonObject.getString("name"));
+                LatLng planGPS = new LatLng(dataJsonObject.getDouble("lat"), dataJsonObject.getDouble("lng"));
 
                 MarkerOptions markerOptions = new MarkerOptions();
 
@@ -425,7 +484,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
                 //markerOptions.icon(getMarkerIcon(markerColor)); // change the color of marker
 
-                markerOptions.title(placeData.getString("no"));
+                markerOptions.title(dataJsonObject.getString("no"));
 
                 Marker planMarker = mMap.addMarker(markerOptions);
                 //planMarker.setOnClickListener(onButton1Clicked); //마커에 클릭이벤트를 달아 오른쪽에 창이 나오도록 해야함
@@ -569,8 +628,13 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-            if(myMarker==null) addMyMarker(myLatLng);
-            else myMarker.position(myLatLng);
+            if(myMarker==null){
+                addMyMarker(myLatLng);
+            }
+            else{
+                myMarker.position(myLatLng);
+
+            }
 
         }
 

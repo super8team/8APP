@@ -16,7 +16,7 @@ public class WriteHistoryActivity extends AppCompatActivity {
     Intent intent;
     String placeNum="";
     EditText contentHistory;
-
+    UserPreferences userPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,11 +24,12 @@ public class WriteHistoryActivity extends AppCompatActivity {
 
         closeWriteHistory = (Button)findViewById(R.id.closeWriteHistory);
         writeContentHistory = (Button)findViewById(R.id.writeContentHistory);
+
         closeWriteHistory.setOnClickListener(mainListener);
         writeContentHistory.setOnClickListener(mainListener);
 
         contentHistory = (EditText)findViewById(R.id.contentHistory);
-
+        userPreferences = UserPreferences.getUserPreferences(this);
         Intent getIntent = getIntent();
         Bundle myBundle = getIntent.getExtras();
         placeNum = myBundle.getString("placeNum");
@@ -41,13 +42,16 @@ public class WriteHistoryActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
 
-                case R.id.closeWriteHistory:
+                case R.id.writeContentHistory:
 
                     JSONObject sendData = new JSONObject();
                     try {
+
+                        sendData.put("userId",userPreferences.getUserId());
                         sendData.put("placeNum",placeNum);
-                        sendData.put("content",contentHistory.getText()+" ");
+                        sendData.put("content",contentHistory.getText().toString()+" ");
                         sendData.put("weather","sunny");
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -58,7 +62,7 @@ public class WriteHistoryActivity extends AppCompatActivity {
                     finish();
                     break;
 
-                case R.id.writeContentHistory:
+                case R.id.closeWriteHistory:
 
                     intent = new Intent();
                     setResult(0,intent);

@@ -45,6 +45,8 @@ public class StudentListActivity extends AppCompatActivity {
 
         setLayout();
 
+        userPreferences = UserPreferences.getUserPreferences(this);
+
         mGroupList = new ArrayList<String>();
         mChildList = new ArrayList<ArrayList<String>>();
         helper = new StudentHelper(this,"NameDB",null,1);
@@ -148,17 +150,17 @@ public class StudentListActivity extends AppCompatActivity {
             String returnString = requestNetwork.execute().get();
             Log.e("planResult", "result is "+returnString);
             JSONObject studentList = new JSONObject(returnString);
-            JSONArray classListArray = new JSONArray(studentList.getString("school"));
+            JSONObject classList = new JSONObject(studentList.getString("school"));
 
-            for(int i = 0 ; i < classListArray.length();i++) { // class1 class2 class3
+            for(int i = 0 ; i < classList.length();i++) { // class1 class2 class3
 
                 String className = "class" + (i+1) ;
-                JSONArray studentListArray = new JSONArray(studentList.getString(className));
+                JSONObject studentListArray = classList.getJSONObject(className);
 
                 for(int j = 0 ; j < studentListArray.length();j++){
-
+                    String studentName = "student" + (j+1) ;
                     //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
-                    JSONObject dataJsonObject = studentListArray.getJSONObject(j);
+                    JSONObject dataJsonObject = studentListArray.getJSONObject(studentName);
 
                     helper.insert(dataJsonObject.getString("id"),dataJsonObject.getString("name"),i+1);
 

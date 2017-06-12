@@ -25,6 +25,7 @@ public class UserPreferences {
     final static String USERID = "id";
     final static String USERNAME = "name";
     final static String USERTYPE = "type";
+    final static String CHILDID = "childID";
 
 
     private UserPreferences(Context context) {
@@ -53,6 +54,7 @@ public class UserPreferences {
             user.put(USERID, preferences.getString(USERID, ""));
             user.put(USERNAME, preferences.getString(USERID, ""));
             user.put(USERTYPE, preferences.getString(USERTYPE, ""));
+            user.put(CHILDID, preferences.getString(CHILDID, ""));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -65,6 +67,7 @@ public class UserPreferences {
             editor.putString(USERID, user.getString(USERID));
             editor.putString(USERNAME, user.getString(USERNAME));
             editor.putString(USERTYPE, user.getString(USERTYPE));
+            editor.putString(CHILDID, user.getString(CHILDID));
             editor.commit();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -87,6 +90,12 @@ public class UserPreferences {
         String userType = "";
         userType = preferences.getString(USERTYPE, "");
         return userType;
+    }
+
+    public String getUserChild() {
+        String userChild = "";
+        userChild = preferences.getString(CHILDID, "");
+        return userChild;
     }
 
     public void removeUser() {

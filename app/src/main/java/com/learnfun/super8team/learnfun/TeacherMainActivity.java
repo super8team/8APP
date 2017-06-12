@@ -42,12 +42,13 @@ public class TeacherMainActivity extends AppCompatActivity {
                 case R.id.goToToday:
 
                     Intent intent = new Intent(TeacherMainActivity.this, TodayActivity.class);
+
                     startActivity(intent);
 
                     break;
 
                 case R.id.goToPlanTable:
-                    intent = new Intent(TeacherMainActivity.this, PlanTableActivity.class);
+                     intent = new Intent(TeacherMainActivity.this, PlanTableActivity.class);
                     startActivity(intent);
 
                     break;
@@ -59,7 +60,7 @@ public class TeacherMainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.goToContens:
-                    intent = new Intent(TeacherMainActivity.this, ContentViewActivity.class);
+                    intent = new Intent(TeacherMainActivity.this, ContentActivity.class);
                     startActivity(intent);
 
                     break;

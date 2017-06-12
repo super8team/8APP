@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         user = userPreferences.getUser();
 
         // 로그인 상태를 검사, 자동로그인하며 액티비티 이동
-        if (!userPreferences.getUserId().equals("")) { login(); }
+        //if (!userPreferences.getUserId().equals("")) { login(); }
 
         // 로그인 하지 않은 경우, 로그인 UI를 보여줌
         idEdit = (EditText)findViewById(R.id.idEdit);
@@ -133,17 +133,17 @@ public class LoginActivity extends AppCompatActivity {
         switch(userPreferences.getUserType()) {
             case "parents":
                     intent = new Intent(LoginActivity.this, ParentsMainActivity.class);
-                Toast.makeText(LoginActivity.this, user+"("+userPreferences.getUserType()+") 님, 환영합니다!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LoginActivity.this, user+"("+userPreferences.getUserType()+") 님, 환영합니다!", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
                 break;
             case "student":
                     intent = new Intent(LoginActivity.this, StudentMainActivity.class);
-                Toast.makeText(LoginActivity.this, user+"("+userPreferences.getUserType()+") 님, 환영합니다!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LoginActivity.this, user+"("+userPreferences.getUserType()+") 님, 환영합니다!", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
                 break;
             case "teacher":
                     intent = new Intent(LoginActivity.this, TeacherMainActivity.class);
-                Toast.makeText(LoginActivity.this, user+"("+userPreferences.getUserType()+") 님, 환영합니다!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LoginActivity.this, user+"("+userPreferences.getUserType()+") 님, 환영합니다!", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
                 break;
             default:

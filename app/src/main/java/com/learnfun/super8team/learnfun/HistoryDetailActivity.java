@@ -16,12 +16,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,15 +57,28 @@ import io.socket.emitter.Emitter;
 
 public class HistoryDetailActivity extends FragmentActivity implements OnMapReadyCallback,LocationListener,AdapterView.OnItemSelectedListener {
 
+
+
     private GoogleMap mMap;
     private static int MY_LOCATION_REQUEST_CODE = 2000;
+    public static final int REQUEST_CODE_WRITE = 1001;
     private LocationManager locationManager;
     MarkerOptions myMarker=null;
     private Socket socket=null;
     UserPreferences userPreferences;
-    LatLng SEOUL = new LatLng(37.56, 126.97);
+    LatLng SEOUL = new LatLng(35.896687, 128.620512);
     NetworkAsync requestNetwork;
-    JSONObject recentDate,planGPS;
+    JSONObject sendData,planGPS;
+    Animation translateLeftAnim;
+    Animation translateRightAnim;
+    LinearLayout slidingPage01;
+    ScrollView scrollPage;
+    private Button slidingPageClose,writeHistory;
+
+    String placeNum="";
+    boolean isPageOpen = false;
+
+    TextView contentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,22 +89,45 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        slidingPageClose = (Button)findViewById(R.id.slidingPageClose);
+        writeHistory = (Button)findViewById(R.id.writeHistory);
 
-        chkGpsService();
+        slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
+        scrollPage = (ScrollView) findViewById(R.id.scrollPage);
+
+        ImageView image =(ImageView)this.findViewById(R.id.imageView2);
+        image.setImageResource(R.drawable.onebin);
+
+        contentView = (TextView)this.findViewById(R.id.contentView);
+
+        translateLeftAnim = AnimationUtils.loadAnimation(this,R.anim.translate_left);
+        translateRightAnim = AnimationUtils.loadAnimation(this,R.anim.translate_right);
+
+        HistoryDetailActivity.SlidingPageAnimationListener animListener = new HistoryDetailActivity.SlidingPageAnimationListener();
+        translateLeftAnim.setAnimationListener(animListener);
+        translateRightAnim.setAnimationListener(animListener);
+
+
+
+
+        try {
+            socket = IO.socket("http://172.19.1.166:8000");
+            socket.on(Socket.EVENT_CONNECT, listenStartPerson);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         userPreferences = UserPreferences.getUserPreferences(this);
         switch(userPreferences.getUserType()) {
             case "parents":
                 try{
-                    socket = IO.socket("http://172.19.1.166:8000");
 
-
-                    socket.on(Socket.EVENT_CONNECT, listenStartPerson);
                     //.on("getclass1", listen_start_person)
                     socket.on("getKidGPS", listenGetMessagePerson);
 
                     socket.connect();
-                    socket.emit("kidGPS",userPreferences.getUserId());
+                    socket.emit("kidGPS",userPreferences.getUserChild());
+
 
                 }
                 catch(Exception e) {
@@ -92,6 +135,11 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
                     break;
             case "student":
+                chkGpsService();
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                Log.d("TAG", "onMapLoaded 체크퍼미션 실행했다");
+
+                checkLocationPermission();
 
                 break;
 
@@ -104,40 +152,129 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
         getPlanGPS();
 
-
+        slidingPageClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                slidingPage01.startAnimation(translateRightAnim);
+                scrollPage.startAnimation(translateRightAnim);
+            }
+        });
+        writeHistory.setOnClickListener(new View.OnClickListener() { //글쓰기 버튼 클릭시
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), WriteHistoryActivity.class);
+                intent.putExtra("placeNum", placeNum);
+                startActivityForResult(intent,REQUEST_CODE_WRITE);
+            }
+        });
 
     }//oncreate function end
+    private class SlidingPageAnimationListener implements Animation.AnimationListener{
 
-    public static String getDate(){
-        SimpleDateFormat dateFormat = new  SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
-        Date date = new Date();
-        String strDate = dateFormat.format(date);
-        return strDate;
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if(isPageOpen){
+                slidingPage01.setVisibility(View.GONE);
+                scrollPage.setVisibility(View.GONE);
+                isPageOpen = false;
+
+            }else{
+
+                isPageOpen=true;
+            }
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
     }
 
+    private android.location.LocationListener locationListener = new android.location.LocationListener() {
+
+
+        @Override
+        public void onLocationChanged(Location location) {
+            //setCustomMarkerView();
+            Log.d("TAG", "onLocationChanged에 들어왔다");
+
+            LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            JSONObject gps = new JSONObject();
+            try {
+                gps.put("id",userPreferences.getUserId());
+                gps.put("name",userPreferences.getUserName());
+                gps.put("lat",location.getLatitude());
+                gps.put("lng",location.getLongitude());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            socket.emit("personGPS",gps);
+
+            if(myMarker==null) addMyMarker(myLatLng);
+            else myMarker.position(myLatLng);
+
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+
+
+    };
+
+
     public void getPlanGPS(){ // 히스토리부분
-        recentDate = new JSONObject();
+
+        String userid = userPreferences.getUserId();
+        Log.e("planResult", "result is "+userid);
+        sendData = new JSONObject();
+
         try {
-            recentDate.put("date",getDate());
+
+            //recentDate.put("date",getDate());
+            sendData.put("userID",userid);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        requestNetwork = new NetworkAsync(this, "getPlan",  NetworkAsync.POST, recentDate);
+
+        requestNetwork = new NetworkAsync(this, "getPlan",  NetworkAsync.POST, sendData);
 
         try {
             // 네트워크 통신 후 json 획득
             String returnString = requestNetwork.execute().get();
             Log.e("planResult", "result is "+returnString);
             planGPS = new JSONObject(returnString);
-            JSONArray planGPSArray = new JSONArray(planGPS.getString("plan"));
-            PolygonOptions rectOptions = new PolygonOptions();
 
-            for(int i = 0 ; i < planGPSArray.length();i++){
+            //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
+            JSONObject placeGPS = new JSONObject(planGPS.getString("gps"));
+            PolygonOptions rectOptions = new PolygonOptions();
+            Log.e("planResult", "result is "+placeGPS);
+            for(int i = 0 ; i < placeGPS.length();i++){
 
                 //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
-                JSONObject dataJsonObject = planGPSArray.getJSONObject(i);
-
-                //Log.d("TAG", String.valueOf(dataJsonObject.getDouble("lat")));
+                String placeNum = "place" + (i+1);
+                JSONObject dataJsonObject = placeGPS.getJSONObject(placeNum);
+                //JSONObject placeData = new JSONObject(dataJsonObject);
+                Log.d("TAG", dataJsonObject.getString("name"));
                 LatLng planGPS = new LatLng(dataJsonObject.getDouble("lat"), dataJsonObject.getDouble("lng"));
 
                 MarkerOptions markerOptions = new MarkerOptions();
@@ -146,10 +283,10 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
                 //markerOptions.icon(getMarkerIcon(markerColor)); // change the color of marker
 
-                markerOptions.title(dataJsonObject.getString("name"));
+                markerOptions.title(dataJsonObject.getString("no"));
 
                 Marker planMarker = mMap.addMarker(markerOptions);
-
+                //planMarker.setOnClickListener(onButton1Clicked); //마커에 클릭이벤트를 달아 오른쪽에 창이 나오도록 해야함
                 rectOptions.add(planGPS);
 
             }
@@ -164,38 +301,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
     }
 
-    //GPS 설정 체크
-    private boolean chkGpsService() {
 
-        String gps = android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-
-        Log.d(gps, "aaaa");
-
-        if (!(gps.matches(".*gps.*") && gps.matches(".*network.*"))) {
-
-            // GPS OFF 일때 Dialog 표시
-            AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
-            gsDialog.setTitle("위치 서비스 설정");
-            gsDialog.setMessage("무선 네트워크 사용, GPS 위성 사용을 모두 체크하셔야 정확한 위치 서비스가 가능합니다.\n위치 서비스 기능을 설정하시겠습니까?");
-            gsDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // GPS설정 화면으로 이동
-                    Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    startActivity(intent);
-                }
-            })
-                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            return;
-                        }
-                    }).create().show();
-            return false;
-
-        } else {
-            return true;
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -278,16 +384,73 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
 
 
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
 
             @Override
             public void onMapLoaded() {
-                Log.d("TAG", "onMapLoaded 체크퍼미션 실행했다");
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        if(!marker.getTitle().equals("현재위치")) {
+                            placeNum = marker.getTitle();
+                            if (isPageOpen) {
+                                //slidingPage01.startAnimation(translateRightAnim);
+                            } else {
+                                slidingPage01.setVisibility(View.VISIBLE);
+                                slidingPage01.startAnimation(translateLeftAnim);
+                                scrollPage.setVisibility(View.VISIBLE);
+                                scrollPage.startAnimation(translateLeftAnim);
 
-                checkLocationPermission();
+                                //디비에서 히스토리 정보를 가져와서 슬라이드창에 글을 뿌려준다
+                                sendData = new JSONObject();
+
+                                try {
+
+                                    //recentDate.put("date",getDate());
+                                    sendData.put("userId",userPreferences.getUserId());
+                                    sendData.put("placeNum",placeNum);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                requestNetwork = new NetworkAsync(HistoryDetailActivity.this, "getHistoryContent",  NetworkAsync.POST, sendData);
+
+                                try {
+                                    // 네트워크 통신 후 json 획득
+                                    String returnString = requestNetwork.execute().get();
+                                    Log.e("planResult", "result is "+returnString);
+                                    JSONObject place = new JSONObject(returnString);
+
+                                    //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
+                                    JSONObject contentList = new JSONObject(place.getString("place"));
+
+
+                                    for(int i = 0 ; i < contentList.length();i++){
+
+                                        //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+                                        String contentNum = "content" + (i+1);
+                                        JSONObject dataJsonObject = contentList.getJSONObject(contentNum);
+                                        //JSONObject placeData = new JSONObject(dataJsonObject);
+
+                                        contentView.setText("content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather"));
+
+
+                                    }
+
+
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        return false;
+                    }
+                });
                 //  addImageMarker(); // 새로운 이미지 마커를 박음
             }
 
@@ -373,52 +536,6 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 //        }
 
 
-    private android.location.LocationListener locationListener = new android.location.LocationListener() {
-
-
-        @Override
-        public void onLocationChanged(Location location) {
-            //setCustomMarkerView();
-            Log.d("TAG", "onLocationChanged에 들어왔다");
-
-            LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            JSONObject gps = new JSONObject();
-            try {
-                gps.put("name",userPreferences.getUserId());
-                gps.put("name",userPreferences.getUserName());
-                gps.put("lat",location.getLatitude());
-                gps.put("lng",location.getLongitude());
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            socket.emit("personGPS",gps);
-
-            if(myMarker==null) addMyMarker(myLatLng);
-            else myMarker.position(myLatLng);
-
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-
-
-    };
-
-
     private void addMyMarker(LatLng latLng){
         Log.d("TAG", "마커생성!!!!!!!!!!!!!!!!!");
         //현재 위치에 마커 생성
@@ -470,6 +587,38 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 //        mSydney.setTag(0);
 //
 //    }
+    //GPS 설정 체크
+    private boolean chkGpsService() {
+
+        String gps = android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+
+        Log.d(gps, "aaaa");
+
+        if (!(gps.matches(".*gps.*") && gps.matches(".*network.*"))) {
+
+            // GPS OFF 일때 Dialog 표시
+            AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
+            gsDialog.setTitle("위치 서비스 설정");
+            gsDialog.setMessage("무선 네트워크 사용, GPS 위성 사용을 모두 체크하셔야 정확한 위치 서비스가 가능합니다.\n위치 서비스 기능을 설정하시겠습니까?");
+            gsDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // GPS설정 화면으로 이동
+                    Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    startActivity(intent);
+                }
+            })
+                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    }).create().show();
+            return false;
+
+        } else {
+            return true;
+        }
+    }
     @Override
     public void onLocationChanged(Location location) {
 
@@ -499,4 +648,10 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+    //    public static String getDate(){
+//        SimpleDateFormat dateFormat = new  SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+//        Date date = new Date();
+//        String strDate = dateFormat.format(date);
+//        return strDate;
+//    }
 }
