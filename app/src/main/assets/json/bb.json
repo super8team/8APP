@@ -3,9 +3,9 @@
 
     "vertical" : "center",
     "horizontal" : "center",
-    "location" : "35.896480,128.620723",
-    "visionable" : true,
-    "clickable" : false,
+    "location" : "(35.896480,128.620723)",
+    "visionable" : false,
+    "clickable" : true,
     "disable" : false,
     "script" : [
       {
@@ -65,7 +65,7 @@
 
     "vertical" : "center",
     "horizontal" : "center",
-    "location" : "35.896380,128.620380",
+    "location" : "(35.896380,128.620380)",
     "visionable" : true,
     "clickable" : false,
     "disable" : false,

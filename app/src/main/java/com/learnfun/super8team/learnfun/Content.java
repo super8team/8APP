@@ -54,13 +54,19 @@ public class Content {
         this.visionable = jobj.getBoolean("visionable");
         this.clickable  = jobj.getBoolean("clickable");
         this.disable    = jobj.getBoolean("disable");
-        String temp[] = jobj.getString("location").split(",");
+        String str = jobj.getString("location");
+        Log.i("뭐냐이거",str);
+        String temp[] = str.substring(1,str.length()-1).split(",");
+        Log.i("위치값은 어떻게/?",temp[0]);
+        Log.i("위치값은 어떻게/?",temp[1]);
         // 현재 입력된 위경도 데이터로 로케이션 객체 생성
         this.location = new Location("Content");
         this.location.setLatitude(Double.parseDouble(temp[0]));
         this.location.setLongitude(Double.parseDouble(temp[1]));
 
-//        Log.i("컨텐츠 멤버 값 입력완료 -----", this.name);
+        Log.i("컨텐츠 멤버 값 입력완료 -----", this.name);
+        Log.i("vision 값 입력완료 -----", String.valueOf(this.visionable));
+        Log.i("ciick 값 입력완료 -----", String.valueOf(this.clickable));
         //컨텐츠 배열들을 ArrayList에 저장
         //이미지 컨텐츠 배열
         for(int i=0;i<jobj.getJSONArray("image").length();i++){
