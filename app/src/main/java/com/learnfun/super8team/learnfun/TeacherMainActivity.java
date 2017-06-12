@@ -48,7 +48,7 @@ public class TeacherMainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.goToPlanTable:
-                    intent = new Intent(TeacherMainActivity.this, PlanTableActivity.class);
+                     intent = new Intent(TeacherMainActivity.this, PlanTableActivity.class);
                     startActivity(intent);
 
                     break;

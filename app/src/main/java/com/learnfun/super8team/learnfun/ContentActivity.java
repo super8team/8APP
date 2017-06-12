@@ -433,27 +433,33 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         int x = (int)event.getX();
         int y = (int)event.getY()-200;
         Location contentsLocation;
-        Log.e(TAG, "onTouch");
+        Log.e(TAG, "onTouch: "+x+", "+y);
 
         //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
         for (int i=0;i<contents.size();i++) {
-            try {
-                contentsLocation = contents.get(i).getContentLocation();
-                List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
+
+            if(contents.get(i).getClickable()) {
+                try {
+                    contentsLocation = contents.get(i).getContentLocation();
+                    List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
 
                     Float targetX = points.get(0);
                     Float targetY = points.get(1);
+                    Log.i("contents", targetX+", "+targetY);
 
-                  if(targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY +100 && !Content.CONTENT_USED && !contents.get(i).getContentDisable()){
-                    Log.e(TAG, contents.get(i).getContentName());
-//                      Toast.makeText(ContentActivity.this, contents.get(i).getContentName(), Toast.LENGTH_SHORT).show();
 
-//                    //AR 비활성화
-                      stopAROverlay();
-                      contents.get(i).setContentView();
+                    if(targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY +100) {
+                          if (!Content.CONTENT_USED && !contents.get(i).getContentDisable()) {
+                              Log.e(TAG, contents.get(i).getContentName());
+
+                              //AR 비활성화
+                              stopAROverlay();
+                              contents.get(i).setContentView();
+                          }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
 
