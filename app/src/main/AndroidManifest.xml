@@ -53,7 +53,11 @@
         <activity android:name=".SelectColorActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ParentsMainActivity" />
-        <activity android:name=".StudentMainActivity"></activity>
+        <activity android:name=".StudentMainActivity" />
+        <activity
+            android:name=".HistoryDetailActivity"
+            android:label="@string/title_activity_history_detail" />
+        <activity android:name=".WriteHistoryActivity"></activity>
     </application>
 
 </manifest>

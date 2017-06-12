@@ -9,6 +9,10 @@
     <string name="title_activity_today">Map</string>
     <string name="title_activity_recommend">Map</string>
     <string name="close">닫기</string>
+    <string name="write">글쓰기</string>
+    <string name="history">발자취</string>
+    <string name="writeContent">내용을 입력해주세요</string>
+
 
     <string name="prompt">반을 선택하세요</string>
     <string-array name="class_Name">
@@ -16,6 +20,11 @@
         <item>2반</item>
         <item>3반</item>
     </string-array>
-
+    <string-array name="color_array">
+        <item>RED</item>
+        <item>BLUE</item>
+        <item>YELLOW</item>
+    </string-array>
+    <string name="title_activity_history_detail">Map</string>
 
 </resources>

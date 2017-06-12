@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator">
+
+    <!--슬라이딩뷰가 열릴때-->
+    <translate
+        android:fromYDelta="-100%p"
+        android:toYDelta="0%p"
+        android:duration="500"
+        android:repeatCount="0"
+        android:fillAfter="true"
+        />
+
+</set>

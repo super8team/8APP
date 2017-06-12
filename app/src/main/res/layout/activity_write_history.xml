@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.learnfun.super8team.learnfun.WriteHistoryActivity">
+
+    <EditText
+        android:id="@+id/notice"
+        android:layout_width="301dp"
+        android:layout_height="190dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        tools:layout_editor_absoluteX="30dp"
+        tools:layout_editor_absoluteY="114dp" />
+
+    <TextView
+        android:id="@+id/contentHistory"
+        android:layout_width="165dp"
+        android:layout_height="27dp"
+        android:text="@string/writeContent"
+        tools:layout_editor_absoluteX="30dp"
+        tools:layout_editor_absoluteY="87dp" />
+
+    <Button
+        android:id="@+id/writeContentHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/write"
+        tools:layout_editor_absoluteY="416dp"
+        tools:layout_editor_absoluteX="76dp" />
+
+    <Button
+        android:id="@+id/closeWriteHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/close"
+        tools:layout_editor_absoluteY="416dp"
+        tools:layout_editor_absoluteX="216dp" />
+</android.support.constraint.ConstraintLayout>
