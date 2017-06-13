@@ -100,4 +100,14 @@ public class BtnView extends ContentView{
         });
     }
 
+    @Override
+    public void actionClear() {
+        btnView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //아무것도 하지 않음
+                Log.i("클리어 액션","아무것도 하지않는다");
+            }
+        });
+    }
 }
