@@ -4,7 +4,7 @@
 
     <!--슬라이딩뷰가 열릴때-->
     <translate
-        android:fromYDelta="-100%p"
+        android:fromYDelta="100%p"
         android:toYDelta="0%p"
         android:duration="500"
         android:repeatCount="0"
