@@ -2,6 +2,7 @@ package com.learnfun.super8team.learnfun;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -11,12 +12,23 @@ import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,30 +40,45 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
+
 import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
 
-public class TodayActivity extends FragmentActivity implements OnMapReadyCallback,LocationListener,AdapterView.OnItemSelectedListener {
+public class TodayActivity extends FragmentActivity implements OnMapReadyCallback,LocationListener,AdapterView.OnItemSelectedListener,GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private static int MY_LOCATION_REQUEST_CODE = 2000;
+    public static final int REQUEST_CODE_WRITE = 1001;
     private LocationManager locationManager;
     View marker_root_view;
     MarkerOptions myMarker=null;
     private Socket socket=null;
+    boolean isPageOpen = false;
+    String placeNum="";
+    Animation translateLeftAnim;
+    Animation translateRightAnim;
 
-    LatLng SEOUL = new LatLng(37.56, 126.97);
-    JSONObject classOne;
-    JSONObject classTwo;
-    JSONObject classThree;
+    LinearLayout slidingPage01;
+    ScrollView scrollPage;
 
+    LatLng SEOUL = new LatLng(35.896687, 128.620512);
+
+    JSONObject sendData,planGPS;
+    UserPreferences userPreferences;
+    NetworkAsync requestNetwork;
     //ArrayList<LatLng> classOne = new ArrayList();
     ArrayList<Marker> classOneMarker = new ArrayList();
     //ArrayList<LatLng> classTwo = new ArrayList();
@@ -59,82 +86,13 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     //ArrayList<LatLng> classThree = new ArrayList();
     ArrayList<Marker> classThreeMarker = new ArrayList();
 
-
+    private Button slidingPageClose,writeHistory;
     ArrayAdapter<String> adapter;
     Spinner spinner;
+    Switch histroySwitch;
+    boolean mSwc = true;    // 스위치 상태를 기억할 변수
 
-//    void addOneClass(){
-//
-//        LatLng latLng1 = new LatLng(35.897532, 128.622696);
-//        LatLng latLng2 = new LatLng(35.896664, 128.619985);
-//
-//
-//        classOne.add(latLng1); classOne.add(latLng2);
-//
-//    }
-//
-//    void addTwoClass(){
-//
-//
-//        LatLng latLng3 = new LatLng(35.891765, 128.614243);
-//        LatLng latLng4 = new LatLng(35.897884, 128.608298);
-//
-//
-//        classTwo.add(latLng3);classTwo.add(latLng4);
-//
-//    }
-//
-//    void addThreeClass(){
-//
-//
-//        LatLng latLng5 = new LatLng(35.895238, 128.622741);
-//        LatLng latLng6 = new LatLng(35.893233, 128.624808);
-//
-//
-//        classThree.add(latLng5);classThree.add(latLng6);
-//
-//    }
-
-//    void removeClassMarker(String className){ //각 마커별 이름을 구별해야함, 디비에 각 학생들의 gps를 저장해야함, 자신의 gps를 저장하는 db
-//        Log.d("tag", "리무브마커함수 실행");
-//        if(className.equals("1반")){
-//            if(!classOneMarker.isEmpty()) {
-//                Log.d("tag", "1반지우기");
-//                for (int i = 0; i < classOneMarker.size(); i++) {
-//                    classOneMarker.get(i).remove();
-//                    classOneMarker.clear();
-//
-//                }
-//            }
-//        }else if(className.equals("2반")){
-//            if(!classTwoMarker.isEmpty()) {
-//                Log.d("tag", "2반지우기");
-//                for (int i = 0; i < classTwoMarker.size(); i++) {
-//                    classTwoMarker.get(i).remove();
-//                    classTwoMarker.clear();
-//                }
-//            }
-//        }else{
-//            if(!classThreeMarker.isEmpty()) {
-//                Log.d("tag", "3반지우기");
-//                for (int i = 0; i < classThreeMarker.size(); i++) {
-//                    classThreeMarker.get(i).remove();
-//                    classThreeMarker.clear();
-//                }
-//            }
-//        }
-//
-//    }
-//    void repeatRemoveMarker(String className){
-//        for(int i=0; i < classOneMarker.size();i++){
-//            classTwoMarker.get(i).remove();
-//            classThreeMarker.get(i).remove();
-//
-//            classTwoMarker.clear();
-//            classThreeMarker.clear();
-//        }
-//    }
-
+    TextView contentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,12 +103,32 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        slidingPageClose = (Button)findViewById(R.id.slidingPageClose);
+        writeHistory = (Button)findViewById(R.id.writeHistory);
 
-//        addOneClass();
-//        addTwoClass();
-//        addThreeClass();
+        slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
+        scrollPage = (ScrollView) findViewById(R.id.scrollPage);
+
+        ImageView image =(ImageView)this.findViewById(R.id.imageView2);
+        image.setImageResource(R.drawable.onebin);
+
+        contentView = (TextView)this.findViewById(R.id.contentView);
+
+
+        translateLeftAnim = AnimationUtils.loadAnimation(this,R.anim.translate_left);
+        translateRightAnim = AnimationUtils.loadAnimation(this,R.anim.translate_right);
+
+        SlidingPageAnimationListener animListener = new SlidingPageAnimationListener();
+        translateLeftAnim.setAnimationListener(animListener);
+        translateRightAnim.setAnimationListener(animListener);
 
         spinner = (Spinner)findViewById(R.id.spinner);
+
+        histroySwitch = (Switch)findViewById(R.id.historySwitch);
+        histroySwitch.setOnCheckedChangeListener(SWITCH);
+
+        userPreferences = UserPreferences.getUserPreferences(this);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.class_Name,android.R.layout.simple_spinner_item
         );
@@ -158,6 +136,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -191,19 +170,12 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             }
         });
 
-        //it can go to the ManagementPage for student
-        //Button manageStudnetBtn = (Button)findViewById(R.id.manageStudent);
-        //manageStudnetBtn.setOnClickListener(new View.OnClickListener(){
 
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(), StudentListActivity.class);
-//                startActivity(intent);
-//            }
-  //      });
+        chkGpsService(); //GPS sensor on / off check
+
 
             try{
-                socket = IO.socket("http://172.19.1.166:8000");
+                socket = IO.socket("http://163.44.166.91:8000");
 
 
                 socket.on(Socket.EVENT_CONNECT, listenStartPerson);
@@ -212,15 +184,168 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
                 socket.connect();
 
-
             }
+
             catch(Exception e){
 
             }
 
 
+        slidingPageClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                slidingPage01.startAnimation(translateRightAnim);
+                scrollPage.startAnimation(translateRightAnim);
+            }
+        });
+        writeHistory.setOnClickListener(new View.OnClickListener() { //글쓰기 버튼 클릭시
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), WriteHistoryActivity.class);
+                intent.putExtra("placeNum", placeNum);
+                startActivityForResult(intent,REQUEST_CODE_WRITE);
+            }
+        });
 
     }//oncreate function end
+
+    //GPS 설정 체크
+    private boolean chkGpsService() {
+
+        String gps = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+
+        Log.d(gps, "aaaa");
+
+        if (!(gps.matches(".*gps.*") && gps.matches(".*network.*"))) {
+
+            // GPS OFF 일때 Dialog 표시
+            AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
+            gsDialog.setTitle("위치 서비스 설정");
+            gsDialog.setMessage("무선 네트워크 사용, GPS 위성 사용을 모두 체크하셔야 정확한 위치 서비스가 가능합니다.\n위치 서비스 기능을 설정하시겠습니까?");
+            gsDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // GPS설정 화면으로 이동
+                    Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    startActivity(intent);
+                }
+            })
+                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    }).create().show();
+            return false;
+
+        } else {
+            return true;
+        }
+    }
+
+    public Switch.OnCheckedChangeListener SWITCH = new Switch.OnCheckedChangeListener()
+
+    {
+
+        public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+
+            mSwc = isChecked;
+            if(isChecked == true){ //처음 화면은 학생들의 위치를 나타내주는 화면
+                mMap.clear();
+                socket.emit("history", "don't send any gps");
+                spinner.setVisibility(View.INVISIBLE); // 화면에 안보임
+                classOneMarker.clear();
+                classTwoMarker.clear();
+                classThreeMarker.clear();
+                if(myMarker!=null) mMap.addMarker(myMarker);
+                getPlanGPS();
+
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            if(!marker.getTitle().equals("현재위치")) {
+                                placeNum = marker.getTitle();
+                                if (isPageOpen) {
+                                    //slidingPage01.startAnimation(translateRightAnim);
+                                } else {
+                                    slidingPage01.setVisibility(View.VISIBLE);
+                                    slidingPage01.startAnimation(translateLeftAnim);
+                                    scrollPage.setVisibility(View.VISIBLE);
+                                    scrollPage.startAnimation(translateLeftAnim);
+
+
+                                    //디비에서 히스토리 정보를 가져와서 슬라이드창에 글을 뿌려준다
+                                    sendData = new JSONObject();
+
+                                    try {
+
+                                        //recentDate.put("date",getDate());
+                                        sendData.put("userId",userPreferences.getUserId());
+                                        sendData.put("placeNum",placeNum);
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    requestNetwork = new NetworkAsync(TodayActivity.this, "getHistoryContent",  NetworkAsync.POST, sendData);
+
+                                    try {
+                                        // 네트워크 통신 후 json 획득
+                                        String returnString = requestNetwork.execute().get();
+                                        Log.e("planResult", "result is "+returnString);
+                                        JSONObject place = new JSONObject(returnString);
+
+                                        //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
+                                        JSONObject contentList = new JSONObject(place.getString("place"));
+
+
+                                        for(int i = 0 ; i < contentList.length();i++){
+
+                                            //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+                                            String contentNum = "content" + (i+1);
+                                            JSONObject dataJsonObject = contentList.getJSONObject(contentNum);
+                                            //JSONObject placeData = new JSONObject(dataJsonObject);
+
+                                            contentView.setText("content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather"));
+
+
+
+                                        }
+
+
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+                            }
+                            return false;
+                        }
+                    });
+
+
+            } else{// 히스토리를 나타내는 화면
+
+                mMap.clear();
+                spinner.setVisibility(View.VISIBLE); // 화면에보임
+                socket.emit("class1", "I want to class1's GPS");
+                //addStudentMarker(classOne, "#21ff3f", "1반");
+                if(myMarker!=null) mMap.addMarker(myMarker);
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+
+                        return false;
+                    }
+                });
+            }
+
+
+        }
+
+    };
+
 
     @Override
     protected void onDestroy() {
@@ -232,7 +357,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
         public void call(Object... args) {
 
-            socket.emit("Connection", "i can connect to you");
+            socket.emit("Connection", "connected on server");
             //서버에서 보낸 JSON객체를 사용할 수 있습니다.
 
             runOnUiThread(new Runnable() {
@@ -255,7 +380,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             //서버에서 보낸 JSON객체를 사용할 수 있습니다.
 
-            runOnUiThread(new Runnable() {
+            runOnUiThread(new Runnable() { //발생가능 문제점 : 1반이 선택된 상태에서 1반에 대한 객체가 들어올경우 마커가 중첩되어 찍힐수있음
                 @Override
                 public void run() {
                     try {
@@ -309,6 +434,75 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             });
         }
     };
+
+    public static String getDate(){
+        SimpleDateFormat dateFormat = new  SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+        Date date = new Date();
+        String strDate = dateFormat.format(date);
+        return strDate;
+    }
+
+    public void getPlanGPS(){ // 히스토리부분
+
+        //String userid = userPreferences.getUserId();
+
+        sendData = new JSONObject();
+
+        try {
+
+            //recentDate.put("date",getDate());
+            sendData.put("userID","Illum");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        requestNetwork = new NetworkAsync(this, "getPlan",  NetworkAsync.POST, sendData);
+
+        try {
+            // 네트워크 통신 후 json 획득
+            String returnString = requestNetwork.execute().get();
+            Log.e("planResult", "result is "+returnString);
+            planGPS = new JSONObject(returnString);
+
+            //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
+            JSONObject placeGPS = new JSONObject(planGPS.getString("gps"));
+            PolygonOptions rectOptions = new PolygonOptions();
+            Log.e("planResult", "result is "+placeGPS);
+            for(int i = 0 ; i < placeGPS.length();i++){
+
+                //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+                String placeNum = "place" + (i+1);
+                JSONObject dataJsonObject = placeGPS.getJSONObject(placeNum);
+                //JSONObject placeData = new JSONObject(dataJsonObject);
+                Log.d("TAG", dataJsonObject.getString("name"));
+                LatLng planGPS = new LatLng(dataJsonObject.getDouble("lat"), dataJsonObject.getDouble("lng"));
+
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                markerOptions.position(planGPS);
+
+                //markerOptions.icon(getMarkerIcon(markerColor)); // change the color of marker
+
+                markerOptions.title(dataJsonObject.getString("no"));
+
+                Marker planMarker = mMap.addMarker(markerOptions);
+                //planMarker.setOnClickListener(onButton1Clicked); //마커에 클릭이벤트를 달아 오른쪽에 창이 나오도록 해야함
+                rectOptions.add(planGPS);
+
+            }
+
+            // Get back the mutable Polygon
+            Polygon polygon = mMap.addPolygon(rectOptions);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -434,8 +628,13 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-            if(myMarker==null) addMyMarker(myLatLng);
-            else myMarker.position(myLatLng);
+            if(myMarker==null){
+                addMyMarker(myLatLng);
+            }
+            else{
+                myMarker.position(myLatLng);
+
+            }
 
         }
 
@@ -505,7 +704,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             Log.d("TAG", "마커에 좌표넣었다");
             markerOptions.icon(getMarkerIcon(markerColor)); // change the color of marker
             Log.d("TAG", "아이콘색변경했다");
-            markerOptions.title(dataJsonObject.getString("name")+className);
+            markerOptions.title(dataJsonObject.getString("name"));
             Log.d("TAG", "마커이름 바꿨다");
             Marker studentMarker = mMap.addMarker(markerOptions);
             Log.d("TAG", "마커 생성하고 맵에 추가했다");
@@ -594,5 +793,67 @@ public void onLocationChanged(Location location) {
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(this,"마커가 선택 되었습니다.",Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
+    private class SlidingPageAnimationListener implements Animation.AnimationListener{
+
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if(isPageOpen){
+                slidingPage01.setVisibility(View.GONE);
+                scrollPage.setVisibility(View.GONE);
+                isPageOpen = false;
+
+            }else{
+
+                isPageOpen=true;
+            }
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.action_settings){
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        //색상을 클릭하고 다시 넘어올경우 색상을 저장해야함
+        if(requestCode == REQUEST_CODE_WRITE){
+            if(resultCode == RESULT_OK){
+                String name = intent.getExtras().getString("name");
+                Toast toast = Toast.makeText(getBaseContext(),
+                        "응답으로 전달된 name: )" + name, Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }
     }
 }

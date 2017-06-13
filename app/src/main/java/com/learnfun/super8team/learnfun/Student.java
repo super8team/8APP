@@ -6,7 +6,9 @@ package com.learnfun.super8team.learnfun;
 
 public class Student {
     public String name;
-    public int id;
+    public String id;
+    public String color;
+    public int num;
     public int className;
 
     public String toString() {

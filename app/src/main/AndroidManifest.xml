@@ -22,7 +22,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".LoginActivity">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity android:name=".TeacherMainActivity" />
 
         <!--
@@ -42,7 +47,6 @@
             android:label="@string/title_activity_today" />
         <activity android:name=".PlanTableActivity" />
         <activity android:name=".StudentListActivity" />
-        <activity android:name=".ContentViewActivity" />
         <activity android:name=".CheckListActivity" />
         <activity
             android:name=".RecommendActivity"
@@ -50,14 +54,18 @@
         <activity android:name=".SelectColorActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ParentsMainActivity" />
-        <activity android:name=".StudentMainActivity"></activity>
+
+        <activity android:name=".StudentMainActivity" />
+        <activity
+            android:name=".HistoryDetailActivity"
+            android:label="@string/title_activity_history_detail" />
+        <activity android:name=".WriteHistoryActivity"></activity>
+
         <activity android:name=".ContentActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity android:name=".Dialog" android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
+
     </application>
 
 </manifest>

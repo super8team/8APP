@@ -41,8 +41,8 @@ public class TeacherMainActivity extends AppCompatActivity {
 
                 case R.id.goToToday:
 
-//                    Intent intent = new Intent(TeacherMainActivity.this, TodayActivity.class);
-                    Intent intent = new Intent(TeacherMainActivity.this, ContentActivity.class);
+                    Intent intent = new Intent(TeacherMainActivity.this, TodayActivity.class);
+
                     startActivity(intent);
 
                     break;
