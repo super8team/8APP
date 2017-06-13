@@ -64,6 +64,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     public static final int REQUEST_CODE_WRITE = 1001;
     private LocationManager locationManager;
     MarkerOptions myMarker=null;
+    MarkerOptions cMarker=null;
     private Socket socket=null;
     UserPreferences userPreferences;
     LatLng SEOUL = new LatLng(35.896687, 128.620512);
@@ -90,13 +91,13 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         slidingPageClose = (Button)findViewById(R.id.slidingPageClose);
-        writeHistory = (Button)findViewById(R.id.writeHistory);
+        //writeHistory = (Button)findViewById(R.id.writeHistory);
 
         slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
         scrollPage = (ScrollView) findViewById(R.id.scrollPage);
 
         ImageView image =(ImageView)this.findViewById(R.id.imageView2);
-        image.setImageResource(R.drawable.onebin);
+        image.setImageResource(R.drawable.learn);
 
         contentView = (TextView)this.findViewById(R.id.contentView);
 
@@ -159,14 +160,14 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                 scrollPage.startAnimation(translateRightAnim);
             }
         });
-        writeHistory.setOnClickListener(new View.OnClickListener() { //글쓰기 버튼 클릭시
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), WriteHistoryActivity.class);
-                intent.putExtra("placeNum", placeNum);
-                startActivityForResult(intent,REQUEST_CODE_WRITE);
-            }
-        });
+//        writeHistory.setOnClickListener(new View.OnClickListener() { //글쓰기 버튼 클릭시
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), WriteHistoryActivity.class);
+//                intent.putExtra("placeNum", placeNum);
+//                startActivityForResult(intent,REQUEST_CODE_WRITE);
+//            }
+//        });
 
     }//oncreate function end
     private class SlidingPageAnimationListener implements Animation.AnimationListener{
@@ -282,7 +283,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                 markerOptions.position(planGPS);
 
                 //markerOptions.icon(getMarkerIcon(markerColor)); // change the color of marker
-
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.placemarker));
                 markerOptions.title(dataJsonObject.getString("no"));
 
                 Marker planMarker = mMap.addMarker(markerOptions);
@@ -341,9 +342,27 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                 public void run() {
                     try {
                         //위에서 오브젝트를 받은것을 다시 제이슨배열로 해체
-                        JSONArray jsonArray = new JSONArray(obj.getString("class"));
+                        //JSONArray jsonArray = new JSONArray(obj.getString("class"));
+                        JSONObject child = new JSONObject(obj.getString("child"));
                         //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+                        for(int i =0; i < 1; i++){
 
+                            //JSONObject dataJsonObject = jsonArray.getJSONObject(i);// 0에 cho 객체가 있음
+                            //제이슨 객체안의 데이터를 빼온다
+                            Log.d("studentname", child.getString("class"));
+                            Double lat = Double.valueOf(child.getString("lat"));
+                            Double lng = Double.valueOf(child.getString("lng"));
+                            LatLng latLng = new LatLng(lat, lng);
+                            cMarker = new MarkerOptions();
+                            cMarker.position(latLng);
+                            cMarker.title(child.getString("name"));
+                            mMap.addMarker(cMarker);
+
+                            //지도 상에서 보여주는 영역 이동
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+                        }
 
 
                     } catch (JSONException e) {
@@ -427,7 +446,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
                                     //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
                                     JSONObject contentList = new JSONObject(place.getString("place"));
-
+                                    String sumContent = "";
 
                                     for(int i = 0 ; i < contentList.length();i++){
 
@@ -436,11 +455,11 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                                         JSONObject dataJsonObject = contentList.getJSONObject(contentNum);
                                         //JSONObject placeData = new JSONObject(dataJsonObject);
 
-                                        contentView.setText("content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather"));
+                                        sumContent += "content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather")+ "\n";
 
 
                                     }
-
+                                    contentView.setText(sumContent);
 
 
                                 } catch (Exception e) {
@@ -621,7 +640,19 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     }
     @Override
     public void onLocationChanged(Location location) {
+        JSONObject gps = new JSONObject();
+        try {
 
+            gps.put("id",userPreferences.getUserId());
+            gps.put("name",userPreferences.getUserName());
+            gps.put("lat",location.getLatitude());
+            gps.put("lng",location.getLongitude());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socket.emit("childGPS",gps);
+        socket.emit("studentGPS",gps);
     }
 
     @Override

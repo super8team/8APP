@@ -3,6 +3,7 @@ package com.learnfun.super8team.learnfun;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,12 +52,12 @@ public class WriteHistoryActivity extends AppCompatActivity {
                         sendData.put("placeNum",placeNum);
                         sendData.put("content",contentHistory.getText().toString()+" ");
                         sendData.put("weather","sunny");
-
+                        Log.d("sendData = ", String.valueOf(sendData));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     requestNetwork = new NetworkAsync(WriteHistoryActivity.this, "writeHistoryContent",  NetworkAsync.POST, sendData);
-
+                    requestNetwork.execute();
                     intent = new Intent();
                     setResult(0,intent);
                     finish();

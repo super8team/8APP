@@ -10,7 +10,7 @@
     <string name="title_activity_recommend">Map</string>
     <string name="close">닫기</string>
     <string name="write">글쓰기</string>
-    <string name="history">발자취</string>
+    <string name="history">학생위치</string>
     <string name="write_Content">내용을 입력해주세요</string>
     <string name="history_List">히스토리 목록</string>
     <string name="survey_List">설문조사 목록</string>

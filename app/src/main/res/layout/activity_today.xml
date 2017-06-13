@@ -58,20 +58,26 @@
         </LinearLayout>
     </LinearLayout>
 </fragment>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
     <ScrollView
         android:id="@+id/scrollPage"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="250dp"
         android:visibility="gone"
+        android:layout_gravity="bottom"
         >
 
         <LinearLayout
             android:id="@+id/slidingPage01"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="top"
-            android:background="#B3f9f7f7"
+            android:background="#f9f7f7"
             android:visibility="gone"
 
             >
@@ -88,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/none_content" />
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -99,6 +106,7 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:text="@string/write"
+                    android:background="@color/colorSky"
                     android:layout_weight="0.97" />
 
                 <Button
@@ -113,4 +121,5 @@
         </LinearLayout>
 
     </ScrollView>
+    </LinearLayout>
 </RelativeLayout>
