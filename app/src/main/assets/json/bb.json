@@ -5,7 +5,7 @@
     "horizontal" : "center",
     "location" : "35.896480,128.620723",
     "visionable" : true,
-    "clickable" : false,
+    "clickable" : true,
     "disable" : false,
     "script" : [
       {
