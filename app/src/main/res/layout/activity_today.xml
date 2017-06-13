@@ -17,29 +17,46 @@
     >
 
 
-<LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
-    <Spinner
-        android:prompt="@string/prompt"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:id="@+id/spinner"
-        />
-
-    <Switch
-        android:text="@string/history"
-        android:textColor="@color/colorPrimaryDark"
-        android:id="@+id/historySwitch"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        />
+        >
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
 
+            <Switch
+                android:text="@string/history"
+                android:id="@+id/historySwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/bt_corner"
+                android:layout_margin="10dp"
+                android:layout_gravity="right"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
 
-</LinearLayout>
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:layout_margin="10dp"
+                android:background="@drawable/bt_corner"
+                android:textColor="@color/colorWrite"
+                android:prompt="@string/prompt" />
+        </LinearLayout>
+    </LinearLayout>
 </fragment>
     <ScrollView
         android:id="@+id/scrollPage"

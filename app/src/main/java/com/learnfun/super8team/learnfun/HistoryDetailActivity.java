@@ -26,7 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
-import android.widget.Switch;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,7 +84,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("tag", "온크리에이트 실행");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_today);
+        setContentView(R.layout.activity_history_detail);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -150,7 +150,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                  */
         }
 
-        getPlanGPS();
+
 
         slidingPageClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -371,7 +371,6 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
                     //이곳에 ui 관련 작업을 할 수 있습니다.
 
-
                 }
             });
         }
@@ -391,6 +390,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
             @Override
             public void onMapLoaded() {
+                getPlanGPS();
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {

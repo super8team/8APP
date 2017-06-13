@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="dicta" />
+        android:text="Illum" />
 
     <EditText
         android:id="@+id/pwEdit"

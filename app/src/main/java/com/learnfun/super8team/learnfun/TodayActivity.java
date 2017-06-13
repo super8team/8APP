@@ -468,7 +468,8 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
             JSONObject placeGPS = new JSONObject(planGPS.getString("gps"));
             PolygonOptions rectOptions = new PolygonOptions();
-            Log.e("planResult", "result is "+placeGPS);
+            Log.e("planResult", "result is "+ placeGPS);
+
             for(int i = 0 ; i < placeGPS.length();i++){
 
                 //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬

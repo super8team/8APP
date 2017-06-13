@@ -40,13 +40,13 @@ public class StudentMainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.goToHistory:
-                    intent = new Intent(StudentMainActivity.this, PlanTableActivity.class);
+                    intent = new Intent(StudentMainActivity.this, HistoryListActivity.class);
                     startActivity(intent);
 
                     break;
 
                 case R.id.goToSurvey:
-                    intent = new Intent(StudentMainActivity.this, StudentListActivity.class);
+                    intent = new Intent(StudentMainActivity.this, SurveyListActivity.class);
                     startActivity(intent);
 
                     break;

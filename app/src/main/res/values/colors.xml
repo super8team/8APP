@@ -10,5 +10,6 @@
     <color name="colorPurple">#e696ff</color>
     <color name="colorOrange">#ffd596</color>
     <color name="colorWrite">#ffffff</color>
+    <color name="colorGray">#d6dbdb</color>
 
 </resources>

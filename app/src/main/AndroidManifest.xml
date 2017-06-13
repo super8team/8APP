@@ -11,9 +11,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature android:name="android.hardware.camera" />
 
     <application
         android:allowBackup="true"
@@ -24,9 +24,10 @@
         android:theme="@style/AppTheme">
         <activity android:name=".LoginActivity">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".TeacherMainActivity" />
 
@@ -54,18 +55,17 @@
         <activity android:name=".SelectColorActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ParentsMainActivity" />
-
         <activity android:name=".StudentMainActivity" />
         <activity
             android:name=".HistoryDetailActivity"
             android:label="@string/title_activity_history_detail" />
-        <activity android:name=".WriteHistoryActivity"></activity>
-
-        <activity android:name=".ContentActivity">
-
-        </activity>
-        <activity android:name=".Dialog" android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
-
+        <activity android:name=".WriteHistoryActivity" />
+        <activity android:name=".ContentActivity" />
+        <activity
+            android:name=".Dialog"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity android:name=".SurveyListActivity" />
+        <activity android:name=".HistoryListActivity"></activity>
     </application>
 
 </manifest>
