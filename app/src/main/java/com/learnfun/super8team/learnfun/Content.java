@@ -192,8 +192,11 @@ public class Content {
         if (hasEditview) editview.setVisibility(View.GONE);
         CONTENT_USED = false;
         this.disable = true;
+        this.visionable = false;
+        this.clickable = false;
 
         //DB에 있는 명세(현재컨텐츠의 값) 수정 하는 코드 작성할 것
+        contentActivity.getDB().update(this.name);
     }
     //컨텐츠 이름 받아오기
     public String getContentName(){
