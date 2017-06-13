@@ -187,14 +187,16 @@ public class Content {
     //컨텐트 뷰 비활성화
     public void unsetContentView(){
         for(int i=0;i<views.size();i++){
+            //뷰 비활성화
             views.get(i).unsetContentView();
+            //액션 스크립트 초기화
+            views.get(i).actionClear();
         }
         if (hasEditview) editview.setVisibility(View.GONE);
         CONTENT_USED = false;
         this.disable = true;
         this.visionable = false;
         this.clickable = false;
-
         //DB에 있는 명세(현재컨텐츠의 값) 수정 하는 코드 작성할 것
         contentActivity.getDB().update(this.name);
     }
@@ -224,6 +226,7 @@ public class Content {
 
     private void addScript() {
         //스크립트 읽어들이기
+
         try {
             if (disable == false) {
                 Log.i("스크립트 ", jobj.getString("name"));

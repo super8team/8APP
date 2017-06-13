@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,8 +45,11 @@ public class ImgView extends ContentView {
     public void setContentView() throws InterruptedException {
 
             //이미지 크기적용
-            imageView.setMaxWidth(width);
-            imageView.setMaxHeight(height);
+            ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) imageView.getLayoutParams();
+            params.width = this.width;
+            params.height = this.height;
+//            imageView.setMaxWidth(width);
+//            imageView.setMaxHeight(height);
             //이미지 변경
             //네트워크작업은 메인 스레드가아닌 다른 스레드에서 작업해야함
             Thread imgThread = new Thread() {
@@ -125,6 +130,17 @@ public class ImgView extends ContentView {
                 }
 
                 contentActivity.startActivityForResult(intent,3203);
+            }
+        });
+    }
+
+    @Override
+    public void actionClear() {
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //아무것도 하지 않음
+                Log.i("클리어 액션","아무것도 하지않는다");
             }
         });
     }

@@ -30,6 +30,9 @@ abstract public class ContentView {
     //에디트 검사 액션 코드 등록
     abstract public void setCheckEditAction(final EditText editview,final String answer,final JSONObject ooo, final JSONObject xxx,final ContentActivity contentActivity);
 
+    //액션 코드 (클릭리스너 초기화)
+    abstract public void actionClear();
+
     //액션코드 구분 코드
     public Intent setActionScript(JSONObject code , Intent intent, String name){
         try{
