@@ -48,6 +48,7 @@ public class DBManager extends SQLiteOpenHelper{
             db.execSQL("insert into JSON_CODE values('"+json+"')");
             temp = json;
         }
-        return temp;
+//        return temp;
+        return json;
     }
 }

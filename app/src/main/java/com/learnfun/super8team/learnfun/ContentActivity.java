@@ -48,7 +48,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     final static String TAG = "ContentActivity";
 
     private SurfaceView surfaceView;
-    private TextView tv;
     private LinearLayout cameraContainerLayout;
     private RelativeLayout OverlayLayout;
     private AROverlayView arOverlayView;
@@ -67,6 +66,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     boolean isGPSEnabled;
     boolean isNetworkEnabled;
     boolean locationServiceAvailable;
+//    RocationPermissionThread permissionThread;
 
     private ArrayList<JSONObject> jsons = new ArrayList();
     private ArrayList<Content> contents = new ArrayList();
@@ -78,6 +78,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
+
 
         //DB생성
         dbManager = new DBManager(getApplicationContext(),"content",null,1);
@@ -110,6 +111,8 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         super.onResume();
         // 권한 획득
         requestLocationPermission();
+//        permissionThread = new RocationPermissionThread();
+//        permissionThread.start();
         requestCameraPermission();
         registerSensors();
         initAROverlayView();
@@ -143,8 +146,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public void requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "requestLocationPermission - if");
             this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS_CODE);
         } else {
+            Log.e(TAG, "requestLocationPermission - else");
             initLocationService();
         }
     }
@@ -187,10 +192,13 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     private void initLocationService() {
         if ( Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "initLocationService - if");
             return  ;
         }
 
         try   {
+            Log.e(TAG, "initLocationService");
+
             this.locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
 
             // Get GPS and network status
@@ -204,6 +212,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             if (!isNetworkEnabled && !isGPSEnabled)    {
                 // cannot get location
                 this.locationServiceAvailable = false;
+                Log.e(TAG, "locationServiceAvailable = false");
             }
 
             this.locationServiceAvailable = true;
@@ -212,9 +221,14 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                         MIN_TIME_BW_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                Log.e(TAG, "locationServiceAvailable isNetworkEnabled");
                 if (locationManager != null)   {
                     location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    if (location != null) updateLatestLocation(location);
+                    Log.e(TAG, "locationServiceAvailable isNetworkEnabled locationManager != null");
+                    if (location != null) {
+                        Log.e(TAG, "locationServiceAvailable location != null");
+                        updateLatestLocation(location);
+                    }
                 }
             }
 
@@ -222,10 +236,14 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         MIN_TIME_BW_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-
+                Log.e(TAG, "locationServiceAvailable isGPSEnabled");
                 if (locationManager != null)  {
                     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (location != null) updateLatestLocation(location);
+                    Log.e(TAG, "locationServiceAvailable  isGPSEnabled locationManager != null");
+                    if (location != null) {
+                        Log.e(TAG, "locationServiceAvailable location != null");
+                        updateLatestLocation(location);
+                    }
                 }
             }
         } catch (Exception ex)  {
@@ -435,31 +453,33 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         Location contentsLocation;
         Log.e(TAG, "onTouch: "+x+", "+y);
 
+        if (!locationServiceAvailable) return super.onTouchEvent(event);
+
         //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
         for (int i=0;i<contents.size();i++) {
-
+//
             if(contents.get(i).getClickable()) {
-                try {
-                    contentsLocation = contents.get(i).getContentLocation();
-                    List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
-
-                    Float targetX = points.get(0);
-                    Float targetY = points.get(1);
-                    Log.i("contents", targetX+", "+targetY);
-
-
-                    if(targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY +100) {
-                          if (!Content.CONTENT_USED && !contents.get(i).getContentDisable()) {
-                              Log.e(TAG, contents.get(i).getContentName());
-
-                              //AR 비활성화
-                              stopAROverlay();
-                              contents.get(i).setContentView();
-                          }
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    contentsLocation = contents.get(i).getContentLocation();
+//                    List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
+//
+//                    Float targetX = points.get(0);
+//                    Float targetY = points.get(1);
+//                    Log.i("contents", targetX+", "+targetY);
+//
+//
+//                    if(targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY +100) {
+//                          if (!Content.CONTENT_USED && !contents.get(i).getContentDisable()) {
+//                              Log.e(TAG, contents.get(i).getContentName());
+//
+//                              //AR 비활성화
+//                              stopAROverlay();
+//                              contents.get(i).setContentView();
+//                          }
+//                    }
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
         }
 
@@ -485,4 +505,32 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             }
         }
     }
+
+//    public class RocationPermissionThread extends Thread {
+//        private static final String TAG = "RocationPermissionThread";
+//
+//        public void run() {
+////            // 체크 퍼미션
+////            Log.e(TAG, "쓰레드 시작!");
+//
+//            // 스레드에게 수행시킬 동작들 구현
+//            int second = 0;
+//            while (true) {
+//                second++;
+//                try {
+//                    if (!locationServiceAvailable) {
+//                        Log.e(TAG, "permission check");
+//                        requestLocationPermission();
+//                        Thread.sleep(1000);
+//                    } else {
+//                        break;
+//                    }
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                Log.e("permission check 경과된 시간 : ", Integer.toString(second));
+//            }
+//        }
+//    }
+
 }
