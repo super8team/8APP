@@ -20,8 +20,10 @@ public class StudentHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = "create table student ( " +
-                " id integer primary key , " +
-                " name text , " +
+                "num integer auto_increment , " +
+                "name text , " +
+                "id text , " +
+                "color text , " +
                 "className integer);";
         db.execSQL(sql);
     }
@@ -39,10 +41,14 @@ public class StudentHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query("student", null, null, null, null, null, null);
         while(cursor.moveToNext()){
             Student item = new Student();
-            item.id = cursor.getInt(cursor.getColumnIndex("id"));
-            Log.d("id", String.valueOf(cursor.getInt(cursor.getColumnIndex("id"))));
+            item.num = cursor.getInt(cursor.getColumnIndex("num"));
+            Log.d("num", String.valueOf(cursor.getInt(cursor.getColumnIndex("num"))));
             item.name = cursor.getString(cursor.getColumnIndex("name"));
             Log.d("name", cursor.getString(cursor.getColumnIndex("name")));
+            item.id = cursor.getString(cursor.getColumnIndex("id"));
+            Log.d("id", cursor.getString(cursor.getColumnIndex("id")));
+            item.color = cursor.getString(cursor.getColumnIndex("color"));
+            Log.d("color", cursor.getString(cursor.getColumnIndex("color")));
             item.className = cursor.getInt(cursor.getColumnIndex("className"));
             Log.d("className", String.valueOf(cursor.getInt(cursor.getColumnIndex("className"))));
             result.add(item);
@@ -63,20 +69,27 @@ public class StudentHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public void delete(int id){
+    public void delete(int num){
         SQLiteDatabase db = getWritableDatabase();
-        if(id < 0)
+        if(num < 0)
             onUpgrade(db, db.getVersion(), db.getVersion()+1);
         else {
-            db.delete("student", "_id=?", new String[]{String.valueOf(id)});
+            db.delete("student", "num=?", new String[]{String.valueOf(num)});
         }
     }
+    public void update(int num,String color){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("color",color);
+        db.update("student",values, "num=?", new String[]{String.valueOf(num)});
 
-    public void insert(int id, String name,int className){
+    }
+    public void insert(String id, String name,int className){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("id", id);
         values.put("name", name);
+        values.put("color", "blue");
         values.put("className", className);
         db.insert("student", null, values);
     }

@@ -54,13 +54,19 @@ public class Content {
         this.visionable = jobj.getBoolean("visionable");
         this.clickable  = jobj.getBoolean("clickable");
         this.disable    = jobj.getBoolean("disable");
-        String temp[] = jobj.getString("location").split(",");
+        String str = jobj.getString("location");
+        Log.i("뭐냐이거",str);
+        String temp[] = str.substring(1,str.length()-1).split(",");
+        Log.i("위치값은 어떻게/?",temp[0]);
+        Log.i("위치값은 어떻게/?",temp[1]);
         // 현재 입력된 위경도 데이터로 로케이션 객체 생성
         this.location = new Location("Content");
         this.location.setLatitude(Double.parseDouble(temp[0]));
         this.location.setLongitude(Double.parseDouble(temp[1]));
 
-//        Log.i("컨텐츠 멤버 값 입력완료 -----", this.name);
+        Log.i("컨텐츠 멤버 값 입력완료 -----", this.name);
+        Log.i("vision 값 입력완료 -----", String.valueOf(this.visionable));
+        Log.i("ciick 값 입력완료 -----", String.valueOf(this.clickable));
         //컨텐츠 배열들을 ArrayList에 저장
         //이미지 컨텐츠 배열
         for(int i=0;i<jobj.getJSONArray("image").length();i++){
@@ -181,13 +187,18 @@ public class Content {
     //컨텐트 뷰 비활성화
     public void unsetContentView(){
         for(int i=0;i<views.size();i++){
+            //뷰 비활성화
             views.get(i).unsetContentView();
+            //액션 스크립트 초기화
+            views.get(i).actionClear();
         }
         if (hasEditview) editview.setVisibility(View.GONE);
         CONTENT_USED = false;
         this.disable = true;
-
+        this.visionable = false;
+        this.clickable = false;
         //DB에 있는 명세(현재컨텐츠의 값) 수정 하는 코드 작성할 것
+        contentActivity.getDB().update(this.name);
     }
     //컨텐츠 이름 받아오기
     public String getContentName(){
@@ -215,6 +226,7 @@ public class Content {
 
     private void addScript() {
         //스크립트 읽어들이기
+
         try {
             if (disable == false) {
                 Log.i("스크립트 ", jobj.getString("name"));

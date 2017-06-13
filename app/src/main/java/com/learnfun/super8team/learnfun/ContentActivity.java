@@ -457,29 +457,29 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
         //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
         for (int i=0;i<contents.size();i++) {
-//
-            if(contents.get(i).getClickable()) {
-//                try {
-//                    contentsLocation = contents.get(i).getContentLocation();
-//                    List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
-//
-//                    Float targetX = points.get(0);
-//                    Float targetY = points.get(1);
-//                    Log.i("contents", targetX+", "+targetY);
-//
-//
-//                    if(targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY +100) {
-//                          if (!Content.CONTENT_USED && !contents.get(i).getContentDisable()) {
-//                              Log.e(TAG, contents.get(i).getContentName());
-//
-//                              //AR 비활성화
-//                              stopAROverlay();
-//                              contents.get(i).setContentView();
-//                          }
-//                    }
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
+
+            if(contents.get(i).getClickable() && contents.get(i).getVisionable()) {
+                try {
+                    contentsLocation = contents.get(i).getContentLocation();
+                    List<Float> points = arOverlayView.getNavigationPoint(contentsLocation, i);
+
+                    Float targetX = points.get(0);
+                    Float targetY = points.get(1);
+                    Log.i("contents", targetX+", "+targetY);
+
+
+                    if(targetX - 100 < x && x < targetX + 100 && targetY - 100 < y && y < targetY +100) {
+                          if (!Content.CONTENT_USED && !contents.get(i).getContentDisable()) {
+                              Log.e(TAG, contents.get(i).getContentName());
+
+                              //AR 비활성화
+                              stopAROverlay();
+                              contents.get(i).setContentView();
+                          }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -493,7 +493,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                     //각콘텐츠 반경과 현재 좌표를 비교하고 컨텐츠 실행중이 아니면 컨텐츠 표시
 //                        Log.i("디세이블 상황 ", String.valueOf(contents.get(i).getContentDisable()));
 
-                    if (contents.get(i).checkCondition(lat, lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable()) {
+                    if (contents.get(i).checkCondition(lat, lng) && !Content.CONTENT_USED && !contents.get(i).getContentDisable() && !contents.get(i).getClickable()) {
 
                         //AR 비활성화
                         stopAROverlay();
@@ -506,6 +506,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         }
     }
 
+//<<<<<<< HEAD
 //    public class RocationPermissionThread extends Thread {
 //        private static final String TAG = "RocationPermissionThread";
 //
@@ -533,4 +534,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 //        }
 //    }
 
+    public DBManager getDB(){
+        return dbManager;
+    }
 }
