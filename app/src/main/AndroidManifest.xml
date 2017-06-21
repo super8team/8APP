@@ -49,9 +49,6 @@
         <activity android:name=".PlanTableActivity" />
         <activity android:name=".StudentListActivity" />
         <activity android:name=".CheckListActivity" />
-        <activity
-            android:name=".RecommendActivity"
-            android:label="@string/title_activity_recommend" />
         <activity android:name=".SelectColorActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ParentsMainActivity" />

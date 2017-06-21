@@ -30,5 +30,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorSky"
-        android:text="입력" />
+        android:textSize="20dp"
+        android:text="로그인" />
+
+    <LinearLayout
+        android:layout_width="276dp"
+        android:layout_height="69dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/quickTeacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="교사" />
+
+        <Button
+            android:id="@+id/quickParents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="학부모" />
+
+        <Button
+            android:id="@+id/quickStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="학생" />
+    </LinearLayout>
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.learnfun.super8team.learnfun;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -19,6 +22,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -30,10 +34,7 @@ public class StudentListActivity extends AppCompatActivity {
     private ArrayList<String> mGroupList = null;
     private ArrayList<ArrayList<String>> mChildList = null;
     private ArrayList<String> mClassStudent = null;
-    private ArrayList<String> mClass2Student = null;
-    private ArrayList<String> mClass3Student = null;
     private BaseExpandableAdapter adapter;
-    public static final int REQUEST_CODE_COLOR = 1001;
     NetworkAsync requestNetwork;
     // 로그인한 유저 정보를 담을 객체
     UserPreferences userPreferences;
@@ -49,8 +50,11 @@ public class StudentListActivity extends AppCompatActivity {
 
         mGroupList = new ArrayList<String>();
         mChildList = new ArrayList<ArrayList<String>>();
-        helper = new StudentHelper(this,"NameDB",null,1);
-        setStudentList();
+        helper = new StudentHelper(this,"NameDB",null,7);
+
+        int tableCheck = helper.tableCheck();
+
+        if(tableCheck==0) setStudentList();
 
 
          ArrayList<Integer> classes = helper.selectClasses();
@@ -69,6 +73,7 @@ public class StudentListActivity extends AppCompatActivity {
                 if(classes.get(i) == student.get(j).className ){
                     mClassStudent.add(student.get(j).name);
                 }
+
             }
             mChildList.add(mClassStudent);
         }
@@ -95,10 +100,27 @@ public class StudentListActivity extends AppCompatActivity {
                                         int groupPosition, int childPosition, long id) {
 //                Toast.makeText(getApplicationContext(),"g click = "+groupPosition  +"c click = " + childPosition,
 //                        Toast.LENGTH_SHORT).show();
+
+                int count =0;
+                //counting for student num
+                for(int i =0; i <= groupPosition;i++){
+
+                    if(i==groupPosition){
+                        for(int j=0; j <=childPosition;j++){
+                            count++;
+                        }
+                    }else{
+                        for(int j=0; j < mChildList.get(i).size();j++){
+                            count++;
+                        }
+                    }
+
+                }
+
                 //학생 이름을 클릭시 새창으로 색상을 선택할수 있도록 한다
 //                Intent intent = new Intent(getApplicationContext(), SelectColorActivity.class);
 //                startActivityForResult(intent,REQUEST_CODE_COLOR);
-                AlertDialog dialog = createDialogBox(groupPosition,childPosition);
+                AlertDialog dialog = createDialogBox(groupPosition,childPosition,count);
                 dialog.show();
 
 //                Context context = getApplicationContext();
@@ -134,7 +156,7 @@ public class StudentListActivity extends AppCompatActivity {
 
     } //onCreate function end
 
-    public void setStudentList(){ // 학생리스트를 받아옴
+    public void setStudentList(){ // 학생리스트를 서버에서 받아와서 db에 넣음
         String userid = userPreferences.getUserId();
 
         JSONObject sendData = new JSONObject();
@@ -174,24 +196,31 @@ public class StudentListActivity extends AppCompatActivity {
 
     }
 
-    private AlertDialog createDialogBox(int groupPosition, final int childPosition){
+    private AlertDialog createDialogBox(final int groupPosition, final int childPosition, final int count){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
 
         builder.setTitle("마커색상선택");
         //builder.setMessage("이 길을 계속 가시겠습니까?");
+//        Toast.makeText(getApplicationContext(),String.valueOf(count),
+//                Toast.LENGTH_SHORT).show();
         builder.setItems(R.array.color_array, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which) { //1:red, 2:blue, 3:yellow
 
-                            case 1:
+                        switch (which) { //0:red, 1:blue, 2:yellow
+
+                            case 0:
                                 //DB에 groupPosition과 childPosition에 맞게 색상을 저장한다.
-                                helper.update(1,"red");
+                                helper.update(count,"red");
+                                Log.d("color = ","red");
+                                break;
+                            case 1:
+                                helper.update(count,"blue");
+                                Log.d("color = ","blue");
                                 break;
                             case 2:
-                                helper.update(1,"blue");
-                                break;
-                            case 3:
-                                helper.update(1,"yellow");
+                                helper.update(count,"yellow");
+                                Log.d("color = ","yellow");
                                 break;
                         }
                     }
@@ -224,19 +253,6 @@ public class StudentListActivity extends AppCompatActivity {
     };
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        //색상을 클릭하고 다시 넘어올경우 색상을 저장해야함
-        if(requestCode == REQUEST_CODE_COLOR){
-            if(resultCode == RESULT_OK){
-                String name = intent.getExtras().getString("name");
-                Toast toast = Toast.makeText(getBaseContext(),
-                        "응답으로 전달된 name: )" + name, Toast.LENGTH_LONG);
-                toast.show();
-            }
-        }
-    }
 
     /*
          * Layout

@@ -62,7 +62,9 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
             v = inflater.inflate(R.layout.student_list_expendable, parent, false);
             viewHolder.tv_groupName = (TextView) v.findViewById(R.id.group);
             viewHolder.iv_image = (ImageView) v.findViewById(R.id.image);
+
             v.setTag(viewHolder);
+
         }else{
             viewHolder = (ViewHolder)v.getTag();
         }
@@ -96,6 +98,7 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
         return childPosition;
     }
 
+
     // 차일드뷰 각각의 ROW
     @Override
     public View getChildView(int groupPosition, int childPosition,
@@ -112,6 +115,8 @@ public class BaseExpandableAdapter extends BaseExpandableListAdapter {
         }else{
             viewHolder = (ViewHolder)v.getTag();
         }
+
+
 
         viewHolder.tv_childName.setText(getChild(groupPosition, childPosition));
 

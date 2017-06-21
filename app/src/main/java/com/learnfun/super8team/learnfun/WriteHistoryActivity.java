@@ -58,6 +58,7 @@ public class WriteHistoryActivity extends AppCompatActivity {
                     }
                     requestNetwork = new NetworkAsync(WriteHistoryActivity.this, "writeHistoryContent",  NetworkAsync.POST, sendData);
                     requestNetwork.execute();
+
                     intent = new Intent();
                     setResult(0,intent);
                     finish();
