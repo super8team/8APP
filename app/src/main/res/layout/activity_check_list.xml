@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.learnfun.super8team.learnfun.CheckListActivity">
+
     <ScrollView
         android:id="@+id/scrollPage"
         android:layout_width="match_parent"
@@ -22,5 +23,6 @@
         </RelativeLayout>
         </HorizontalScrollView>
 </ScrollView>
+
 </RelativeLayout>
 

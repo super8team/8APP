@@ -64,5 +64,4 @@
         <activity android:name=".SurveyListActivity" />
         <activity android:name=".HistoryListActivity"></activity>
     </application>
-
 </manifest>
