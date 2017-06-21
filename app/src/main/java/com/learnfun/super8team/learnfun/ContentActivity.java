@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,6 +20,7 @@ import android.opengl.Matrix;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,6 +28,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,6 +47,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class ContentActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
     final static String TAG = "ContentActivity";
@@ -73,11 +78,16 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     private JSONArray json;
 
     private DBManager dbManager;
+    private Context context = this;
+    private NetworkAsync requestNetwork;
+    private UserPreferences userPreferences = UserPreferences.getUserPreferences(context);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
+
+        //서버에서
 
         //DB생성
         dbManager = new DBManager(getApplicationContext(),"content",null,1);
@@ -88,6 +98,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         cameraContainerLayout = (LinearLayout) findViewById(R.id.camera_container_layout);
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         arOverlayView = new AROverlayView(this);
+
         OverlayLayout = (RelativeLayout) findViewById(R.id.overlay_layout);
 
         initContents();
@@ -103,6 +114,19 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
         // 여기 있던 locationListener는 밑에 있는 리스너 함수들로 옮김!
 
+        //뒤로가기 버튼
+        final ImageButton exitBtn = (ImageButton) findViewById(R.id.exitBtn);
+        exitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(exitBtn.getVisibility() == View.VISIBLE) {
+                    for (int i = 0; i < contents.size(); i++) {
+                        contents.get(i).closeContent();
+                        initAROverlayView();
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -151,15 +175,24 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
     private void initContents() {
 
+        try {
+        JSONObject userInputInfo = new JSONObject();
+            //유저 정보를 가져온다.
+            Log.i("유저정보   ",userPreferences.getUserId());
+        userInputInfo.put("inputID",userPreferences.getUserId());
 
-//        json = call(); //컨텐츠 명세 불러오기
-        //DB에서 명세 뽑아오는 걸로 수정할 것 - 메인 액티비티에서 명세 찾을 조건을 받아야됨 or 메인 엑티비티에서 명세만 넘겨받음(스트링으로)
+            // 서버에 유저아이디를 넘기고 명세를 넘겨받음
+        requestNetwork = new NetworkAsync(context,"getContents",NetworkAsync.POST, userInputInfo);
+
+
         //로컬 디비에 명세가 없으면 명세를 저장, 명세가 있으면 로컬명세를 읽음
         String data = dbManager.init(call().toString());
 
+//        실제실행 코드
+//        String data = dbManager.init(requestNetwork.execute().get());
 
 
-        try {
+
             //문자열을 제이슨 배열로 변환
             json = new JSONArray(data);
 
@@ -182,6 +215,9 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+//        catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void initLocationService() {
@@ -433,7 +469,14 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         int x = (int)event.getX();
         int y = (int)event.getY()-200;
         Location contentsLocation;
+
         Log.e(TAG, "onTouch: "+x+", "+y);
+        Effect effect = new Effect(this,x,y);
+
+        if (effect.getParent() != null) {
+            ((ViewGroup) effect.getParent()).removeView(effect);
+        }
+        OverlayLayout.addView(effect);
 
         //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
         for (int i=0;i<contents.size();i++) {
@@ -489,4 +532,5 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public DBManager getDB(){
         return dbManager;
     }
+    public RelativeLayout getOverlayLayout() {return OverlayLayout; }
 }

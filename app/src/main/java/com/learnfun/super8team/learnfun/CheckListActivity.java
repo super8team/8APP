@@ -61,6 +61,7 @@ public class CheckListActivity extends AppCompatActivity {
                 text[tr][td].setHeight(200);    // 크기
                 text[tr][td].setWidth(200);    // 크기
 
+
                 row[tr].addView(text[tr][td]);
 
             } // td for end

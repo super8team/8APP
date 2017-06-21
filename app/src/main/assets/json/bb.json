@@ -25,7 +25,7 @@
         {
           "id" : 1,
           "name": "tower",
-          "src" : "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/%EA%B2%BD%EC%A3%BC_%EB%B6%88%EA%B5%AD%EC%82%AC_%EB%8B%A4%EB%B3%B4%ED%83%91.jpg/272px-%EA%B2%BD%EC%A3%BC_%EB%B6%88%EA%B5%AD%EC%82%AC_%EB%8B%A4%EB%B3%B4%ED%83%91.jpg",
+          "src" : "http://t1.daumcdn.net/liveboard/emoticon/kakaofriends/v3/ryanspecial/emot_020_x3.gif",
           "width" : 1200,
           "height" : 1200
         }
@@ -61,7 +61,7 @@
 
     "vertical" : "center",
     "horizontal" : "center",
-    "location" : "(35.896380,128.620380)",
+    "location" : "(35.896280,128.620380)",
     "visionable" : true,
     "clickable" : true,
     "disable" : false,
@@ -121,7 +121,7 @@
         {
           "id" : 4,
           "name": "answer",
-          "src" : "http://img.hankyung.com/photo/201110/2011102598011_2011102531511.jpg",
+          "src" : "http://www.chongas.com.br/wp-content/uploads/2011/02/flanders.gif",
           "width" : 500,
           "height" : 500
         }

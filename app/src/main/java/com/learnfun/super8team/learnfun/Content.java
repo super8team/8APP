@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import org.json.JSONArray;
@@ -70,7 +71,7 @@ public class Content {
         //컨텐츠 배열들을 ArrayList에 저장
         //이미지 컨텐츠 배열
         for(int i=0;i<jobj.getJSONArray("image").length();i++){
-            ImgView imgView = new ImgView(jobj.getJSONArray("image").getJSONObject(i), contentActivity.findViewById(imgviews[i]),this.name);
+            ImgView imgView = new ImgView(jobj.getJSONArray("image").getJSONObject(i), contentActivity.findViewById(imgviews[i]),this.name,contentActivity);
 
             this.views.add(imgView);
 
@@ -178,10 +179,26 @@ public class Content {
                 Log.e("Content", "visible");
                 views.get(i).setContentView();
             }
+            //액션 스크립트 등록
             addScript();
             if (hasEditview) editview.setVisibility(View.VISIBLE);
+            ImageButton exitBtn = (ImageButton) contentActivity.findViewById(R.id.exitBtn);
+            exitBtn.setVisibility(View.VISIBLE);
         }
 
+    }
+    //컨텐츠 그냥 종료
+    public void closeContent(){
+        for(int i=0;i<views.size();i++){
+            //뷰 비활성화
+            views.get(i).unsetContentView();
+            //액션 스크립트 초기화
+            views.get(i).actionClear();
+        }
+        if (hasEditview) editview.setVisibility(View.GONE);
+        ImageButton exitBtn = (ImageButton) contentActivity.findViewById(R.id.exitBtn);
+        exitBtn.setVisibility(View.GONE);
+        CONTENT_USED = false;
     }
 
     //컨텐트 뷰 비활성화
@@ -193,6 +210,8 @@ public class Content {
             views.get(i).actionClear();
         }
         if (hasEditview) editview.setVisibility(View.GONE);
+        ImageButton exitBtn = (ImageButton) contentActivity.findViewById(R.id.exitBtn);
+        exitBtn.setVisibility(View.GONE);
         CONTENT_USED = false;
         this.disable = true;
         this.visionable = false;
