@@ -529,13 +529,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                 Log.d("TAG", dataJsonObject.getString("name"));
                 LatLng planGPS = new LatLng(dataJsonObject.getDouble("lat"), dataJsonObject.getDouble("lng"));
 
-
-
-                //로그를 구현할 부분
-
-
-
-
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(planGPS);
                 //markerOptions.icon(R.drawable.placeMarker); // change the color of marker

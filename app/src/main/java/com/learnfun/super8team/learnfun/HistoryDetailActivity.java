@@ -104,7 +104,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
         translateLeftAnim = AnimationUtils.loadAnimation(this,R.anim.translate_left);
         translateRightAnim = AnimationUtils.loadAnimation(this,R.anim.translate_right);
 
-        HistoryDetailActivity.SlidingPageAnimationListener animListener = new HistoryDetailActivity.SlidingPageAnimationListener();
+        SlidingPageAnimationListener animListener = new SlidingPageAnimationListener();
         translateLeftAnim.setAnimationListener(animListener);
         translateRightAnim.setAnimationListener(animListener);
 
@@ -367,6 +367,11 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                             LatLng latLng = new LatLng(lat, lng);
                             cMarker = new MarkerOptions();
                             cMarker.position(latLng);
+                            if(child.getString("gender").equals("M")){
+                                cMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.boyd));
+                            }else{
+                                cMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.girld));
+                            }
                             cMarker.title(child.getString("name"));
                             mMap.addMarker(cMarker);
 
@@ -428,7 +433,9 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        if(!marker.getTitle().equals("현재위치") || !marker.getTitle().equals("박성원") ){
+                        Log.d("markerTitle = ",marker.getTitle());
+                        if(!marker.getTitle().equals("김봉춘") && !marker.getTitle().equals("현재위치") ){
+                            Log.d("김봉춘 체크 = ","김봉춘체크");
                             placeNum = marker.getTitle();
                             if (isPageOpen) {
                                 //slidingPage01.startAnimation(translateRightAnim);
@@ -578,7 +585,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
         myMarker = new MarkerOptions();
         myMarker.position(latLng);
-        myMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.placemarker));
+        myMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.mymarkerd));
         myMarker.title("현재위치");
         mMap.addMarker(myMarker);
 
