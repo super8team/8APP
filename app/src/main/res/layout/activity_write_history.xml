@@ -11,30 +11,67 @@
     android:layout_height="495dp"
     tools:layout_editor_absoluteY="8dp"
     tools:layout_editor_absoluteX="8dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:orientation="vertical"
-        >
+        android:layout_weight="1.21">
 
-        <TextView
-            android:id="@+id/notice"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_weight="0.02"
-            android:text="@string/write_Content"
-             />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/contentHistory"
+            <ImageView
+                android:id="@+id/pictureImageView"
+                android:layout_width="match_parent"
+                android:layout_height="171dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="144dp"
+            android:layout_height="85dp"
+            android:layout_gravity="right"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/imageButtonGallery"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="#f9f9f4"
+                android:layout_weight="0.64"
+                app:srcCompat="@drawable/gallery1d" />
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/imageButtonCamera"-->
+                <!--android:layout_width="60dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:background="#ffffff"-->
+                <!--android:layout_weight="1"-->
+                <!--app:srcCompat="@drawable/camerad" />-->
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="210dp"
-            android:layout_weight="0.02"
-            android:ems="10"
-            android:inputType="textMultiLine"
-             />
+            android:layout_height="match_parent"
+            android:layout_weight="0.64"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/contentHistory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/write_Content"
+                android:inputType="textMultiLine" />
+        </LinearLayout>
+
 
     </LinearLayout>
 
@@ -58,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/close"
+            android:text="@string/back"
              />
 
 
