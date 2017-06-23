@@ -7,15 +7,26 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,14 +66,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
+
+import static android.R.attr.bitmap;
 
 public class TodayActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener {
 
@@ -102,7 +121,20 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     boolean emitSwitch = false;
     TextView contentView;
     String logContent = "";
+    ImageView historyImage;
 
+    //히스토리에 이미지를 뿌려주기 위한 변수들
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<MyData> myDataset;
+    public static final String baseShoppingURL = "http://163.44.166.91/LEARnFUN/storage/app/historyImgs/1-1.png";
+    Bitmap bitmap;
+    public ImageView mImageView;
+    public TextView mTextView;
+
+    //dialog
+    AppCompatDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,8 +154,8 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
         scrollPage = (ScrollView) findViewById(R.id.scrollPage);
 
-        ImageView image =(ImageView)this.findViewById(R.id.imageView2);
-        image.setImageResource(R.drawable.learn);
+        //historyImage =(ImageView)this.findViewById(R.id.pictureImage);
+
 
         contentView = (TextView)this.findViewById(R.id.contentView);
 
@@ -139,6 +171,9 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
         histroySwitch = (Switch)findViewById(R.id.historySwitch);
         histroySwitch.setOnCheckedChangeListener(SWITCH);
+
+
+
 
         userPreferences = UserPreferences.getUserPreferences(this);
 
@@ -198,7 +233,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(parent.getContext(),"선택한것은"+parent.getItemAtPosition(position),Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(parent.getContext(),"선택한것은"+parent.getItemAtPosition(position),Toast.LENGTH_SHORT).show();
                     mMap.clear();
 
                     if(parent.getItemAtPosition(position).equals("1반")){
@@ -309,6 +344,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                 if(myMarker!=null) mMap.addMarker(myMarker);
                 getPlanGPS();
 
+
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() { //발자취 눌렀을때 동작함수
                     @Override
                     public boolean onMarkerClick(Marker marker) {
@@ -317,6 +353,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                             if (isPageOpen) {
                                 //slidingPage01.startAnimation(translateRightAnim);
                             } else {
+                                startProgress();//다이얼로그 실행 함수
                                 slidingPage01.setVisibility(View.VISIBLE);
                                 slidingPage01.startAnimation(translateLeftAnim);
                                 scrollPage.setVisibility(View.VISIBLE);
@@ -327,7 +364,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                                 sendData = new JSONObject();
 
                                 try {
-
                                     //recentDate.put("date",getDate());
                                     sendData.put("userId",userPreferences.getUserId());
                                     sendData.put("placeNum",placeNum);
@@ -348,20 +384,74 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                                     JSONObject contentList = new JSONObject(place.getString("place"));
                                     String sumContent = "";
 
+                                    //cardView를 만들기위한 코드
+                                    mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+                                    // use this setting to improve performance if you know that changes
+                                    // in content do not change the layout size of the RecyclerView
+                                    mRecyclerView.setHasFixedSize(true);
+
+                                    // use a linear layout manager
+                                    mLayoutManager = new LinearLayoutManager(TodayActivity.this);
+                                    mRecyclerView.setLayoutManager(mLayoutManager);
+
+                                    // specify an adapter (see also next example)
+                                    myDataset = new ArrayList<>();
+                                    mAdapter = new MyAdapter(myDataset);
+                                    mRecyclerView.setAdapter(mAdapter);
+
                                     for(int i = 0 ; i < contentList.length();i++){
 
                                         //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
                                         String contentNum = "content" + (i+1);
                                         JSONObject dataJsonObject = contentList.getJSONObject(contentNum);
                                         //JSONObject placeData = new JSONObject(dataJsonObject);sumContent
-                                        sumContent += "content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather")+ "\n";
-                                        //contentView.setText("content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather"));
 
+                                        //sumContent += "content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather")+ "\n";
+                                        //contentView.setText("content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather"));
+                                        //getImageFromURL(dataJsonObject.getString("url")),dataJsonObject.getString("content")
+
+//                                        myDataset.add(new MyData(dataJsonObject.getString("content"),getImageFromURL("http://163.44.166.91/LEARnFUN/storage/app/historyImgs/1-1.png")));
+                                        String imageUrl="";
+                                        imageUrl = dataJsonObject.getString("url");
+
+                                        final String finalImageUrl = imageUrl;
+                                        Thread mThread = new Thread(){
+                                            @Override
+                                            public void run() {
+                                                try{//baseShoppingURL
+
+                                                    URL url = new URL(finalImageUrl); //URL주소를 이용해서 URL객체를 생성
+                                                    //아래 코드는 웹에서 이미지를 가져온뒤
+                                                    //이미지 뷰에 지정할 Bitmap을 생성하는 과정
+                                                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                                                    conn.setDoInput(true);
+                                                    conn.connect();
+
+                                                    InputStream is = conn.getInputStream();
+                                                    bitmap = BitmapFactory.decodeStream(is);
+
+                                                }catch (IOException ex){
+
+                                                }
+                                            }
+                                        };
+
+                                        mThread.start();
+
+                                        try{
+                                            mThread.join();
+
+                                            myDataset.add(new MyData(dataJsonObject.getString("content"),bitmap));
+
+
+                                        }catch (InterruptedException e){
+
+                                        }
 
 
                                     }
-                                    contentView.setText(sumContent);
-
+                                    //historyImage.setImageBitmap(bitmap);
+                                    //contentView.setText(sumContent);
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -395,6 +485,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         }
 
     };
+
 
 
     @Override
@@ -485,12 +576,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         }
     };
 
-    public static String getDate(){
-        SimpleDateFormat dateFormat = new  SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
-        Date date = new Date();
-        String strDate = dateFormat.format(date);
-        return strDate;
-    }
 
     public void getPlanGPS(){ // 히스토리부분
 
@@ -848,7 +933,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this,"마커가 선택 되었습니다.",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"마커가 선택 되었습니다.",Toast.LENGTH_SHORT).show();
         return false;
     }
 
@@ -893,6 +978,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -900,15 +986,83 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         if(requestCode == REQUEST_CODE_WRITE){
             if(resultCode == RESULT_OK){
                 String name = intent.getExtras().getString("name");
-                Toast toast = Toast.makeText(getBaseContext(),
-                        "응답으로 전달된 name: )" + name, Toast.LENGTH_LONG);
-                toast.show();
+//                Toast toast = Toast.makeText(getBaseContext(),
+//                        "응답으로 전달된 name: )" + name, Toast.LENGTH_LONG);
+//                toast.show();
 
             }
         }
         slidingPage01.setVisibility(View.GONE);
         scrollPage.setVisibility(View.GONE);
         isPageOpen = false;
+    }
+
+    public void progressON(Activity activity, String message) {
+
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressSET(message);
+        } else {
+
+            progressDialog = new AppCompatDialog(activity);
+            progressDialog.setCancelable(false);
+            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            progressDialog.setContentView(R.layout.progress_loading);
+            progressDialog.show();
+
+        }
+
+
+        final ImageView img_loading_frame = (ImageView) progressDialog.findViewById(R.id.iv_frame_loading);
+        final AnimationDrawable frameAnimation = (AnimationDrawable) img_loading_frame.getBackground();
+        img_loading_frame.post(new Runnable() {
+            @Override
+            public void run() {
+                frameAnimation.start();
+            }
+        });
+
+        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
+        if (!TextUtils.isEmpty(message)) {
+            tv_progress_message.setText(message);
+        }
+
+
+    }
+    public void progressSET(String message) {
+
+        if (progressDialog == null || !progressDialog.isShowing()) {
+            return;
+        }
+
+
+        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
+        if (!TextUtils.isEmpty(message)) {
+            tv_progress_message.setText(message);
+        }
+
+    }
+
+    public void progressOFF() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+    private void startProgress() {
+
+        progressON(TodayActivity.this,"Loading...");
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressOFF();
+            }
+        }, 11500);
+
     }
 
 }

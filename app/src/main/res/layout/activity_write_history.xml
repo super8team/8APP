@@ -20,6 +20,31 @@
         android:orientation="vertical"
         android:layout_weight="1.21">
 
+        <!--<LinearLayout-->
+            <!--android:layout_width="144dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/imageButtonGallery"-->
+                <!--android:layout_width="60dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_gravity="right"-->
+                <!--android:layout_weight="0.64"-->
+                <!--android:background="#f9f9f4"-->
+                <!--app:srcCompat="@drawable/gallery1d" />-->
+
+            <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/imageButtonCamera"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="60dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="60dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:background="#ffffff"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:srcCompat="@drawable/camerad" />&ndash;&gt;-->
+
+        <!--</LinearLayout>-->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,38 +52,14 @@
 
             <ImageView
                 android:id="@+id/pictureImageView"
-                android:layout_width="match_parent"
-                android:layout_height="171dp"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="144dp"
-            android:layout_height="85dp"
-            android:layout_gravity="right"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/imageButtonGallery"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="#f9f9f4"
-                android:layout_weight="0.64"
-                app:srcCompat="@drawable/gallery1d" />
-
-            <!--<ImageButton-->
-                <!--android:id="@+id/imageButtonCamera"-->
-                <!--android:layout_width="60dp"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:background="#ffffff"-->
-                <!--android:layout_weight="1"-->
-                <!--app:srcCompat="@drawable/camerad" />-->
-
+                android:layout_width="wrap_content"
+                android:layout_height="221dp"
+                app:srcCompat="@drawable/picture" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.64"
             android:orientation="horizontal">
 

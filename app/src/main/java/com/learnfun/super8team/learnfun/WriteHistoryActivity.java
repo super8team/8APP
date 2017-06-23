@@ -65,12 +65,12 @@ public class WriteHistoryActivity extends AppCompatActivity {
         writeContentHistory = (Button)findViewById(R.id.writeContentHistory);
         imageView = (ImageView) findViewById(R.id.pictureImageView);
         //imageBtnCamera = (ImageButton) findViewById(R.id.imageButtonCamera);
-        imageBtnGallery = (ImageButton) findViewById(R.id.imageButtonGallery);
+        //imageBtnGallery = (ImageButton) findViewById(R.id.imageButtonGallery);
 
         closeWriteHistory.setOnClickListener(mainListener);
         writeContentHistory.setOnClickListener(mainListener);
         //imageBtnCamera.setOnClickListener(mainListener);
-        imageBtnGallery.setOnClickListener(mainListener);
+        imageView.setOnClickListener(mainListener);
 
         contentHistory = (EditText)findViewById(R.id.contentHistory);
         userPreferences = UserPreferences.getUserPreferences(this);
@@ -117,7 +117,7 @@ public class WriteHistoryActivity extends AppCompatActivity {
                     finish();
                     break;
 
-                case R.id.imageButtonGallery:
+                case R.id.pictureImageView:
                     showFileChooser();
                     break;
 //                case R.id.imageButtonCamera:
