@@ -5,5 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.learnfun.super8team.learnfun.HistoryListActivity">
+    <LinearLayout
+        android:layout_width="343dp"
+        android:layout_height="208dp"
+        tools:layout_editor_absoluteY="175dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="344dp"
+            android:layout_height="102dp"
+            android:layout_weight="1"
+            android:text="@string/not_ready"
+            android:textSize="200px"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="-95dp" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

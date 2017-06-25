@@ -32,7 +32,7 @@ import java.util.UUID;
 
 public class WriteHistoryActivity extends AppCompatActivity {
     NetworkAsync requestNetwork;
-    private Button closeWriteHistory , writeContentHistory;
+    private Button closeWriteHistory , writeContentHistory,inputHistoryContent;
     private ImageView imageView;
     private ImageButton imageBtnGallery,imageBtnCamera;
 
@@ -64,9 +64,9 @@ public class WriteHistoryActivity extends AppCompatActivity {
         closeWriteHistory = (Button)findViewById(R.id.closeWriteHistory);
         writeContentHistory = (Button)findViewById(R.id.writeContentHistory);
         imageView = (ImageView) findViewById(R.id.pictureImageView);
-        //imageBtnCamera = (ImageButton) findViewById(R.id.imageButtonCamera);
+        inputHistoryContent = (Button) findViewById(R.id.inputHistoryContent);
         //imageBtnGallery = (ImageButton) findViewById(R.id.imageButtonGallery);
-
+        inputHistoryContent.setOnClickListener(mainListener);
         closeWriteHistory.setOnClickListener(mainListener);
         writeContentHistory.setOnClickListener(mainListener);
         //imageBtnCamera.setOnClickListener(mainListener);
@@ -120,11 +120,11 @@ public class WriteHistoryActivity extends AppCompatActivity {
                 case R.id.pictureImageView:
                     showFileChooser();
                     break;
-//                case R.id.imageButtonCamera:
-//                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                    startActivity(intent);
-//
-//                    break;
+
+                case R.id.inputHistoryContent:
+
+                    contentHistory.setText("아이들이 수확 후 정리정돈까지 하고 있는 모습입니다 ㅎㅎ 사회적 소양을 함양중이네요~");
+                    break;
 
             }
 

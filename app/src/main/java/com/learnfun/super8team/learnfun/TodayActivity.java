@@ -17,6 +17,8 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -128,7 +130,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<MyData> myDataset;
-    public static final String baseShoppingURL = "http://163.44.166.91/LEARnFUN/storage/app/historyImgs/1-1.png";
     Bitmap bitmap;
     public ImageView mImageView;
     public TextView mTextView;
@@ -156,8 +157,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
         //historyImage =(ImageView)this.findViewById(R.id.pictureImage);
 
-
-        contentView = (TextView)this.findViewById(R.id.contentView);
 
 
         translateLeftAnim = AnimationUtils.loadAnimation(this,R.anim.translate_left);
@@ -276,7 +275,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             // 다이얼로그 메세지 생성 setMessage에 서버에서 로그 기록을 가지고 와서 뿌려줘야함
             alertDialogBuilder
-                    .setMessage("11:30 - 영진전문대학에 진입했습니다.")
+                    .setMessage("10:00 - 상모고등학교에서 출발했습니다.\n11:30 - 영진전문대학에 진입했습니다.")
                     .setCancelable(false)
                     .setNegativeButton("취소", //Negative 버튼 기능 작성
                             new DialogInterface.OnClickListener() {
@@ -348,6 +347,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() { //발자취 눌렀을때 동작함수
                     @Override
                     public boolean onMarkerClick(Marker marker) {
+
                         if(!marker.getTitle().equals("현재위치")) {
                             placeNum = marker.getTitle();
                             if (isPageOpen) {
@@ -413,7 +413,9 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 //                                        myDataset.add(new MyData(dataJsonObject.getString("content"),getImageFromURL("http://163.44.166.91/LEARnFUN/storage/app/historyImgs/1-1.png")));
                                         String imageUrl="";
                                         imageUrl = dataJsonObject.getString("url");
-
+//                                        ImageAsync getImage = new ImageAsync(TodayActivity.this,imageUrl);
+//                                        bitmap=getImage.execute();
+//                                        myDataset.add(new MyData(dataJsonObject.getString("content"),bitmap));
                                         final String finalImageUrl = imageUrl;
                                         Thread mThread = new Thread(){
                                             @Override
@@ -1061,8 +1063,10 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             public void run() {
                 progressOFF();
             }
-        }, 11500);
+        }, 3500);
 
     }
+
+
 
 }

@@ -56,7 +56,16 @@
                 android:layout_height="221dp"
                 app:srcCompat="@drawable/picture" />
         </LinearLayout>
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inputHistoryContent"
+        android:text="덤프값"
+        />
+</LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
