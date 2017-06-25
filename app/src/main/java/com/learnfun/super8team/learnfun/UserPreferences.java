@@ -27,7 +27,6 @@ public class UserPreferences {
     final static String USERTYPE = "type";
     final static String CHILDID = "childID";
 
-
     private UserPreferences(Context context) {
         // 단말 어플리케이션 설정을 저장하는 프리퍼런스 키(LEARnFUN) 세팅
         preferences = context.getSharedPreferences("LEARnFUN", MODE_PRIVATE);

@@ -104,7 +104,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
         translateLeftAnim = AnimationUtils.loadAnimation(this,R.anim.translate_left);
         translateRightAnim = AnimationUtils.loadAnimation(this,R.anim.translate_right);
 
-        HistoryDetailActivity.SlidingPageAnimationListener animListener = new HistoryDetailActivity.SlidingPageAnimationListener();
+        SlidingPageAnimationListener animListener = new SlidingPageAnimationListener();
         translateLeftAnim.setAnimationListener(animListener);
         translateRightAnim.setAnimationListener(animListener);
 
@@ -112,8 +112,11 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
 
         try {
-            socket = IO.socket("http://172.19.1.166:8000");
+            socket = IO.socket("http://163.44.166.91:8000");
+            socket.connect();
             socket.on(Socket.EVENT_CONNECT, listenStartPerson);
+            socket.on("getKidGPS", listenGetMessagePerson);
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -124,10 +127,9 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                 try{
 
                     //.on("getclass1", listen_start_person)
-                    socket.on("getKidGPS", listenGetMessagePerson);
 
-                    socket.connect();
-                    socket.emit("kidGPS",userPreferences.getUserChild());
+
+                    //socket.emit("kidGPS",userPreferences.getUserChild());
 
 
                 }
@@ -141,6 +143,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                 Log.d("TAG", "onMapLoaded 체크퍼미션 실행했다");
 
                 checkLocationPermission();
+                //socket.emit("childGPS");
 
                 break;
 
@@ -150,6 +153,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                  다른 유저 예외처리
                  */
         }
+
 
 
 
@@ -170,6 +174,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 //        });
 
     }//oncreate function end
+
     private class SlidingPageAnimationListener implements Animation.AnimationListener{
 
         @Override
@@ -206,7 +211,10 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
             LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             JSONObject gps = new JSONObject();
+            Log.d("TAG", "로케이션안에 들어옴");
+            Log.d("TAG", String.valueOf(location));
             try {
+
                 gps.put("id",userPreferences.getUserId());
                 gps.put("name",userPreferences.getUserName());
                 gps.put("lat",location.getLatitude());
@@ -215,8 +223,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            socket.emit("personGPS",gps);
+            socket.emit("childGPS",gps);
+            socket.emit("studentGPS",gps);
 
             if(myMarker==null) addMyMarker(myLatLng);
             else myMarker.position(myLatLng);
@@ -269,6 +277,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             JSONObject placeGPS = new JSONObject(planGPS.getString("gps"));
             PolygonOptions rectOptions = new PolygonOptions();
             Log.e("planResult", "result is "+placeGPS);
+
             for(int i = 0 ; i < placeGPS.length();i++){
 
                 //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
@@ -306,7 +315,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
     @Override
     protected void onDestroy() {
-        socket.on(Socket.EVENT_DISCONNECT, listenDisconnectPerson);
+
         super.onDestroy();
     }
 
@@ -341,20 +350,28 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                 @Override
                 public void run() {
                     try {
+
                         //위에서 오브젝트를 받은것을 다시 제이슨배열로 해체
                         //JSONArray jsonArray = new JSONArray(obj.getString("class"));
                         JSONObject child = new JSONObject(obj.getString("child"));
                         //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+                        Log.d("child", String.valueOf(child));
+
                         for(int i =0; i < 1; i++){
 
                             //JSONObject dataJsonObject = jsonArray.getJSONObject(i);// 0에 cho 객체가 있음
                             //제이슨 객체안의 데이터를 빼온다
                             Log.d("studentname", child.getString("class"));
-                            Double lat = Double.valueOf(child.getString("lat"));
-                            Double lng = Double.valueOf(child.getString("lng"));
+                            Double lat = child.getDouble("lat");
+                            Double lng = child.getDouble("lng");
                             LatLng latLng = new LatLng(lat, lng);
                             cMarker = new MarkerOptions();
                             cMarker.position(latLng);
+                            if(child.getString("gender").equals("M")){
+                                cMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.boyd));
+                            }else{
+                                cMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.girld));
+                            }
                             cMarker.title(child.getString("name"));
                             mMap.addMarker(cMarker);
 
@@ -379,7 +396,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
         public void call(Object... args) {
             Log.d("loglog", "연결 끊는다");
-            socket.disconnect();
+
 
 
             //서버에서 보낸 JSON객체를 사용할 수 있습니다.
@@ -410,10 +427,15 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             @Override
             public void onMapLoaded() {
                 getPlanGPS();
+                if(userPreferences.getUserType().equals("parents")) {
+                    socket.emit("kidGPS", userPreferences.getUserChild());
+                }
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        if(!marker.getTitle().equals("현재위치")) {
+                        Log.d("markerTitle = ",marker.getTitle());
+                        if(!marker.getTitle().equals("김봉춘") && !marker.getTitle().equals("현재위치") ){
+                            Log.d("김봉춘 체크 = ","김봉춘체크");
                             placeNum = marker.getTitle();
                             if (isPageOpen) {
                                 //slidingPage01.startAnimation(translateRightAnim);
@@ -482,6 +504,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
     protected void onStop() {
         //mGoogleApiClient.disconnect();
+//        socket.disconnect();
+//        socket.on(Socket.EVENT_DISCONNECT, listenDisconnectPerson);
         super.onStop();
     }
 
@@ -561,6 +585,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
         myMarker = new MarkerOptions();
         myMarker.position(latLng);
+        myMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.mymarkerd));
         myMarker.title("현재위치");
         mMap.addMarker(myMarker);
 
@@ -640,19 +665,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     }
     @Override
     public void onLocationChanged(Location location) {
-        JSONObject gps = new JSONObject();
-        try {
 
-            gps.put("id",userPreferences.getUserId());
-            gps.put("name",userPreferences.getUserName());
-            gps.put("lat",location.getLatitude());
-            gps.put("lng",location.getLongitude());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        socket.emit("childGPS",gps);
-        socket.emit("studentGPS",gps);
     }
 
     @Override

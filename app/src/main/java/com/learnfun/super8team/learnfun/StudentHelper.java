@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -20,7 +21,7 @@ public class StudentHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = "create table student ( " +
-                "num integer auto_increment , " +
+                "num integer primary key autoincrement , " +
                 "name text , " +
                 "id text , " +
                 "color text , " +
@@ -79,11 +80,47 @@ public class StudentHelper extends SQLiteOpenHelper {
     }
     public void update(int num,String color){
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("color",color);
-        db.update("student",values, "num=?", new String[]{String.valueOf(num)});
+        try {
+            db.execSQL("update student set color = '" + color + "' where num=" + num+";");
+        }catch (SQLiteException e){
+            e.printStackTrace();
+            Log.e("updateCheckERROR", "update ERROR");
+        }
+        Log.d("updateCheck", "color = "+color+"num = "+num+"update 완료");
+//        ContentValues values = new ContentValues();
+//        values.put("color",color);
+//        Log.d("color = ",color);
+//        db.update("student",values, "num=?", new String[]{String.valueOf(num)});
 
     }
+
+    public int tableCheck(){
+        SQLiteDatabase db = getWritableDatabase();
+
+        int className=0;
+        //catch에 안 붙잡히면 테이블이 있다는 의미이므로 true, 잡히면 테이블이 없으므로 false를 반환
+        try{
+            Cursor cursor =  db.query("student", null, null, null, "className", null, null);
+            //String table,String[] columns,String selection,String[] selectionArgs,String groupBy,String having,String orderBy,String limit
+            while(cursor.moveToNext()){
+                className = cursor.getInt(cursor.getColumnIndex("className"));
+                Log.d("className", String.valueOf(cursor.getInt(cursor.getColumnIndex("className"))));
+
+            }
+
+        }catch(SQLiteException e){
+            e.printStackTrace();
+
+        }catch(Exception e){
+            e.printStackTrace();
+
+        }
+
+        return className;
+
+
+    }
+
     public void insert(String id, String name,int className){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
