@@ -78,6 +78,7 @@ public class BtnView extends ContentView{
                 Intent intent = new Intent(contentActivity,Dialog.class);
 
                 contentActivity.startActivityForResult(setActionScript(code,intent,ContentName),3203);
+                contentActivity.overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
             }
         });
     }
@@ -96,6 +97,7 @@ public class BtnView extends ContentView{
                     }
 
                 contentActivity.startActivityForResult(intent,3203);
+                contentActivity.overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
             }
         });
     }

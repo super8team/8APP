@@ -1,6 +1,7 @@
 package com.learnfun.super8team.learnfun;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -171,4 +172,6 @@ public class NetworkAsync extends AsyncTask<String, Integer, String> {
         }
         return stringData;
     }
+
+
 }

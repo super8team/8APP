@@ -15,7 +15,31 @@
         android:duration="500"
         tools:context="com.learnfun.super8team.learnfun.HistoryDetailActivity"
         >
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                <Button
+                    android:id="@+id/logBtn"
+                    android:layout_width="wrap_content"
+                    android:background="@drawable/bt_corner"
+                    android:layout_margin="10dp"
+                    android:layout_height="40dp"
+                    android:text="@string/log"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
 
     </fragment>
@@ -29,54 +53,66 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:visibility="gone"
+            android:background="#d2eef7"
             android:layout_gravity="bottom"
+            android:fillViewport="true"
+            android:scrollbars="vertical"
             >
 
             <LinearLayout
                 android:id="@+id/slidingPage01"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="top"
-                android:background="#f9f7f7"
+                android:background="#d2eef7"
                 android:visibility="gone"
-
+                android:padding="16dp"
+                android:scrollbars="vertical"
                 >
 
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-                <TextView
-                    android:id="@+id/contentView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/none_content" />
-
-
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="1">
 
-                    <!--<Button-->
-                        <!--android:id="@+id/writeHistory"-->
-                        <!--android:layout_width="140dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="@string/write"-->
-                        <!--android:background="@color/colorSky"-->
-                        <!--android:layout_weight="0.97" />-->
+                    <Button
+                        android:id="@+id/writeHistory"
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/write"
+                        android:layout_weight="0.97" />
 
                     <Button
                         android:id="@+id/slidingPageClose"
-                        android:layout_width="match_parent"
+                        android:layout_width="168dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
                         android:text="@string/close" />
                 </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:id="@+id/my_recycler_view"
+                    >
+                </android.support.v7.widget.RecyclerView>
+
+                <!--<ImageView-->
+                <!--android:id="@+id/pictureImage"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--/>-->
+
+                <!--<TextView-->
+                <!--android:id="@+id/contentView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/none_content" />-->
+
+
+
 
 
             </LinearLayout>

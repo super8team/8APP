@@ -25,7 +25,7 @@
         {
           "id" : 1,
           "name": "tower",
-          "src" : "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/%EA%B2%BD%EC%A3%BC_%EB%B6%88%EA%B5%AD%EC%82%AC_%EB%8B%A4%EB%B3%B4%ED%83%91.jpg/272px-%EA%B2%BD%EC%A3%BC_%EB%B6%88%EA%B5%AD%EC%82%AC_%EB%8B%A4%EB%B3%B4%ED%83%91.jpg",
+          "src" : "http://www.cha.go.kr/unisearch/images/national_treasure/1612679.jpg",
           "width" : 1200,
           "height" : 1200
         }
@@ -34,7 +34,7 @@
         {
           "id" : 1,
           "name": "데모문제",
-          "description" : "아래 구조물의 이름은 무엇인가요",
+          "description" : "아래 구조물의 이름은?",
           "size": 20,
           "color": "#eeeeee"
         }
@@ -61,7 +61,7 @@
 
     "vertical" : "center",
     "horizontal" : "center",
-    "location" : "(35.896380,128.620380)",
+    "location" : "(35.896280,128.620380)",
     "visionable" : true,
     "clickable" : true,
     "disable" : false,
@@ -100,28 +100,28 @@
         {
           "id" : 1,
           "name": "wrong1",
-          "src" : "http://imgnews.naver.com/image/038/2009/02/11/hoyeol79200902102306460.jpg",
+          "src" : "http://163.44.166.91/LEARnFUN/storage/app/public/anjoongkeun.jpg",
           "width" : 500,
           "height" : 500
         },
         {
           "id" : 2,
           "name": "wrong2",
-          "src" : "http://cfs6.blog.daum.net/image/1/blog/2007/07/18/14/38/469da763b88ce&filename=%EC%9C%84%EC%9D%B85.jpg",
+          "src" : "http://163.44.166.91/LEARnFUN/storage/app/public/gandi.jpg",
           "width" : 500,
           "height" : 500
         },
         {
           "id" : 3,
           "name": "wrong3",
-          "src" : "http://webzine.etone.co.kr/files/attach/images/123/597/001/6f72fd14203c90a6658c65cdef4ad3c4.jpg",
+          "src" : "http://163.44.166.91/LEARnFUN/storage/app/public/linkon.jpg",
           "width" : 500,
           "height" : 500
         },
         {
           "id" : 4,
           "name": "answer",
-          "src" : "http://img.hankyung.com/photo/201110/2011102598011_2011102531511.jpg",
+          "src" : "http://163.44.166.91/LEARnFUN/storage/app/public/plands.gif",
           "width" : 500,
           "height" : 500
         }
@@ -131,48 +131,48 @@
         {
           "id" : 1,
           "name": "데모문제2",
-          "description" : "다음중 위인이 아닌 것은?",
-          "size": 30,
+          "description" : "다음중 위인이 아닌 인물은?",
+          "size": 25,
           "color": "#eeeeee"
         }
       ],
     "button" : [
 
     ]
-},
-  {
-    "name" : "TEST",
-
-    "vertical" : "center",
-    "horizontal" : "center",
-    "location" : "(35.896980,128.620880)",
-    "visionable" : true,
-    "clickable" : true,
-    "disable" : false,
-    "script" : [
-      {
-        "type" : "CLICK",
-        "name" : "test",
-        "action" : {
-          "out_img" : "http://upload2.inven.co.kr/upload/2017/06/12/bbs/i13811589200.jpg",
-          "end" : "end"
-        }
-      }
-    ],
-    "image" : [
-      {
-        "id" : 1,
-        "name": "test",
-        "src" : "http://upload2.inven.co.kr/upload/2017/06/12/bbs/i13811589200.jpg",
-        "width" : 1500,
-        "height" : 1500
-      }
-    ],
-    "text"  : [
-
-    ],
-    "button" : [
-
-    ]
-  }
+}
+//,
+//  {
+//    "name" : "TEST",
+//
+//    "vertical" : "center",
+//    "horizontal" : "center",
+//    "location" : "(35.8965827, 128.6215884)",
+//    "visionable" : true,
+//    "clickable" : true,
+//    "disable" : false,
+//    "script" : [
+//      {
+//        "type" : "CLICK",
+//        "name" : "test",
+//        "action" : {
+//          "out_img" : "https://ext.fmkorea.com/files/attach/new/20160702/3655086/53302805/404672452/dc7710206e8f59d7162dbbe9575e0f8b.gif"
+//        }
+//      }
+//    ],
+//    "image" : [
+//      {
+//        "id" : 1,
+//        "name": "test",
+//        "src" : "http://upload2.inven.co.kr/upload/2017/06/12/bbs/i13811589200.jpg",
+//        "width" : 1500,
+//        "height" : 1500
+//      }
+//    ],
+//    "text"  : [
+//
+//    ],
+//    "button" : [
+//
+//    ]
+//}
 ]

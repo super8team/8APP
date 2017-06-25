@@ -26,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     JSONObject resultJson;
 
     Button loginBtn;
+    Button teacherBtn,parentsBtn,studentBtn;
     EditText idEdit, pwEdit;
     String inputID, inputPASS, returnString;
 
@@ -71,7 +72,36 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     };
+    View.OnClickListener quickButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.i(TAG, "quick login button");
+            // 값 유효성 검사, 있는지 없는지
+            switch (v.getId()) {
 
+                case R.id.quickTeacher:
+
+                    idEdit.setText("Illum");
+                    pwEdit.setText("123456");
+
+                    break;
+
+                case R.id.quickParents:
+                    idEdit.setText("desmond21");
+                    pwEdit.setText("123456");
+
+                    break;
+
+                case R.id.quickStudent:
+                    idEdit.setText("dicta");
+                    pwEdit.setText("123456");
+
+                    break;
+
+            }
+
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
@@ -89,6 +119,15 @@ public class LoginActivity extends AppCompatActivity {
         idEdit = (EditText)findViewById(R.id.idEdit);
         pwEdit = (EditText)findViewById(R.id.pwEdit);
         loginBtn = (Button)findViewById(R.id.loginBtn);
+
+        //로그인을 빠르게 하기위한 버튼
+        teacherBtn = (Button)findViewById(R.id.quickTeacher);
+        parentsBtn = (Button)findViewById(R.id.quickParents);
+        studentBtn = (Button)findViewById(R.id.quickStudent);
+
+        teacherBtn.setOnClickListener(quickButtonListener);
+        parentsBtn.setOnClickListener(quickButtonListener);
+        studentBtn.setOnClickListener(quickButtonListener);
 
         // 로그인 버튼을 누른 이벤트처리
         loginBtn.setOnClickListener(loginListener);

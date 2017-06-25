@@ -76,7 +76,6 @@ public class AROverlayView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         if (currentLocation == null) {
             return;
         }
