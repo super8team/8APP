@@ -11,5 +11,6 @@
     <color name="colorOrange">#ffd596</color>
     <color name="colorWrite">#ffffff</color>
     <color name="colorGray">#d6dbdb</color>
-
+    <color name="colorBlack">#000000</color>
+    <color name="colorWhite">#ffffff</color>
 </resources>

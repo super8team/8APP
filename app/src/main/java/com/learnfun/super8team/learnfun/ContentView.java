@@ -51,6 +51,9 @@ abstract public class ContentView {
 //                boolean end = code.getBoolean("end");
                 intent.putExtra("end","true");
             }
+            if (code.has("config")){
+
+            }
         }catch (JSONException e) {
             e.printStackTrace();
         }

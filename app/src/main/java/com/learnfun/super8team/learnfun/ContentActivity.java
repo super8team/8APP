@@ -102,6 +102,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         OverlayLayout = (RelativeLayout) findViewById(R.id.overlay_layout);
 
         initContents();
+        requestCameraPermission();
         // 0607 22:00 여기 있던 권한 설정은 onResume으로 옮겼습니다 ㅎ.ㅎ 카메라 권한 따고 초기화 하는 거랑 같이 하기 위해서!
         // 0607 23:53 권한 획득에 자꾸 실패해서 진아코드로 대체
 
@@ -134,13 +135,13 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         super.onResume();
         // 권한 획득
         requestLocationPermission();
-        requestCameraPermission();
         registerSensors();
         initAROverlayView();
+
     }
 
     public void onPause() {
-        releaseCamera();
+//        releaseCamera();
         super.onPause();
     }
 
@@ -391,11 +392,11 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                 if(contents.get(i).getContentName().equals(contentName)){
                     //찾아서 종료,
                     contents.get(i).unsetContentView();
-
-                    //종료된 컨텐츠 명세 수정해서 로컬디비에 저장
-
                 }
             }
+        }
+        if(resultCode == 1717){
+            Toast.makeText(this,"test용 톳트",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -467,7 +468,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int x = (int)event.getX();
-        int y = (int)event.getY()-200;
+        int y = (int)event.getY()-130;
         Location contentsLocation;
 
         Log.e(TAG, "onTouch: "+x+", "+y);

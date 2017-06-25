@@ -8,8 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,11 +24,10 @@ public class Dialog extends AppCompatActivity  {
     private TextView textView;
     private ImageView imageView;
     private String src;
-    private Bitmap bitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_dialog);
 
 //        findViewById(R.id.dialog_exit).setOnClickListener(this);
@@ -48,37 +51,19 @@ public class Dialog extends AppCompatActivity  {
         if(intent.hasExtra("text")){
             textView.setText(intent.getExtras().getString("text"));
             textView.setVisibility(View.VISIBLE);
+//            setResult(1717);
+//            finish();
         }
         if(intent.hasExtra("image")){
             src = intent.getExtras().getString("image");
-            Thread imgThread =  new Thread() {
 
-                @Override
-                public void run() {
-                    try {
-                        URL url = new URL(src);
-
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setDoInput(true);
-                        conn.connect();
-
-                        InputStream is = conn.getInputStream();
-                        bitmap = BitmapFactory.decodeStream(is);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-
-            imgThread.start();
-
-            try {
-                imgThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if(src.substring(src.length()-3,src.length()).equals("gif") || src.substring(src.length()-3,src.length()).equals("GIF")){
+                Log.i("g.dialog이미지 종류 :::",src.substring(src.length()-3,src.length()));
+                Glide.with(this).asGif().load(src).into(imageView);
+            }else{
+                Log.i("e.dialog이미지 종류 :::",src.substring(src.length()-3,src.length()));
+                Glide.with(this).asBitmap().load(src).into(imageView);
             }
-
-            imageView.setImageBitmap(bitmap);
 
             imageView.setVisibility(View.VISIBLE);
         }

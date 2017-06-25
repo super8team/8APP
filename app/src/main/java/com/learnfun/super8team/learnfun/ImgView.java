@@ -29,7 +29,7 @@ public class ImgView extends ContentView {
     private int width;
     private int height;
     private ImageView imageView;
-    private Bitmap bitmap;
+
     private ContentActivity contentActivity;
     ImgView(JSONObject jobj, View view, String name,ContentActivity contentActivity) throws JSONException, InterruptedException {
         //이미지컨텐츠 제이슨 받아서 값 분배

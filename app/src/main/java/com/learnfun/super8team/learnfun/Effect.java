@@ -47,7 +47,7 @@ public class Effect extends View {
 
         int r = random.nextInt(4);
 //        Log.i("랜덤값", String.valueOf(r));
-        canvas.drawBitmap(image.get(r),x-250,y-250,null);
+        canvas.drawBitmap(image.get(r),x-250,y-140,null);
 
         contentActivity.getOverlayLayout().removeView(this);
 
