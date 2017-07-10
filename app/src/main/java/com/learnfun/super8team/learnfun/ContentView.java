@@ -1,8 +1,11 @@
 package com.learnfun.super8team.learnfun;
 
 import android.content.Intent;
+import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,7 +17,7 @@ abstract public class ContentView {
 //    protected
     protected int id;
     protected String name;
-    protected String ContentName;
+    protected String contentName;
 
 
 
@@ -34,9 +37,9 @@ abstract public class ContentView {
     abstract public void actionClear();
 
     //액션코드 구분 코드
-    public Intent setActionScript(JSONObject code , Intent intent, String name){
+    public Intent setActionScript(JSONObject code , Intent intent, String contentName, ContentActivity contentActivity){
         try{
-            intent.putExtra("name",name);
+
 
             if(code.has("out_txt")){
                 //해당 액션 코드가 있는지 검사후 있으면 추출후 인텐트에 넣음
@@ -48,12 +51,65 @@ abstract public class ContentView {
                 intent.putExtra("image",image);
             }
             if (code.has("end")){
-//                boolean end = code.getBoolean("end");
+                intent.putExtra("name",contentName);
                 intent.putExtra("end","true");
             }
             if (code.has("config")){
+                JSONArray jobj = code.getJSONArray("config");
+
+                //설정값 변경코드 콘텐츠명, 비전, 클릭, 생명여부순
+                //인텐트에 데이터를 담지않는다.
+                for(int i=0;i<jobj.length();i++){
+                    contentActivity.setContentStatus(jobj.getJSONObject(i).getString("target_name"),
+                                                     jobj.getJSONObject(i).getBoolean("visionable"),
+                                                     jobj.getJSONObject(i).getBoolean("clickable"),
+                                                     jobj.getJSONObject(i).getBoolean("disable"));
+                }
 
             }
+            if (code.has("toast")){
+                String message = code.getString("toast");
+                intent.putExtra("toast",message);
+            }
+            if (code.has("quest")){
+                Log.i("액션코드부분","체크됨");
+                String message = code.getString("quest");
+                contentActivity.onQuestButton(message);
+            }
+            if (code.has("endQuest")){
+                contentActivity.closeQuestButton();
+            }
+            if (code.has("bingo")){
+                Log.i("액션코드부분","체크됨");
+                String message = code.getString("quest");
+                contentActivity.onQuestButton(message);
+            }
+            if (code.has("endBingo")){
+                Log.i("액션코드부분","체크됨");
+                String message = code.getString("quest");
+                contentActivity.onQuestButton(message);
+            }
+            if (code.has("collection")){
+                Log.i("액션코드부분","체크됨");
+                String message = code.getString("quest");
+                contentActivity.onQuestButton(message);
+            }
+            if (code.has("endCollection")){
+                Log.i("액션코드부분","체크됨");
+                String message = code.getString("quest");
+                contentActivity.onQuestButton(message);
+            }
+            if (code.has("openMap")){
+                Log.i("액션코드부분","체크됨");
+                String message = code.getString("quest");
+                contentActivity.onQuestButton(message);
+            }
+            if (code.has("closeMap")){
+                Log.i("액션코드부분","체크됨");
+                String message = code.getString("quest");
+                contentActivity.onQuestButton(message);
+            }
+
         }catch (JSONException e) {
             e.printStackTrace();
         }

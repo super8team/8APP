@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.resource.drawable.DrawableResource;
 import com.learnfun.super8team.learnfun.AR.ARCamera;
 import com.learnfun.super8team.learnfun.AR.AROverlayView;
 import com.learnfun.super8team.learnfun.AR.LocationHelper;
@@ -81,6 +82,14 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     private Context context = this;
     private NetworkAsync requestNetwork;
     private UserPreferences userPreferences = UserPreferences.getUserPreferences(context);
+
+    private LinearLayout countParameter;
+    private LinearLayout scoreParameter;
+    private ImageButton quest;
+    private ImageButton bingo;
+    private ImageButton collection;
+    private ImageButton contentMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +184,15 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
 
     private void initContents() {
+
+        //상위 메뉴들 선언
+        countParameter = (LinearLayout) findViewById(R.id.countParameter);
+        scoreParameter = (LinearLayout) findViewById(R.id.scoreParameter);
+
+        quest = (ImageButton) findViewById(R.id.questBtn);
+        bingo = (ImageButton) findViewById(R.id.bingoBtn);
+        contentMap = (ImageButton) findViewById(R.id.mapBtn);
+        collection = (ImageButton) findViewById(R.id.collectBtn);
 
         try {
         JSONObject userInputInfo = new JSONObject();
@@ -383,21 +401,31 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i("리절트 실행", "===================================");
+        Log.i("토스트 내용물", "aaa"+String.valueOf(data));
         if(resultCode == 3203){
             Log.i("코드 일치", String.valueOf(resultCode));
-            String contentName = data.getStringExtra("name");
 
-            for(int i=0;i<contents.size();i++){
-                //반환값의 이름과 같은 이름의 컨텐츠를 찾는다.
-                if(contents.get(i).getContentName().equals(contentName)){
-                    //찾아서 종료,
-                    contents.get(i).unsetContentView();
+            if(data.hasExtra("name")){
+                String contentName = data.getStringExtra("name");
+                Log.i("반환 이름?",contentName);
+                for(int i=0;i<contents.size();i++){
+                    //반환값의 이름과 같은 이름의 컨텐츠를 찾는다.
+                    if(contents.get(i).getContentName().equals(contentName)){
+                        //찾아서 종료,
+                        contents.get(i).unsetContentView();
+                    }
                 }
             }
+
+            if(data.hasExtra("toast")){
+                Toast.makeText(this,data.getStringExtra("toast"),Toast.LENGTH_SHORT).show();
+            }
+        }else if( resultCode==7732){
+            //한번 들어갔다가 나오면 아이콘 원상태로 복귀
+            quest.setBackgroundResource(R.drawable.quest);
         }
-        if(resultCode == 1717){
-            Toast.makeText(this,"test용 톳트",Toast.LENGTH_SHORT).show();
-        }
+
+
     }
 
     @Override
@@ -529,9 +557,45 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             }
         }
     }
-
+    public void setContentStatus(String contentName,boolean visionable, boolean clickable, boolean disable){
+        for(int i =0;i<contents.size();i++){
+            if(contents.get(i).getContentName().equals(contentName)){
+                //로컬데이터베이스 명세 변경
+                Log.i("컨텐츠명 :"+contents.get(i).getContentName(),"비교 명 :"+contentName);
+                contents.get(i).setContentVisionable(visionable);
+                contents.get(i).setContentClickable(clickable);
+                contents.get(i).setContentDisable(disable);
+                getDB().update(contentName,visionable,clickable,disable);
+            }
+        }
+    }
     public DBManager getDB(){
         return dbManager;
     }
     public RelativeLayout getOverlayLayout() {return OverlayLayout; }
+
+    public void onQuestButton(final String msg) {
+        Log.i("뷰띄우는부분","체크됨");
+        quest.setBackgroundResource(R.drawable.quest_mark);
+        quest.setVisibility(View.VISIBLE);
+        quest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ContentActivity.this,ContentQuest.class);
+                intent.putExtra("message",msg);
+                startActivityForResult(intent,7732);
+                overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
+            }
+        });
+    }
+    public void closeQuestButton(){
+        quest.setVisibility(View.GONE);
+//        quest.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+    }
 }

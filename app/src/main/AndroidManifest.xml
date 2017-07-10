@@ -61,8 +61,11 @@
         <activity android:name=".ContentActivity" />
         <activity
             android:name=".Dialog"
-            android:theme="@style/Base.Theme.AppCompat.Dialog"/>
+            android:theme="@style/Base.Theme.AppCompat.Dialog" />
         <activity android:name=".SurveyListActivity" />
-        <activity android:name=".HistoryListActivity"></activity>
+        <activity android:name=".HistoryListActivity" />
+        <activity android:name=".ContentQuest"
+                    android:theme="@style/Theme.AppCompat.Light.Dialog"/>
     </application>
+
 </manifest>

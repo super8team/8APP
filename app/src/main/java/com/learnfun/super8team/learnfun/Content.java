@@ -209,7 +209,10 @@ public class Content {
             //액션 스크립트 초기화
             views.get(i).actionClear();
         }
-        if (hasEditview) editview.setVisibility(View.GONE);
+        if (hasEditview) {
+            editview.setVisibility(View.GONE);
+            editview.setText("");
+        }
         ImageButton exitBtn = (ImageButton) contentActivity.findViewById(R.id.exitBtn);
         exitBtn.setVisibility(View.GONE);
         CONTENT_USED = false;
@@ -217,7 +220,7 @@ public class Content {
         this.visionable = false;
         this.clickable = false;
         //DB에 있는 명세(현재컨텐츠의 값) 수정 하는 코드 작성할 것
-        contentActivity.getDB().update(this.name);
+        contentActivity.getDB().update(this.name,false,false,true);
     }
     //컨텐츠 이름 받아오기
     public String getContentName(){
@@ -228,11 +231,13 @@ public class Content {
     public boolean getContentDisable(){
         return this.disable;
     }
+    public void setContentDisable(boolean flag){ this.disable = flag; }
 
     public boolean getClickable() { return this.clickable; }
+    public void setContentClickable(boolean flag){ this.clickable = flag; }
 
     public boolean getVisionable() { return this.visionable; }
-
+    public void setContentVisionable(boolean flag){ this.visionable = flag; }
     //컨텐츠 지우기
 
 //    //컨텐츠 위도 반환
@@ -266,7 +271,7 @@ public class Content {
                         for (int j = 0; j < views.size(); j++) {
 //                            Log.i("제이슨 네임  ",name);
 //                            Log.i("뷰 네임 ", views.get(j).name);
-                            if (name.equals(views.get(j).name) && ONLINE_CONTENT_NAME.equals(views.get(j).ContentName)) {
+                            if (name.equals(views.get(j).name) && ONLINE_CONTENT_NAME.equals(views.get(j).contentName)) {
                                 //이름이 같은 컨텐츠 발견시 액션코드를 해당 컨텐츠에 삽입
                                 //반복종료
                                 Log.i("9SS", views.get(j).toString());
@@ -284,7 +289,7 @@ public class Content {
                         for (int j = 0; j < views.size(); j++) {
                             Log.i("체크1-------", name);
                             Log.i("체크1-------", views.get(j).name);
-                            if (name.equals(views.get(j).name) && ONLINE_CONTENT_NAME.equals(views.get(j).ContentName)) {
+                            if (name.equals(views.get(j).name) && ONLINE_CONTENT_NAME.equals(views.get(j).contentName)) {
                                 Log.i("9SS", views.get(j).toString() );
                                 views.get(j).setCheckEditAction(editview, answer, ooo, xxx, contentActivity);
 

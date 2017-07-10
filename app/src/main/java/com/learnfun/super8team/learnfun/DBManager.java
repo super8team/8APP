@@ -45,7 +45,7 @@ public class DBManager extends SQLiteOpenHelper{
                 temp = cr.getString(0);
                 Log.i("기존값 있음",temp);
             }
-//            db.execSQL("delete from JSON_CODE");
+            db.execSQL("delete from JSON_CODE");
         }else{
             //데이터베이스에 내용이 없으면 참 -> 명세를 디비에 저장하고 반환
             db.execSQL("insert into JSON_CODE values('"+json+"')");
@@ -55,7 +55,7 @@ public class DBManager extends SQLiteOpenHelper{
         return json;
     }
 
-    public void update(String ContentName){
+    public void update(String ContentName,boolean visionable,boolean clickable,boolean disable){
         SQLiteDatabase db = getWritableDatabase();
         String temp = "";
 
@@ -71,16 +71,16 @@ public class DBManager extends SQLiteOpenHelper{
 
             json = new JSONArray(temp);
 
-            Log.i("제이슨 변화 전!!!!",json.toString());
+            Log.i(ContentName+" 제이슨 변화 전!!!!",json.toString());
             for (int i=0;i<json.length();i++){
                 //수정할 컨텐츠를 이름으로 찾는다
                 if(json.getJSONObject(i).getString("name").equals(ContentName)){
                     json.getJSONObject(i).remove("disable");
                     json.getJSONObject(i).remove("visionable");
                     json.getJSONObject(i).remove("clickable");
-                    json.getJSONObject(i).put("disable",true);
-                    json.getJSONObject(i).put("visionable",false);
-                    json.getJSONObject(i).put("clickable",false);
+                    json.getJSONObject(i).put("disable",disable);
+                    json.getJSONObject(i).put("visionable",visionable);
+                    json.getJSONObject(i).put("clickable",clickable);
                     Log.i("제이슨 변화 후!!!!!",json.toString());
                     break;
                 }
