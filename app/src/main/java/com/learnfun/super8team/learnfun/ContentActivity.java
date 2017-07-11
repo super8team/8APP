@@ -13,6 +13,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -54,7 +55,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     final static String TAG = "ContentActivity";
 
     private SurfaceView surfaceView;
-    private TextView tv;
     private LinearLayout cameraContainerLayout;
     private RelativeLayout OverlayLayout;
     private AROverlayView arOverlayView;
@@ -66,13 +66,14 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public static final int REQUEST_LOCATION_PERMISSIONS_CODE = 0;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 10 meters
-    private static final long MIN_TIME_BW_UPDATES = 0;//1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 20;//1000 * 60 * 1; // 1 minute
 
     private LocationManager locationManager;
     private Location location;
     boolean isGPSEnabled;
     boolean isNetworkEnabled;
     boolean locationServiceAvailable;
+//    RocationPermissionThread permissionThread;
 
     private ArrayList<JSONObject> jsons = new ArrayList();
     private ArrayList<Content> contents = new ArrayList();
@@ -83,6 +84,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     private NetworkAsync requestNetwork;
     private UserPreferences userPreferences = UserPreferences.getUserPreferences(context);
 
+
     private LinearLayout countParameter;
     private LinearLayout scoreParameter;
     private ImageButton quest;
@@ -91,16 +93,15 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     private ImageButton contentMap;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
 
-        //서버에서
-
         //DB생성
         dbManager = new DBManager(getApplicationContext(),"content",null,1);
-        Log.i("db???",dbManager.toString());
+//        Log.i("db???",dbManager.toString());
 
         // AR카메라를 위한 초기 설정
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
@@ -118,7 +119,8 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         // 여기 있던 json->call()은 onResume의 initContents()로 옮겼습니다! oncreate보다 resume이 늦게 시작하기 때문!
 
         // GPS 값 받아오기
-
+//        tvGPS = (TextView) findViewById(R.id.gps);
+//        tvNAV = (TextView) findViewById(R.id.nav);
 //        tv = (TextView) findViewById(R.id.bottom_text);
 //        tv.setText("GPS가 잡혀야 좌표가 구해짐");
 
@@ -152,6 +154,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public void onPause() {
 //        releaseCamera();
         super.onPause();
+        locationManager.removeUpdates(this);
     }
 
     private void releaseCamera() {
@@ -165,7 +168,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
 
     public void requestCameraPermission() {
-        Log.e(TAG, "requestCameraPermission");
+//        Log.e(TAG, "requestCameraPermission");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             this.requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSIONS_CODE);
@@ -177,8 +180,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public void requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            Log.e(TAG, "requestLocationPermission - if");
             this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS_CODE);
         } else {
+//            Log.e(TAG, "requestLocationPermission - else");
             initLocationService();
         }
     }
@@ -197,7 +202,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         try {
         JSONObject userInputInfo = new JSONObject();
             //유저 정보를 가져온다.
-            Log.i("유저정보   ",userPreferences.getUserId());
+//            Log.i("유저정보   ",userPreferences.getUserId());
         userInputInfo.put("inputID",userPreferences.getUserId());
 
             // 서버에 유저아이디를 넘기고 명세를 넘겨받음
@@ -206,7 +211,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
         //로컬 디비에 명세가 없으면 명세를 저장, 명세가 있으면 로컬명세를 읽음
         String data = dbManager.init(call().toString());
-
+//
 //        실제실행 코드
 //        String data = dbManager.init(requestNetwork.execute().get());
 
@@ -215,11 +220,11 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             //문자열을 제이슨 배열로 변환
             json = new JSONArray(data);
 
-            Log.i("컨텐츠 길이","asdadsads"+String.valueOf(json.length()));
+//            Log.i("컨텐츠 길이","asdadsads"+String.valueOf(json.length()));
             for (int i = 0; i < json.length(); i++) {
                 //전체 컨텐츠 갯수 뽑아내고 분리
                 jsons.add(json.getJSONObject(i));
-                Log.i("컨텐츠 명",jsons.get(i).getString("name"));
+//                Log.i("컨텐츠 명",jsons.get(i).getString("name"));
                 Content con = new Content(jsons.get(i), this);
                 contents.add(con);
 
@@ -240,60 +245,58 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
 
     private void initLocationService() {
-        if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
-            return  ;
+
+        // check for locationUpdate
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // only check
+            return ;
         }
 
-        try   {
-            this.locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
 
-            // Get GPS and network status
-            this.isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            this.isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        this.locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
 
-//        final TextView tv = (TextView) findViewById(R.id.bottom_text);
-//
-//        tv.setText("GPS가 잡혀야 좌표가 구해짐");
+        this.isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        this.isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-            if (!isNetworkEnabled && !isGPSEnabled)    {
-                // cannot get location
-                this.locationServiceAvailable = false;
-            }
-
+        if (!isNetworkEnabled && !isGPSEnabled) {
+            this.locationServiceAvailable = false;
+        } else {
             this.locationServiceAvailable = true;
-
-            if (isNetworkEnabled) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                        MIN_TIME_BW_UPDATES,
-                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                if (locationManager != null)   {
-                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    if (location != null) updateLatestLocation(location);
-                }
-            }
-
-            if (isGPSEnabled)  {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        MIN_TIME_BW_UPDATES,
-                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-
-                if (locationManager != null)  {
-                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (location != null) updateLatestLocation(location);
-                }
-            }
-        } catch (Exception ex)  {
-            Log.e(TAG, ex.getMessage());
-
         }
-    }
 
-    private void updateLatestLocation(Location curLocation) {
-        Log.e(TAG, "updating..."+String.valueOf(curLocation.getLongitude()));
+        if (isNetworkEnabled) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                    this);
+//            if(locationManager != null) {
+//                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//                Log.i(TAG, "gps init from NETWORK provider");
+//            }
+        } // end if network envables
+
+        if (isGPSEnabled) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                    this);
+//            if (locationManager != null) {
+//                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                Log.i(TAG, "gps init from GPS provider");
+//            }
+        } // end if gps enabled
+
+//        if (location != null ) {
+//            updateLatestLocation();
+//        } // end if location is not null
+    } // end function initLocationService
+
+    private void updateLatestLocation() {
+        Log.e(TAG, "updating..."+String.valueOf(location.getLongitude()));
         if (arOverlayView !=null) {
             Log.i(TAG, "initial location update");
-            arOverlayView.updateCurrentLocation(curLocation);
+            arOverlayView.updateCurrentLocation(location);
         }
         Log.e(TAG, String.valueOf(arOverlayView.getVisibility()));
     }
@@ -453,18 +456,22 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onLocationChanged(Location location) {
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-//        Log.i("위치위취취췿", "location updatelocation updatelocation updatelocation update");
-//        Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
-        //이곳에서 각컨텐츠 조건함수 호출
-//        contentsCheck(35.896480,128.620723);
-        contentsCheck(lat,lng);
+//        double lat = location.getLatitude();
+//        double lng = location.getLongitude();
+////        Log.i("위치위취취췿", "location updatelocation updatelocation updatelocation update");
+////        Log.i("컨텐츠 사용중", String.valueOf(!Content.CONTENT_USED));
+//        //이곳에서 각컨텐츠 조건함수 호출
+////        contentsCheck(35.896480,128.620723);
+//        contentsCheck(lat,lng);
+//
+//        tvGPS.setText("latitude: " + lat + ", longitude: " + lng);
+//        Log.e(TAG, "GPS>> latitude: " + lat + ", longitude: " + lng);
 
-//        tv.setText("latitude: " + lat + ", longitude: " + lng);
+        this.location = location;
 
         if (arOverlayView !=null) {
 //            Log.i(TAG, "location update");
+            this.updateLatestLocation();
             arOverlayView.updateCurrentLocation(location);
 //            Log.e(TAG, String.valueOf(arOverlayView.getVisibility()));
 
@@ -506,6 +513,8 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             ((ViewGroup) effect.getParent()).removeView(effect);
         }
         OverlayLayout.addView(effect);
+
+        if (!locationServiceAvailable) return super.onTouchEvent(event);
 
         //컨텐츠 실행 부분을 이곳에 < contentsCheck(위도,경도)
         for (int i=0;i<contents.size();i++) {
@@ -557,6 +566,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             }
         }
     }
+
     public void setContentStatus(String contentName,boolean visionable, boolean clickable, boolean disable){
         for(int i =0;i<contents.size();i++){
             if(contents.get(i).getContentName().equals(contentName)){
@@ -569,6 +579,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             }
         }
     }
+
     public DBManager getDB(){
         return dbManager;
     }
