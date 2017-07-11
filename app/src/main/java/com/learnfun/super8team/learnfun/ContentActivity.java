@@ -421,6 +421,22 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             Matrix.multiplyMM(rotatedProjectionMatrix, 0, projectionMatrix, 0, rotationMatrixFromVector, 0);
             this.arOverlayView.updateRotatedProjectionMatrix(rotatedProjectionMatrix);
         }
+
+
+        double accX = sensorEvent.values[0];
+        double accY = sensorEvent.values[1];
+        double accZ = sensorEvent.values[2];
+
+        double angleXZ = Math.atan2(accX,  accZ) * 180/Math.PI;
+        double angleYZ = Math.atan2(accY,  accZ) * 180/Math.PI;
+
+        Log.e("LOG", "ACCELOMETER           [X]:" + String.format("%.4f", sensorEvent.values[0])
+                + "           [Y]:" + String.format("%.4f", sensorEvent.values[1])
+                + "           [Z]:" + String.format("%.4f", sensorEvent.values[2])
+                + "           [angleXZ]: " + String.format("%.4f", angleXZ)
+                + "           [angleYZ]: " + String.format("%.4f", angleYZ));
+
+
     }
 
     @Override
@@ -480,13 +496,13 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         int y = (int)event.getY()-130;
         Location contentsLocation;
 
-//        Log.e(TAG, "onTouch: "+x+", "+y);
-//        Effect effect = new Effect(this,x,y);
-//
-//        if (effect.getParent() != null) {
-//            ((ViewGroup) effect.getParent()).removeView(effect);
-//        }
-//        OverlayLayout.addView(effect);
+        Log.e(TAG, "onTouch: "+x+", "+y);
+        Effect effect = new Effect(this,x,y);
+
+        if (effect.getParent() != null) {
+            ((ViewGroup) effect.getParent()).removeView(effect);
+        }
+        OverlayLayout.addView(effect);
 
         if (!locationServiceAvailable) return super.onTouchEvent(event);
 
