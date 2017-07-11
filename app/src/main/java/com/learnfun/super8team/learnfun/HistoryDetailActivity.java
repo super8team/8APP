@@ -69,7 +69,7 @@ import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
 
-public class HistoryDetailActivity extends FragmentActivity implements OnMapReadyCallback,LocationListener,AdapterView.OnItemSelectedListener {
+public class HistoryDetailActivity extends FragmentActivity implements OnMapReadyCallback{
 
 
 
@@ -101,8 +101,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<MyData> myDataset;
     public static final String baseShoppingURL = "http://163.44.166.91/LEARnFUN/storage/app/historyImgs/1-1.png";
-    Bitmap bitmap;
-
+    Bitmap[] bitmap ;
+    String[] historyContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +136,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             socket = IO.socket("http://163.44.166.91:8000");
             socket.connect();
             socket.on(Socket.EVENT_CONNECT, listenStartPerson);
-            socket.on("getKidGPS", listenGetMessagePerson);
+
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -146,11 +146,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
         switch(userPreferences.getUserType()) {
             case "parents":
                 try{
+                    socket.on("childGPSToParents", listenGetChildGPS);
 
-                    //.on("getclass1", listen_start_person)
-
-
-                    //socket.emit("kidGPS",userPreferences.getUserChild());
 
 
                 }
@@ -159,6 +156,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
                     break;
             case "student":
+                socket.on("teacherGPSToStudent", listenGetTeacherGPS);
                 chkGpsService();
                 locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 Log.d("TAG", "onMapLoaded 체크퍼미션 실행했다");
@@ -254,25 +252,30 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
         @Override
         public void onLocationChanged(Location location) {
-            //setCustomMarkerView();
+
             Log.d("TAG", "onLocationChanged에 들어왔다");
 
             LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             JSONObject gps = new JSONObject();
             Log.d("TAG", "로케이션안에 들어옴");
             Log.d("TAG", String.valueOf(location));
+
             try {
 
                 gps.put("id",userPreferences.getUserId());
                 gps.put("name",userPreferences.getUserName());
+                gps.put("schoolName",userPreferences.getUserSchool());
+                gps.put("grade",userPreferences.getUserGrade());
+                gps.put("class",userPreferences.getUserClass());
                 gps.put("lat",location.getLatitude());
                 gps.put("lng",location.getLongitude());
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            socket.emit("childGPS",gps);
-            socket.emit("studentGPS",gps);
+
+            socket.emit("childGPSToServer",gps);
+            socket.emit("studentGPSToServer",gps);
 
             if(myMarker==null) addMyMarker(myLatLng);
             else myMarker.position(myLatLng);
@@ -380,16 +383,16 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
                     //이곳에 ui 관련 작업을 할 수 있습니다.
 
-
                 }
             });
         }
     };
-    private Emitter.Listener listenGetMessagePerson = new Emitter.Listener() {
+    //childGPS가 들오면 아래에서 마커를 생성
+    private Emitter.Listener listenGetChildGPS = new Emitter.Listener() {
 
         public void call(Object... args) {
             Log.d("loglog", "get kidGPS");
-            final JSONObject obj = (JSONObject)args[0];
+            final JSONObject childObject = (JSONObject)args[0];
 
 
             //서버에서 보낸 JSON객체를 사용할 수 있습니다.
@@ -401,33 +404,33 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
                         //위에서 오브젝트를 받은것을 다시 제이슨배열로 해체
                         //JSONArray jsonArray = new JSONArray(obj.getString("class"));
-                        JSONObject child = new JSONObject(obj.getString("child"));
-                        //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
-                        Log.d("child", String.valueOf(child));
 
-                        for(int i =0; i < 1; i++){
+                        //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+                        Log.d("child", String.valueOf(childObject));
 
                             //JSONObject dataJsonObject = jsonArray.getJSONObject(i);// 0에 cho 객체가 있음
                             //제이슨 객체안의 데이터를 빼온다
-                            Log.d("studentname", child.getString("class"));
-                            Double lat = child.getDouble("lat");
-                            Double lng = child.getDouble("lng");
+                        if(userPreferences.getUserChild().equals(childObject.getString("name"))) { //받아온 학생의 이름과 자식의 이름이 같다면
+                            Log.d("studentname", childObject.getString("name"));
+                            Double lat = childObject.getDouble("lat");
+                            Double lng = childObject.getDouble("lng");
                             LatLng latLng = new LatLng(lat, lng);
-                            cMarker = new MarkerOptions();
-                            cMarker.position(latLng);
-                            if(child.getString("gender").equals("M")){
+                            if (cMarker == null) {
+                                cMarker = new MarkerOptions();
+                                cMarker.position(latLng);
                                 cMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.boyd));
-                            }else{
-                                cMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.girld));
+                                cMarker.title(childObject.getString("name"));
+                                mMap.addMarker(cMarker);
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                            } else {
+                                cMarker.position(latLng);
                             }
-                            cMarker.title(child.getString("name"));
-                            mMap.addMarker(cMarker);
-
-                            //지도 상에서 보여주는 영역 이동
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
                         }
+                            //지도 상에서 보여주는 영역 이동
+
+
+
 
 
                     } catch (JSONException e) {
@@ -440,6 +443,60 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             });
         }
     };
+
+    //teacherGPS가 들오면 아래에서 마커를 생성
+    private Emitter.Listener listenGetTeacherGPS = new Emitter.Listener() {
+
+        public void call(Object... args) {
+            Log.d("loglog", "get teacherGPS");
+            final JSONObject teacherObject = (JSONObject)args[0];
+
+
+            //서버에서 보낸 JSON객체를 사용할 수 있습니다.
+
+            runOnUiThread(new Runnable() { //발생가능 문제점 : 1반이 선택된 상태에서 1반에 대한 객체가 들어올경우 마커가 중첩되어 찍힐수있음
+                @Override
+                public void run() {
+                    try {
+
+                        //위에서 오브젝트를 받은것을 다시 제이슨배열로 해체
+                        //JSONArray jsonArray = new JSONArray(obj.getString("class"));
+
+                            //JSONObject dataJsonObject = jsonArray.getJSONObject(i);// 0에 cho 객체가 있음
+                            //제이슨 객체안의 데이터를 빼온다
+                        if(userPreferences.getUserSchool().equals(teacherObject.getString("schoolName")) && userPreferences.getUserClass().equals(teacherObject.getString("class"))) {
+                            Log.d("studentname", teacherObject.getString("class"));
+                            Double lat = teacherObject.getDouble("lat");
+                            Double lng = teacherObject.getDouble("lng");
+                            LatLng latLng = new LatLng(lat, lng);
+                            if (cMarker == null) {
+                                cMarker = new MarkerOptions();
+                                cMarker.position(latLng);
+                                cMarker.title(teacherObject.getString("name"));
+                                mMap.addMarker(cMarker);
+                                //지도 상에서 보여주는 영역 이동
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                            }else{
+                                cMarker.position(latLng);
+                            }
+                        }
+
+
+
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    //이곳에 ui 관련 작업을 할 수 있습니다.
+
+
+                }
+            });
+        }
+    };
+
     private Emitter.Listener listenDisconnectPerson = new Emitter.Listener() {
 
         public void call(Object... args) {
@@ -475,14 +532,13 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             @Override
             public void onMapLoaded() {
                 getPlanGPS();
-                if(userPreferences.getUserType().equals("parents")) {
-                    socket.emit("kidGPS", userPreferences.getUserChild());
-                }
+
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
                         Log.d("markerTitle = ",marker.getTitle());
-                        if(!marker.getTitle().equals("김봉춘") && !marker.getTitle().equals("현재위치") ){
+
+                        if(!marker.getTitle().equals(userPreferences.getUserName()) && !marker.getTitle().equals("현재위치")){
                             Log.d("김봉춘 체크 = ","김봉춘체크");
                             placeNum = marker.getTitle();
                             if (isPageOpen) {
@@ -532,7 +588,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                                     myDataset = new ArrayList<>();
                                     mAdapter = new MyAdapter(myDataset);
                                     mRecyclerView.setAdapter(mAdapter);
-
+                                    historyContent = new String[contentList.length()];
+                                    bitmap = new Bitmap[contentList.length()];
                                     for(int i = 0 ; i < contentList.length();i++){
 
                                         //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
@@ -541,7 +598,11 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                                         //JSONObject placeData = new JSONObject(dataJsonObject);
                                         String imageUrl="";
                                         imageUrl = dataJsonObject.getString("url");
+
+                                        historyContent[i] = dataJsonObject.getString("content");
+
                                         final String finalImageUrl = imageUrl;
+                                        final int finalI = i;
                                         Thread mThread = new Thread(){
                                             @Override
                                             public void run() {
@@ -555,7 +616,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                                                     conn.connect();
 
                                                     InputStream is = conn.getInputStream();
-                                                    bitmap = BitmapFactory.decodeStream(is);
+                                                    bitmap[finalI] = BitmapFactory.decodeStream(is);
 
                                                 }catch (IOException ex){
 
@@ -568,7 +629,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                                         try{
                                             mThread.join();
 
-                                            myDataset.add(new MyData(dataJsonObject.getString("content"),bitmap));
+
 
 
                                         }catch (InterruptedException e){
@@ -577,6 +638,9 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
 
 
+                                    }
+                                    for(int i =0; i<bitmap.length;i++){
+                                        myDataset.add(new MyData(historyContent[i],bitmap[i]));
                                     }
                                     //contentView.setText(sumContent);
 
@@ -760,35 +824,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             return true;
         }
     }
-    @Override
-    public void onLocationChanged(Location location) {
 
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
     //    public static String getDate(){
 //        SimpleDateFormat dateFormat = new  SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
 //        Date date = new Date();
