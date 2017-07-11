@@ -7,19 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -29,13 +21,10 @@ import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -48,7 +37,6 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,7 +44,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -66,24 +53,12 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
-
-import static android.R.attr.bitmap;
 
 public class TodayActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener {
 
@@ -114,7 +89,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     ArrayList<Marker> classTwoMarker = new ArrayList();
     //ArrayList<LatLng> classThree = new ArrayList();
     ArrayList<Marker> classThreeMarker = new ArrayList();
-
+    ArrayList<Marker> studentMarkerArray = new ArrayList();
     private Button slidingPageClose,writeHistory,logBtn;
     ArrayAdapter<String> adapter;
     Spinner spinner;
@@ -124,6 +99,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     TextView contentView;
     String logContent = "";
     ImageView historyImage;
+    int spinnerChoice=1;
 
     //히스토리에 이미지를 뿌려주기 위한 변수들
     private RecyclerView mRecyclerView;
@@ -194,7 +170,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             Log.i("SocketCheck", "Socket connection failed");
         }
 
-        socket.on("getclass",listenGetMessagePerson);
+        socket.on("studentGPSToTeacher",listenGetMessagePerson);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.class_Name,android.R.layout.simple_spinner_item
@@ -238,20 +214,23 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                     if(parent.getItemAtPosition(position).equals("1반")){
                         Log.e("planResult", "1반 받았나!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                         classOneMarker.clear();
-                        if(emitSwitch) socket.emit("class1", "I want class1's GPS");
-                        //addStudentMarker(classOne, "#21ff3f", "1반");
+
+                        spinnerChoice = 1;
+
                         if(myMarker!=null) mMap.addMarker(myMarker);
 
                     }else if(parent.getItemAtPosition(position).equals("2반")){
                         classTwoMarker.clear();
-                        socket.emit("class2", "I want class2's GPS");
-                        //addStudentMarker(classTwo, "#24d8b4","2반");
+
+                        spinnerChoice=2;
+
                         if(myMarker!=null) mMap.addMarker(myMarker);
 
                     }else{
                         classThreeMarker.clear();
-                        socket.emit("class3", "I want class3's GPS");
-                        //addStudentMarker(classThree,"#ebf224","3반");
+
+                        spinnerChoice=3;
+
                         if(myMarker!=null) mMap.addMarker(myMarker);
 
                     }
@@ -335,7 +314,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             if(isChecked == true){ //처음 화면은 학생들의 위치를 나타내주는 화면
                 histroySwitch.setText("발자취");
                 mMap.clear();
-                socket.emit("history", "don't send any gps");
+
                 spinner.setVisibility(View.INVISIBLE); // 화면에 안보임
                 classOneMarker.clear();
                 classTwoMarker.clear();
@@ -353,7 +332,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                             if (isPageOpen) {
                                 //slidingPage01.startAnimation(translateRightAnim);
                             } else {
-                                startProgress();//다이얼로그 실행 함수
+                               // startProgress();//다이얼로그 실행 함수
                                 slidingPage01.setVisibility(View.VISIBLE);
                                 slidingPage01.startAnimation(translateLeftAnim);
                                 scrollPage.setVisibility(View.VISIBLE);
@@ -398,6 +377,9 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                                     myDataset = new ArrayList<>();
                                     mAdapter = new MyAdapter(myDataset);
                                     mRecyclerView.setAdapter(mAdapter);
+                                    String[] imageUrl,content;
+                                    imageUrl = new String[contentList.length()];
+                                    content = new String[contentList.length()];
 
                                     for(int i = 0 ; i < contentList.length();i++){
 
@@ -411,47 +393,50 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                                         //getImageFromURL(dataJsonObject.getString("url")),dataJsonObject.getString("content")
 
 //                                        myDataset.add(new MyData(dataJsonObject.getString("content"),getImageFromURL("http://163.44.166.91/LEARnFUN/storage/app/historyImgs/1-1.png")));
-                                        String imageUrl="";
-                                        imageUrl = dataJsonObject.getString("url");
-//                                        ImageAsync getImage = new ImageAsync(TodayActivity.this,imageUrl);
-//                                        bitmap=getImage.execute();
-//                                        myDataset.add(new MyData(dataJsonObject.getString("content"),bitmap));
-                                        final String finalImageUrl = imageUrl;
-                                        Thread mThread = new Thread(){
-                                            @Override
-                                            public void run() {
-                                                try{//baseShoppingURL
-
-                                                    URL url = new URL(finalImageUrl); //URL주소를 이용해서 URL객체를 생성
-                                                    //아래 코드는 웹에서 이미지를 가져온뒤
-                                                    //이미지 뷰에 지정할 Bitmap을 생성하는 과정
-                                                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-                                                    conn.setDoInput(true);
-                                                    conn.connect();
-
-                                                    InputStream is = conn.getInputStream();
-                                                    bitmap = BitmapFactory.decodeStream(is);
-
-                                                }catch (IOException ex){
-
-                                                }
-                                            }
-                                        };
-
-                                        mThread.start();
-
-                                        try{
-                                            mThread.join();
-
-                                            myDataset.add(new MyData(dataJsonObject.getString("content"),bitmap));
-
-
-                                        }catch (InterruptedException e){
-
-                                        }
-
-
+                                        imageUrl[i] = dataJsonObject.getString("url");
+                                        content[i] = dataJsonObject.getString("content");
                                     }
+                                        ImageAsync getImage = new ImageAsync(TodayActivity.this,imageUrl);
+                                        Bitmap[] imageBit = getImage.execute().get();
+//                                        myDataset.add(new MyData(dataJsonObject.getString("content"),bitmap));
+//                                        final String finalImageUrl = imageUrl;
+//                                        Thread mThread = new Thread(){
+//                                            @Override
+//                                            public void run() {
+//                                                try{//baseShoppingURL
+//
+//                                                    URL url = new URL(finalImageUrl); //URL주소를 이용해서 URL객체를 생성
+//                                                    //아래 코드는 웹에서 이미지를 가져온뒤
+//                                                    //이미지 뷰에 지정할 Bitmap을 생성하는 과정
+//                                                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+//                                                    conn.setDoInput(true);
+//                                                    conn.connect();
+//
+//                                                    InputStream is = conn.getInputStream();
+//                                                    bitmap = BitmapFactory.decodeStream(is);
+//
+//                                                }catch (IOException ex){
+//
+//                                                }
+//                                            }
+//                                        };
+//
+//                                        mThread.start();
+//
+//                                        try{
+//                                            mThread.join();
+                                    for(int i = 0 ; i < contentList.length();i++){
+                                        myDataset.add(new MyData(content[i],imageBit[i]));
+                                    }
+
+//
+//
+//                                        }catch (InterruptedException e){
+//
+//                                        }
+
+
+
                                     //historyImage.setImageBitmap(bitmap);
                                     //contentView.setText(sumContent);
 
@@ -471,8 +456,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                 histroySwitch.setText("학생위치");
                 mMap.clear();
                 spinner.setVisibility(View.VISIBLE); // 화면에보임
-                socket.emit("class1", "I want to class1's GPS");
-                //addStudentMarker(classOne, "#21ff3f", "1반");
                 if(myMarker!=null) mMap.addMarker(myMarker);
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
@@ -528,22 +511,51 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                 public void run() {
                     try {
                         //위에서 오브젝트를 받은것을 다시 제이슨배열로 해체
-                        JSONArray jsonArray = new JSONArray(obj.getString("class"));
+
                         //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
-                        for(int i =0; i < jsonArray.length(); i++){
-
-                            JSONObject dataJsonObject = jsonArray.getJSONObject(i);// 0에 cho 객체가 있음
                             //제이슨 객체안의 데이터를 빼온다
-                            Log.d("studentname", dataJsonObject.getString("class"));
+                            Log.d("studentname", obj.getString("class"));
+                        for(int i =0; i < studentMarkerArray.size(); i++){
 
-                            if(dataJsonObject.getString("class").equals("1")){
-                                addStudentMarker(jsonArray, "#21ff3f", "1반");
-                            }else if(dataJsonObject.getString("class").equals("2")){
-                                addStudentMarker(jsonArray,"#ebf224","2반");
+                            if(studentMarkerArray.get(i).getTitle().equals(obj.getString("name"))){
+
+                                LatLng latLng = new LatLng(obj.getDouble("lat"), obj.getDouble("lng"));
+                                studentMarkerArray.get(i).setPosition(latLng);
+
+                                if(obj.getString("class").equals("1")){
+                                    for(int j=0; j<classOneMarker.size();j++){
+                                        if(classOneMarker.get(i).getTitle().equals(obj.getString("name"))){
+                                            classOneMarker.get(i).setPosition(latLng);
+                                        }
+                                    }
+                                }else if(obj.getString("class").equals("2")){
+                                    for(int j=0; j<classTwoMarker.size();j++){
+                                        if(classTwoMarker.get(i).getTitle().equals(obj.getString("name"))){
+                                            classTwoMarker.get(i).setPosition(latLng);
+                                        }
+                                    }
+                                }else{
+                                    for(int j=0; j<classThreeMarker.size();j++){
+                                        if(classThreeMarker.get(i).getTitle().equals(obj.getString("name"))){
+                                            classThreeMarker.get(i).setPosition(latLng);
+                                        }
+                                    }
+
+                                }
+
+
                             }else{
-                                addStudentMarker(jsonArray,"#24d8b4","3반");
 
+                                if(obj.getString("class").equals("1") && spinnerChoice==1){
+                                    addStudentMarker(obj, "#21ff3f", "1반");
+                                }else if(obj.getString("class").equals("2") && spinnerChoice==2){
+                                    addStudentMarker(obj,"#ebf224","2반");
+                                }else{
+                                    addStudentMarker(obj,"#24d8b4","3반");
+
+                                }
                             }
+
                         }
 
 
@@ -581,14 +593,14 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
     public void getPlanGPS(){ // 히스토리부분
 
-        //String userid = userPreferences.getUserId();
+        String userid = userPreferences.getUserId();
 
         sendData = new JSONObject();
 
         try {
 
             //recentDate.put("date",getDate());
-            sendData.put("userID","Illum");
+            sendData.put("userID",userid);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -826,35 +838,32 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         //mGoogleApiClient.connect();
     }
 
-    private void addStudentMarker(JSONArray arrayList,String markerColor,String className) throws JSONException {
+    private void addStudentMarker(JSONObject studentObj,String markerColor,String className) throws JSONException {
         Log.d("TAG", "학생마커 생성");
         ArrayList<Student> student = helper.selectAll();
 
-        for(int i = 0 ; i < arrayList.length();i++){
-            Log.d("TAG", "포문안에 들어왔다");
-            //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
-            JSONObject dataJsonObject = arrayList.getJSONObject(i);
-            Log.d("TAG", "제이슨 오브젝트로 만들었다");
-            Log.d("TAG", String.valueOf(dataJsonObject.getDouble("lat")));
-            LatLng studentGPS = new LatLng(dataJsonObject.getDouble("lat"), dataJsonObject.getDouble("lng"));
+
+
+            Log.d("TAG", String.valueOf(studentObj.getDouble("lat")));
+            LatLng studentGPS = new LatLng(studentObj.getDouble("lat"), studentObj.getDouble("lng"));
             Log.d("TAG", "좌표객체만들었다");
             MarkerOptions markerOptions = new MarkerOptions();
             Log.d("TAG", "마커옵션 만들었다");
             markerOptions.position(studentGPS);
             Log.d("TAG", "마커에 좌표넣었다");
             for(int j =0; j < student.size();j++){
-                if(dataJsonObject.getString("name").equals(student.get(j).name)){
+                if(studentObj.getString("name").equals(student.get(j).name)){
                     markerOptions.icon(getMarkerIcon(student.get(j).color)); // change the color of marker
                     Log.d("dbColor=", student.get(j).color);
                     Log.d("TAG", "아이콘색변경했다");
                 }
             }
             //markerOptions.icon(getMarkerIcon("red")); // change the color of marker
-            markerOptions.title(dataJsonObject.getString("name"));
+            markerOptions.title(studentObj.getString("name"));
             Log.d("TAG", "마커이름 바꿨다");
             Marker studentMarker = mMap.addMarker(markerOptions);
             Log.d("TAG", "마커 생성하고 맵에 추가했다");
-
+            studentMarkerArray.add(studentMarker);
             if(className.equals("1반")){
                 Log.d("tag", "1반 마커배열에 넣음");
                 classOneMarker.add(studentMarker);
@@ -865,7 +874,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                 Log.d("tag", "3반 마커배열에 넣음");
                 classThreeMarker.add(studentMarker);
             }
-        }
+
 
 
     }

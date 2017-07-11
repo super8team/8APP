@@ -3,15 +3,18 @@ package com.learnfun.super8team.learnfun;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v7.app.AppCompatDialog;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -21,57 +24,54 @@ import java.net.URL;
  * Created by cho on 2017-06-25.
  */
 
-public class ImageAsync extends AsyncTask<String, Void, Bitmap> {
+public class ImageAsync extends AsyncTask<Object, Object, Bitmap[]> {
     final static String TAG = "ImageAsync";
 
-    final static String POST = "POST";
-    final static String GET = "GET";
-
-    final int MAX_BYTE = 1024; // 1024bytes
-    final int MAX_DELAY = 10000; // 10seconds
-    Bitmap bitmapImage=null;
+    Bitmap[] bitmapImage;
     Context context = null;
     // 서비스도메인
-    String urlAddr = "";
-    JSONObject jsonObject = new JSONObject();
-    String httpMethod;
-
+    String[] urlAddr;
     InputStream is = null;
-    ByteArrayOutputStream baos = null;
-    String stringData = "";
+    //dialog
+    AppCompatDialog progressDialog;
 
-    public ImageAsync(Context context, String uri) {
+
+    public ImageAsync(Context context, String[] uri) {
         // 호출한 컨텍스트, 도메인 이후 uri, http메서드(상수NetwirdkAsync.POST), 전달할 json객체
         this.context = context;
-        this.urlAddr += uri;
-        Log.i(TAG, "result url: "+urlAddr);
+        this.urlAddr = uri;
+
+        Log.i(TAG, "result url: "+ urlAddr[0]);
     }
 
 
     @Override
-    protected Bitmap doInBackground(String... params) {
-        Bitmap image=null;
+    protected Bitmap[] doInBackground(Object... params) {
+
+        Bitmap[] image;
         // / 요청
-        image = request();
+//        image = request();
 
         // 결과(json으로 변환 가능한 문자열)반환
-        return image;
+        return request();
     }
 
-    private Bitmap request() {
+    private Bitmap[] request() {
 
 
         try {
-            URL url = new URL(urlAddr);
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            bitmapImage = new Bitmap[urlAddr.length];
+            for(int i=0;i<urlAddr.length;i++){
+                URL url = new URL(urlAddr[i]);
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 
-            if(conn != null) {
-                // 메서드 방식에 따른 리퀘스트 프로퍼티 설정
-                conn.setDoInput(true);
-                conn.connect();
+                if(conn != null) {
+                    // 메서드 방식에 따른 리퀘스트 프로퍼티 설정
+                    conn.setDoInput(true);
+                    conn.connect();
 
-                InputStream is = conn.getInputStream();
-                bitmapImage = BitmapFactory.decodeStream(is);
+                    InputStream is = conn.getInputStream();
+                    bitmapImage[i] = BitmapFactory.decodeStream(is);
 
 //                // 요청
 //                int responseCode = conn.getResponseCode();
@@ -80,7 +80,9 @@ public class ImageAsync extends AsyncTask<String, Void, Bitmap> {
 //                    // 응답
 //                    response(conn);
 //                }
+                }
             }
+
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -92,12 +94,75 @@ public class ImageAsync extends AsyncTask<String, Void, Bitmap> {
         return bitmapImage;
     }
 
-    protected void onPreExecute() {
+    @Override
+    protected void onPostExecute(Bitmap[] s) {
+        startProgress();//다이얼로그 실행 함수
+    }
+    public void progressON(Context activity, String message) {
+
+//        if (activity == null || activity.isFinishing()) {
+//            return;
+//        }
+
+
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressSET(message);
+        } else {
+
+            progressDialog = new AppCompatDialog(activity);
+            progressDialog.setCancelable(false);
+            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            progressDialog.setContentView(R.layout.progress_loading);
+            progressDialog.show();
+
+        }
+
+
+        final ImageView img_loading_frame = (ImageView) progressDialog.findViewById(R.id.iv_frame_loading);
+        final AnimationDrawable frameAnimation = (AnimationDrawable) img_loading_frame.getBackground();
+        img_loading_frame.post(new Runnable() {
+            @Override
+            public void run() {
+                frameAnimation.start();
+            }
+        });
+
+        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
+        if (!TextUtils.isEmpty(message)) {
+            tv_progress_message.setText(message);
+        }
+
+
+    }
+    public void progressSET(String message) {
+
+        if (progressDialog == null || !progressDialog.isShowing()) {
+            return;
+        }
+
+
+        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
+        if (!TextUtils.isEmpty(message)) {
+            tv_progress_message.setText(message);
+        }
 
     }
 
-    @Override
-    protected void onPostExecute(Bitmap s) {
-        super.onPostExecute(s);
+    public void progressOFF() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+    private void startProgress() {
+
+        progressON(context,"Loading...");
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressOFF();
+            }
+        }, 3500);
+
     }
 }

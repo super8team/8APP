@@ -25,7 +25,10 @@ public class UserPreferences {
     final static String USERID = "id";
     final static String USERNAME = "name";
     final static String USERTYPE = "type";
-    final static String CHILDID = "childID";
+    final static String CHILD = "child";
+    final static String SCHOOLNAME = "schoolName";
+    final static String GRADE = "grade";
+    final static String CLASS = "class";
 
     private UserPreferences(Context context) {
         // 단말 어플리케이션 설정을 저장하는 프리퍼런스 키(LEARnFUN) 세팅
@@ -53,7 +56,10 @@ public class UserPreferences {
             user.put(USERID, preferences.getString(USERID, ""));
             user.put(USERNAME, preferences.getString(USERID, ""));
             user.put(USERTYPE, preferences.getString(USERTYPE, ""));
-            user.put(CHILDID, preferences.getString(CHILDID, ""));
+            user.put(CHILD, preferences.getString(CHILD, ""));
+            user.put(SCHOOLNAME, preferences.getString(SCHOOLNAME, ""));
+            user.put(GRADE, preferences.getString(GRADE, ""));
+            user.put(CLASS, preferences.getString(CLASS, ""));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -66,7 +72,10 @@ public class UserPreferences {
             editor.putString(USERID, user.getString(USERID));
             editor.putString(USERNAME, user.getString(USERNAME));
             editor.putString(USERTYPE, user.getString(USERTYPE));
-            editor.putString(CHILDID, user.getString(CHILDID));
+            editor.putString(CHILD, user.getString(CHILD));
+            editor.putString(SCHOOLNAME, user.getString(SCHOOLNAME));
+            editor.putString(GRADE, user.getString(GRADE));
+            editor.putString(CLASS, user.getString(CLASS));
             editor.commit();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -93,8 +102,24 @@ public class UserPreferences {
 
     public String getUserChild() {
         String userChild = "";
-        userChild = preferences.getString(CHILDID, "");
+        userChild = preferences.getString(CHILD, "");
         return userChild;
+    }
+
+    public String getUserSchool() {
+        String userSchool = "";
+        userSchool = preferences.getString(SCHOOLNAME, "");
+        return userSchool;
+    }
+    public String getUserGrade() {
+        String userGrade = "";
+        userGrade = preferences.getString(GRADE, "");
+        return userGrade;
+    }
+    public String getUserClass() {
+        String userClass = "";
+        userClass = preferences.getString(CLASS, "");
+        return userClass;
     }
 
     public void removeUser() {
@@ -109,4 +134,5 @@ public class UserPreferences {
             e.printStackTrace();
         }
     }
+
 }
