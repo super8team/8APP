@@ -104,14 +104,12 @@ abstract public class ContentView {
                 contentActivity.onQuestButton(message);
             }
             if (code.has("openMap")){
-                Log.i("액션코드부분","체크됨");
-                String message = code.getString("quest");
-                contentActivity.onQuestButton(message);
+                contentActivity.onMapButton();
+                //데이터 베이스에 현재상태 저장
+                contentActivity.getDB().insert("map","on");
             }
             if (code.has("closeMap")){
-                Log.i("액션코드부분","체크됨");
-                String message = code.getString("quest");
-                contentActivity.onQuestButton(message);
+                contentActivity.closeMapButton();
             }
 
         }catch (JSONException e) {

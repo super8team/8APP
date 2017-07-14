@@ -100,7 +100,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         setContentView(R.layout.activity_content);
 
         //DB생성
-        dbManager = new DBManager(getApplicationContext(),"content",null,2);
+        dbManager = new DBManager(getApplicationContext(),"content",null,3);
 //        Log.i("db???",dbManager.toString());
 
         // AR카메라를 위한 초기 설정
@@ -112,7 +112,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         OverlayLayout = (RelativeLayout) findViewById(R.id.overlay_layout);
 
         initContents();
-        requestCameraPermission();
+//        requestCameraPermission();
         // 0607 22:00 여기 있던 권한 설정은 onResume으로 옮겼습니다 ㅎ.ㅎ 카메라 권한 따고 초기화 하는 거랑 같이 하기 위해서!
         // 0607 23:53 권한 획득에 자꾸 실패해서 진아코드로 대체
 
@@ -147,15 +147,19 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         super.onResume();
         // 권한 획득
         requestLocationPermission();
+        requestCameraPermission();
         registerSensors();
         initAROverlayView();
 
     }
 
     public void onPause() {
-//        releaseCamera();
         super.onPause();
-        locationManager.removeUpdates(this);
+        if (locationManager!=null)
+            locationManager.removeUpdates(this);
+        if (sensorManager!=null)
+            sensorManager.unregisterListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR));
+//        releaseCamera();
     }
 
     private void releaseCamera() {
@@ -181,10 +185,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public void requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            Log.e(TAG, "requestLocationPermission - if");
+            Log.e(TAG, "requestLocationPermission - if");
             this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS_CODE);
         } else {
-//            Log.e(TAG, "requestLocationPermission - else");
+            Log.e(TAG, "requestLocationPermission - else");
             initLocationService();
         }
     }
@@ -277,10 +281,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                     MIN_TIME_BW_UPDATES,
                     MIN_DISTANCE_CHANGE_FOR_UPDATES,
                     this);
-//            if(locationManager != null) {
-//                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//                Log.i(TAG, "gps init from NETWORK provider");
-//            }
+            if(locationManager != null) {
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                Log.i(TAG, "gps init from NETWORK provider");
+            }
         } // end if network envables
 
         if (isGPSEnabled) {
@@ -288,15 +292,15 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                     MIN_TIME_BW_UPDATES,
                     MIN_DISTANCE_CHANGE_FOR_UPDATES,
                     this);
-//            if (locationManager != null) {
-//                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//                Log.i(TAG, "gps init from GPS provider");
-//            }
+            if (locationManager != null) {
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Log.i(TAG, "gps init from GPS provider");
+            }
         } // end if gps enabled
 
-//        if (location != null ) {
-//            updateLatestLocation();
-//        } // end if location is not null
+        if (location != null ) {
+            updateLatestLocation();
+        } // end if location is not null
     } // end function initLocationService
 
     private void updateLatestLocation() {
@@ -435,7 +439,8 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             quest.setBackgroundResource(R.drawable.quest);
         }else if( resultCode==4132){
             bingo.setBackgroundResource(R.drawable.bingo);
-            requestCameraPermission();
+        }else if( resultCode==5229){
+            contentMap.setBackgroundResource(R.drawable.map);
         }
 
 
@@ -457,6 +462,22 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             Matrix.multiplyMM(rotatedProjectionMatrix, 0, projectionMatrix, 0, rotationMatrixFromVector, 0);
             this.arOverlayView.updateRotatedProjectionMatrix(rotatedProjectionMatrix);
         }
+
+
+        double accX = sensorEvent.values[0];
+        double accY = sensorEvent.values[1];
+        double accZ = sensorEvent.values[2];
+
+        double angleXZ = Math.atan2(accX,  accZ) * 180/Math.PI;
+        double angleYZ = Math.atan2(accY,  accZ) * 180/Math.PI;
+
+        Log.e("LOG", "ACCELOMETER           [X]:" + String.format("%.4f", sensorEvent.values[0])
+                + "           [Y]:" + String.format("%.4f", sensorEvent.values[1])
+                + "           [Z]:" + String.format("%.4f", sensorEvent.values[2])
+                + "           [angleXZ]: " + String.format("%.4f", angleXZ)
+                + "           [angleYZ]: " + String.format("%.4f", angleYZ));
+
+
     }
 
     @Override
@@ -517,12 +538,14 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         Location contentsLocation;
 
         Log.e(TAG, "onTouch: "+x+", "+y);
+
         Effect effect = new Effect(this,x,y);
 
         if (effect.getParent() != null) {
             ((ViewGroup) effect.getParent()).removeView(effect);
         }
         OverlayLayout.addView(effect);
+
 
         if (!locationServiceAvailable) return super.onTouchEvent(event);
 
@@ -656,5 +679,36 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         bingo.setVisibility(View.GONE);
         //빙고디비 초기화
         dbManager.reset("bingo");
+    }
+
+    public void onMapButton(){
+        contentMap.setBackgroundResource(R.drawable.map_mark);
+        contentMap.setVisibility(View.VISIBLE);
+        contentMap.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                //컨텐츠 위치값들 받아오기
+                ArrayList<Location> locations = new ArrayList<Location>();
+                String names[] = new String[contents.size()];
+                for (int i=0;i<contents.size();i++){
+                    locations.add(i,contents.get(i).getContentLocation());
+                    names[i] = contents.get(i).getContentName();
+                }
+
+
+                Intent intent = new Intent(ContentActivity.this,ContentMap.class);
+                intent.putExtra("locations",locations);
+                intent.putExtra("names",names);
+                startActivityForResult(intent,5229);
+                overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
+            }
+        });
+    }
+
+    public void closeMapButton(){
+        contentMap.setVisibility(View.GONE);
+
+        dbManager.reset("map");
     }
 }

@@ -90,8 +90,8 @@
         "type" : "CLICK",
         "name" : "wrong3",
         "action" : {
-          "out_txt" : "빙고테스트.",
-          "bingo" : 9
+          "out_txt" : "맵 테스트.",
+          "openMap" : true
         }
       },
       {
@@ -178,7 +178,8 @@
             "disable":false
           }],
           "endQuest" : true,
-          "endBingo" : true
+          "endBingo" : true,
+          "closeMap" : true
         }
       }
     ],

@@ -33,6 +33,8 @@ public class DBManager extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //db가 존재하지만 버전이 다를경우 호출되는 메소드
+        db.execSQL("drop table JSON_CODE");
+
         db.execSQL("CREATE TABLE JSON_CODE( json TEXT );");
         db.execSQL("CREATE TABLE CONTENT( type TEXT, sql TEXT );");
     }
@@ -40,8 +42,8 @@ public class DBManager extends SQLiteOpenHelper{
     public void testClear(){
         SQLiteDatabase db = getWritableDatabase();
 
-        db.execSQL("delete from JSON_CODE");
-        db.execSQL("delete from CONTENT");
+        db.execSQL("drop table JSON_CODE");
+        db.execSQL("drop table CONTENT");
         db.close();
     }
 
@@ -104,13 +106,14 @@ public class DBManager extends SQLiteOpenHelper{
 
 
             String sql = "update CONTENT set sql = '"+temp+"/"+data+"' where type = '"+type+"'";
+            db.execSQL(sql);
+        }else{
+            //빙고 이외의 컬럼
+            String sql = "update CONTENT set sql = '"+data+"' where type = '"+type+"'";
             Log.i(type+" ::현재 데이터 저장",sql);
             db.execSQL(sql);
         }
-        //빙고 이외의 컬럼
-        String sql = "update CONTENT set sql = '"+data+"' where type = '"+type+"'";
-        Log.i(type+" ::현재 데이터 저장",sql);
-        db.execSQL(sql);
+
 
         db.close();
     }
