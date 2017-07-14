@@ -105,7 +105,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         OverlayLayout = (RelativeLayout) findViewById(R.id.overlay_layout);
 
         initContents();
-        requestCameraPermission();
+//        requestCameraPermission();
         // 0607 22:00 여기 있던 권한 설정은 onResume으로 옮겼습니다 ㅎ.ㅎ 카메라 권한 따고 초기화 하는 거랑 같이 하기 위해서!
         // 0607 23:53 권한 획득에 자꾸 실패해서 진아코드로 대체
 
@@ -139,15 +139,19 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         super.onResume();
         // 권한 획득
         requestLocationPermission();
+        requestCameraPermission();
         registerSensors();
         initAROverlayView();
 
     }
 
     public void onPause() {
-//        releaseCamera();
         super.onPause();
-        locationManager.removeUpdates(this);
+        if (locationManager!=null)
+            locationManager.removeUpdates(this);
+        if (sensorManager!=null)
+            sensorManager.unregisterListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR));
+//        releaseCamera();
     }
 
     private void releaseCamera() {
@@ -254,10 +258,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                     MIN_TIME_BW_UPDATES,
                     MIN_DISTANCE_CHANGE_FOR_UPDATES,
                     this);
-//            if(locationManager != null) {
-//                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//                Log.i(TAG, "gps init from NETWORK provider");
-//            }
+            if(locationManager != null) {
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                Log.i(TAG, "gps init from NETWORK provider");
+            }
         } // end if network envables
 
         if (isGPSEnabled) {
@@ -265,15 +269,15 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                     MIN_TIME_BW_UPDATES,
                     MIN_DISTANCE_CHANGE_FOR_UPDATES,
                     this);
-//            if (locationManager != null) {
-//                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//                Log.i(TAG, "gps init from GPS provider");
-//            }
+            if (locationManager != null) {
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Log.i(TAG, "gps init from GPS provider");
+            }
         } // end if gps enabled
 
-//        if (location != null ) {
-//            updateLatestLocation();
-//        } // end if location is not null
+        if (location != null ) {
+            updateLatestLocation();
+        } // end if location is not null
     } // end function initLocationService
 
     private void updateLatestLocation() {
@@ -497,12 +501,12 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         Location contentsLocation;
 
         Log.e(TAG, "onTouch: "+x+", "+y);
-        Effect effect = new Effect(this,x,y);
-
-        if (effect.getParent() != null) {
-            ((ViewGroup) effect.getParent()).removeView(effect);
-        }
-        OverlayLayout.addView(effect);
+//        Effect effect = new Effect(this,x,y);
+//
+//        if (effect.getParent() != null) {
+//            ((ViewGroup) effect.getParent()).removeView(effect);
+//        }
+//        OverlayLayout.addView(effect);
 
         if (!locationServiceAvailable) return super.onTouchEvent(event);
 
