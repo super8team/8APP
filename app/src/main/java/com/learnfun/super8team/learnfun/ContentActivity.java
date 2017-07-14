@@ -173,10 +173,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public void requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            Log.e(TAG, "requestLocationPermission - if");
+            Log.e(TAG, "requestLocationPermission - if");
             this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS_CODE);
         } else {
-//            Log.e(TAG, "requestLocationPermission - else");
+            Log.e(TAG, "requestLocationPermission - else");
             initLocationService();
         }
     }

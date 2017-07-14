@@ -104,6 +104,7 @@ public class AROverlayView extends View {
                     float x = (0.5f + cameraCoordinateVector[0] / cameraCoordinateVector[3]) * canvas.getWidth();
                     float y = (0.5f - cameraCoordinateVector[1] / cameraCoordinateVector[3]) * canvas.getHeight();
 
+                    Log.d(TAG, "draw x: "+x+", y: "+y);
                     canvas.drawCircle(x, y, radius, paint);
                     canvas.drawText(arPoints.get(i).getContentName(), x - (30 * arPoints.get(i).getContentName().length() / 2), y - 80, paint);
                 }
