@@ -100,7 +100,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         setContentView(R.layout.activity_content);
 
         //DB생성
-        dbManager = new DBManager(getApplicationContext(),"content",null,1);
+        dbManager = new DBManager(getApplicationContext(),"content",null,2);
 //        Log.i("db???",dbManager.toString());
 
         // AR카메라를 위한 초기 설정
@@ -143,6 +143,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     protected void onResume() {
+        Log.i("카메라 상태 ", String.valueOf(camera));
         super.onResume();
         // 권한 획득
         requestLocationPermission();
@@ -199,6 +200,9 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         contentMap = (ImageButton) findViewById(R.id.mapBtn);
         collection = (ImageButton) findViewById(R.id.collectBtn);
 
+        //로컬 데이터베이스 체크후 진행중이던 메뉴 팝업
+        checkSideMenus();
+
         try {
         JSONObject userInputInfo = new JSONObject();
             //유저 정보를 가져온다.
@@ -208,9 +212,12 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             // 서버에 유저아이디를 넘기고 명세를 넘겨받음
         requestNetwork = new NetworkAsync(context,"getContents",NetworkAsync.POST, userInputInfo);
 
+//            dbManager.testClear();
 
         //로컬 디비에 명세가 없으면 명세를 저장, 명세가 있으면 로컬명세를 읽음
         String data = dbManager.init(call().toString());
+//            String data = "";
+
 //
 //        실제실행 코드
 //        String data = dbManager.init(requestNetwork.execute().get());
@@ -426,6 +433,9 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         }else if( resultCode==7732){
             //한번 들어갔다가 나오면 아이콘 원상태로 복귀
             quest.setBackgroundResource(R.drawable.quest);
+        }else if( resultCode==4132){
+            bingo.setBackgroundResource(R.drawable.bingo);
+            requestCameraPermission();
         }
 
 
@@ -585,6 +595,25 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
     public RelativeLayout getOverlayLayout() {return OverlayLayout; }
 
+    public void checkSideMenus(){
+        if(dbManager.select("quest").equals("on")){
+            //퀘스트 컨텐츠가 on 상태일때
+            quest.setVisibility(View.VISIBLE);
+        }
+        if(dbManager.select("bingo").length() > 1){
+            //빙고 컨텐츠 길이가 2이상일때
+            bingo.setVisibility(View.VISIBLE);
+        }
+        if(dbManager.select("collect").equals("on")){
+            //수집 컨텐츠가 on 상태일때
+            collection.setVisibility(View.VISIBLE);
+        }
+        if(dbManager.select("map").equals("on")){
+            //맵 컨텐츠가 on 상태일때
+            contentMap.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void onQuestButton(final String msg) {
         Log.i("뷰띄우는부분","체크됨");
         quest.setBackgroundResource(R.drawable.quest_mark);
@@ -601,12 +630,31 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     }
     public void closeQuestButton(){
         quest.setVisibility(View.GONE);
-//        quest.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+
+        dbManager.reset("quest");
+    }
+
+    public void onBingoButton(){
+
+        bingo.setBackgroundResource(R.drawable.bingo_mark);
+        bingo.setVisibility(View.VISIBLE);
+        bingo.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //현재 빙고정보를 로컬디비에서 들고온다
+                //저장은 ContentView에서 스크립트가 호출될때 함
+                final String data = dbManager.select("bingo");
+                Intent intent = new Intent(ContentActivity.this,ContentBingo.class);
+                intent.putExtra("data",data);
+                startActivityForResult(intent,4132);
+                overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
+
+            }
+        });
+    }
+    public void closeBingoButton(){
+        bingo.setVisibility(View.GONE);
+        //빙고디비 초기화
+        dbManager.reset("bingo");
     }
 }

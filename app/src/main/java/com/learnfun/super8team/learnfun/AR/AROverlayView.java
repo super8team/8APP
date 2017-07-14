@@ -86,7 +86,7 @@ public class AROverlayView extends View {
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
         paint.setTextSize(60);
         for (int i = 0; i < arPoints.size(); i ++) {
-            Log.i(TAG, arPoints.get(i).getContentName()+": "+arPoints.get(i).getVisionable());
+//            Log.i(TAG, arPoints.get(i).getContentName()+": "+arPoints.get(i).getVisionable());
             if(arPoints.get(i).getVisionable()) {
                 float[] currentLocationInECEF = LocationHelper.WSG84toECEF(currentLocation);
                 float[] pointInECEF = LocationHelper.WSG84toECEF(arPoints.get(i).getContentLocation());

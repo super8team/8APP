@@ -73,21 +73,25 @@
         "type" : "CLICK",
         "name" : "wrong1",
         "action" : {
-          "out_txt" : "오답입니다."
+          "out_txt" : "빙고테스트.",
+          "bingo" : 1
+
         }
       },
       {
         "type" : "CLICK",
         "name" : "wrong2",
         "action" : {
-          "out_txt" : "오답입니다."
+          "out_txt" : "빙고테스트.",
+          "bingo" : 5
         }
       },
       {
         "type" : "CLICK",
         "name" : "wrong3",
         "action" : {
-          "out_txt" : "오답입니다."
+          "out_txt" : "빙고테스트.",
+          "bingo" : 9
         }
       },
       {
@@ -172,7 +176,9 @@
             "visionable":true,
             "clickable":true,
             "disable":false
-          }]
+          }],
+          "endQuest" : true,
+          "endBingo" : true
         }
       }
     ],

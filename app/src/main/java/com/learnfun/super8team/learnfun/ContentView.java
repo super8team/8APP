@@ -73,6 +73,8 @@ abstract public class ContentView {
             }
             if (code.has("quest")){
                 Log.i("액션코드부분","체크됨");
+                //데이터베이스에 현재상태 저장
+                contentActivity.getDB().insert("quest","on");
                 String message = code.getString("quest");
                 contentActivity.onQuestButton(message);
             }
@@ -80,14 +82,16 @@ abstract public class ContentView {
                 contentActivity.closeQuestButton();
             }
             if (code.has("bingo")){
-                Log.i("액션코드부분","체크됨");
-                String message = code.getString("quest");
-                contentActivity.onQuestButton(message);
+                int pointer = code.getInt("bingo");
+                //데이터베이스에 현재상태 저장
+                contentActivity.getDB().insert("bingo", String.valueOf(pointer));
+                //빙고실행
+                contentActivity.onBingoButton();
             }
             if (code.has("endBingo")){
-                Log.i("액션코드부분","체크됨");
-                String message = code.getString("quest");
-                contentActivity.onQuestButton(message);
+
+                //빙고종료
+                contentActivity.closeBingoButton();
             }
             if (code.has("collection")){
                 Log.i("액션코드부분","체크됨");
