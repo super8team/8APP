@@ -441,6 +441,8 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             bingo.setBackgroundResource(R.drawable.bingo);
         }else if( resultCode==5229){
             contentMap.setBackgroundResource(R.drawable.map);
+        }else if (resultCode==3073){
+            collection.setBackgroundResource(R.drawable.inventory);
         }
 
 
@@ -541,9 +543,6 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
         Effect effect = new Effect(this,x,y);
 
-        if (effect.getParent() != null) {
-            ((ViewGroup) effect.getParent()).removeView(effect);
-        }
         OverlayLayout.addView(effect);
 
 
@@ -619,31 +618,32 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public RelativeLayout getOverlayLayout() {return OverlayLayout; }
 
     public void checkSideMenus(){
-        if(dbManager.select("quest").equals("on")){
+        if(!dbManager.select("quest").equals("null")){
             //퀘스트 컨텐츠가 on 상태일때
-            quest.setVisibility(View.VISIBLE);
+            onQuestButton();
         }
         if(dbManager.select("bingo").length() > 1){
             //빙고 컨텐츠 길이가 2이상일때
-            bingo.setVisibility(View.VISIBLE);
+            onBingoButton();
         }
         if(dbManager.select("collect").equals("on")){
             //수집 컨텐츠가 on 상태일때
-            collection.setVisibility(View.VISIBLE);
+            onCollectButton();
         }
         if(dbManager.select("map").equals("on")){
             //맵 컨텐츠가 on 상태일때
-            contentMap.setVisibility(View.VISIBLE);
+            onMapButton();
         }
     }
 
-    public void onQuestButton(final String msg) {
+    public void onQuestButton() {
         Log.i("뷰띄우는부분","체크됨");
         quest.setBackgroundResource(R.drawable.quest_mark);
         quest.setVisibility(View.VISIBLE);
         quest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String msg = dbManager.select("quest");
                 Intent intent = new Intent(ContentActivity.this,ContentQuest.class);
                 intent.putExtra("message",msg);
                 startActivityForResult(intent,7732);
@@ -710,5 +710,25 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         contentMap.setVisibility(View.GONE);
 
         dbManager.reset("map");
+    }
+
+    public void onCollectButton(){
+        collection.setBackgroundResource(R.drawable.inventory_mark);
+        collection.setVisibility(View.VISIBLE);
+        collection.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ContentActivity.this,ContentCollection.class);
+
+                startActivityForResult(intent,3073);
+                overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
+            }
+        });
+    }
+
+    public void closeCollectButton(){
+        collection.setVisibility(View.GONE);
+
+        dbManager.reset("collect");
     }
 }
