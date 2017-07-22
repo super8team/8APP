@@ -69,7 +69,7 @@ public class DBManager extends SQLiteOpenHelper{
         }else{
             //데이터베이스에 내용이 없으면 참 -> 명세를 디비에 저장하고 반환
             db.execSQL("insert into JSON_CODE values('"+json+"')");
-            db.execSQL("insert into CONTENT values('quest'  , 'off')");
+            db.execSQL("insert into CONTENT values('quest'  , 'null')");
             db.execSQL("insert into CONTENT values('bingo'  , '/')");
             db.execSQL("insert into CONTENT values('collect', 'off')");
             db.execSQL("insert into CONTENT values('map'    , 'off')");
@@ -122,7 +122,7 @@ public class DBManager extends SQLiteOpenHelper{
         SQLiteDatabase db = getWritableDatabase();
         switch (type){
             case "quest":
-                db.execSQL("update CONTENT set sql = 'off' where type = 'quest'");
+                db.execSQL("update CONTENT set sql = 'null' where type = 'quest'");
                 break;
             case "bingo":
                 db.execSQL("update CONTENT set sql =   '/' where type = 'bingo'");

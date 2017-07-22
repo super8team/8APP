@@ -83,7 +83,7 @@
         "name" : "wrong2",
         "action" : {
           "out_txt" : "빙고테스트.",
-          "bingo" : 5
+          "bingo" : 2
         }
       },
       {
@@ -100,6 +100,7 @@
         "action" : {
           "out_txt" : "정답입니다.",
           "quest" :"퀘스트퀘스트 퀘스트",
+          "bingo" : 3,
           "end": "end"
         }
       }

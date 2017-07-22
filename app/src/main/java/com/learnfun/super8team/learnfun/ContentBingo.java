@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -78,7 +79,30 @@ public class ContentBingo extends AppCompatActivity {
                     break;
             }
         }
-
+//        Log.i("빙고뷰 상태", String.valueOf(bingoBoard.get(0).getVisibility()));
+        for(int i=0,j=0;j<3;i+=3,j++){
+            if(bingoBoard.get(0+i).getVisibility()==View.VISIBLE && bingoBoard.get(1+i).getVisibility()==View.VISIBLE && bingoBoard.get(2+i).getVisibility()==View.VISIBLE){
+                bingoBoard.get(0+i).setBackgroundResource(R.drawable.inventory);
+                bingoBoard.get(1+i).setBackgroundResource(R.drawable.inventory);
+                bingoBoard.get(2+i).setBackgroundResource(R.drawable.inventory);
+            }
+            if(bingoBoard.get(0+j).getVisibility()==View.VISIBLE && bingoBoard.get(3+j).getVisibility()==View.VISIBLE && bingoBoard.get(6+j).getVisibility()==View.VISIBLE ){
+                bingoBoard.get(0+j).setBackgroundResource(R.drawable.inventory);
+                bingoBoard.get(3+j).setBackgroundResource(R.drawable.inventory);
+                bingoBoard.get(6+j).setBackgroundResource(R.drawable.inventory);
+            }
+            if(bingoBoard.get(0).getVisibility()==View.VISIBLE && bingoBoard.get(4).getVisibility()==View.VISIBLE && bingoBoard.get(8).getVisibility()==View.VISIBLE ){
+                bingoBoard.get(0).setBackgroundResource(R.drawable.inventory);
+                bingoBoard.get(4).setBackgroundResource(R.drawable.inventory);
+                bingoBoard.get(8).setBackgroundResource(R.drawable.inventory);
+            }
+            if(bingoBoard.get(2).getVisibility()==View.VISIBLE && bingoBoard.get(4).getVisibility()==View.VISIBLE && bingoBoard.get(6).getVisibility()==View.VISIBLE ){
+                bingoBoard.get(2).setBackgroundResource(R.drawable.inventory);
+                bingoBoard.get(4).setBackgroundResource(R.drawable.inventory);
+                bingoBoard.get(6).setBackgroundResource(R.drawable.inventory);
+            }
+        }
         setResult(4132);
     }
 }
+
