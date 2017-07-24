@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 public class ParentsMainActivity extends AppCompatActivity {
-    private Button goToHistoryDetail , goToSurvey ;
+    private Button goToHistoryDetail , goToSurvey , goToNoticeList ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,9 +15,11 @@ public class ParentsMainActivity extends AppCompatActivity {
 
         goToHistoryDetail = (Button)findViewById(R.id.goToHistoryDetail);
         goToSurvey = (Button)findViewById(R.id.goToSurvey);
+        goToNoticeList = (Button)findViewById(R.id.goToNoticeList);
 
         goToHistoryDetail.setOnClickListener(mainListener);
         goToSurvey.setOnClickListener(mainListener);
+        goToNoticeList.setOnClickListener(mainListener);
 
 
     }
@@ -41,7 +43,9 @@ public class ParentsMainActivity extends AppCompatActivity {
 
                     break;
 
-
+                case R.id.goToNoticeList:
+                    intent = new Intent(ParentsMainActivity.this, NoticeListActivity.class);
+                    startActivity(intent);
 
 
             }

@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.view.Window.FEATURE_NO_TITLE;
+
 public class Dialog extends AppCompatActivity  {
     private TextView textView;
     private ImageView imageView;
@@ -28,6 +30,7 @@ public class Dialog extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(FEATURE_NO_TITLE);
         setContentView(R.layout.activity_dialog);
 
 //        findViewById(R.id.dialog_exit).setOnClickListener(this);
@@ -37,16 +40,19 @@ public class Dialog extends AppCompatActivity  {
 
         //넘어오는 인텐트값 확인후 뷰 표시
         Intent intent = getIntent();
-        Log.i("컨텐트명",intent.getExtras().getString("name"));
-        Log.i("값", String.valueOf(intent.hasExtra("end")));
+        Intent back = new Intent();
 
-        if(intent.hasExtra("end")){
-//            boolean value = intent.getExtras().getBoolean("end");
-            String   name  = intent.getExtras().getString("name");
-            Intent back = new Intent();
-//            back.putExtra("end", value);
-            back.putExtra("name", name);
-            setResult(3203, intent);
+        if(intent.hasExtra("end") || intent.hasExtra("toast")){
+            if(intent.hasExtra("name")){
+                String   name  = intent.getExtras().getString("name");
+                back.putExtra("name", name);
+            }
+            if(intent.hasExtra("toast")){
+                String message = intent.getExtras().getString("toast");
+                back.putExtra("toast",message);
+            }
+
+            setResult(3203, back);
         }
         if(intent.hasExtra("text")){
             textView.setText(intent.getExtras().getString("text"));

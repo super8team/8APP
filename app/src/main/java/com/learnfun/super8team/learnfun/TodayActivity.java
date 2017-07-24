@@ -1144,14 +1144,14 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     }
 
     public void setLog(String log){
-        String userid = userPreferences.getUserId();
+        String userNo = userPreferences.getUserNo();
 
         sendData = new JSONObject();
 
         try {
 
             //recentDate.put("date",getDate());
-            sendData.put("userID",userid);
+            sendData.put("userNo",userNo);
             sendData.put("log",log);
 
         } catch (JSONException e) {
@@ -1162,14 +1162,14 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
     }
     public String getLog(){
-        String userid = userPreferences.getUserId();
+        String userNo = userPreferences.getUserNo();
         String returnString="";
         sendData = new JSONObject();
 
         try {
 
             //recentDate.put("date",getDate());
-            sendData.put("userID",userid);
+            sendData.put("userNo",userNo);
 
         } catch (JSONException e) {
             e.printStackTrace();

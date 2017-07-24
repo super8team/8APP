@@ -18,15 +18,19 @@ public class TxtView extends ContentView{
     private String description;
     private int size;
     private String color;
+    private String background;
+    private float alpha;
     private TextView textView;
 
     TxtView(JSONObject jobj,View view,String name) throws JSONException {
         this.id           = jobj.getInt("id");
-        this.ContentName = name;
+        this.contentName = name;
         this.name         = jobj.getString("name");
         this.description = jobj.getString("description");
         this.size         = jobj.getInt("size");
         this.color        = jobj.getString("color");
+        this.background  = jobj.getString("background");
+        this.alpha        = (float) jobj.getDouble("alpha");
 
         textView = (TextView) view;
 
@@ -43,7 +47,8 @@ public class TxtView extends ContentView{
 
         //텍스트 컬러
         textView.setTextColor(Color.parseColor(this.color));
-
+        textView.setBackgroundColor(Color.parseColor(this.background));
+        textView.setAlpha(this.alpha);
         //텍스트뷰 출력
         textView.setVisibility(View.VISIBLE);
     }
@@ -61,7 +66,7 @@ public class TxtView extends ContentView{
                 Log.i("리스너 클릭","버튼 클릭");
                 Intent intent = new Intent(contentActivity,Dialog.class);
 
-                contentActivity.startActivityForResult(setActionScript(code,intent,ContentName),3203);
+                contentActivity.startActivityForResult(setActionScript(code,intent,contentName,contentActivity),3203);
                 contentActivity.overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
             }
         });
@@ -76,9 +81,9 @@ public class TxtView extends ContentView{
 
                 //정답을 맞췄을경우 출력화면
                 if (editview.getText().toString().equals(answer)){
-                    intent = setActionScript(ooo,intent,ContentName);
+                    intent = setActionScript(ooo,intent,contentName,contentActivity);
                 }else { //틀렷을경우 출력화면
-                    intent = setActionScript(xxx,intent,ContentName);
+                    intent = setActionScript(xxx,intent,contentName,contentActivity);
                 }
 
                 contentActivity.startActivityForResult(intent,3203);

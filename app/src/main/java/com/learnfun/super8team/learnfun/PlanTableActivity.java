@@ -81,14 +81,16 @@ public class PlanTableActivity extends AppCompatActivity {
                     text[tr][td].setWidth(450);    // 크기
 
                     row[tr].addView(text[tr][td]);
-
+                    table.addView(row[tr]);
                 } // td for end
-                table.addView(row[tr], rowLayout);
+
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         mlayout.addView(table,rowLayout);
+//        table.addView(row[tr]);
+//        addView(row);
     }
 }

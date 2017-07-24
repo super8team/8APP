@@ -26,6 +26,7 @@
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -60,8 +61,22 @@
         <activity android:name=".ContentActivity" />
         <activity
             android:name=".Dialog"
-            android:theme="@style/Base.Theme.AppCompat.Dialog"/>
+            android:theme="@style/Base.Theme.AppCompat.Dialog" />
         <activity android:name=".SurveyListActivity" />
-        <activity android:name=".HistoryListActivity"></activity>
+        <activity android:name=".HistoryListActivity" />
+        <activity
+            android:name=".ContentQuest"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity android:name=".ContentBingo" />
+        <activity
+            android:name=".ContentMap"
+            android:label="@string/title_activity_content_map" />
+        <activity
+            android:name=".ContentCollection"
+            android:label="@string/title_activity_content_collection"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NoticeListActivity" />
+        <activity android:name=".NoticeDetailActivity"></activity>
     </application>
+
 </manifest>

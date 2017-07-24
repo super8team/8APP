@@ -23,6 +23,7 @@ public class UserPreferences {
     private static UserPreferences userPreferences = null;
 
     final static String USERID = "id";
+    final static String USERNO = "no";
     final static String USERNAME = "name";
     final static String USERTYPE = "type";
     final static String CHILD = "child";
@@ -54,6 +55,7 @@ public class UserPreferences {
         try {
             // 저장된 값 불러오기 (프리퍼런스 --> json객체)
             user.put(USERID, preferences.getString(USERID, ""));
+            user.put(USERNO, preferences.getString(USERNO, ""));
             user.put(USERNAME, preferences.getString(USERID, ""));
             user.put(USERTYPE, preferences.getString(USERTYPE, ""));
             user.put(CHILD, preferences.getString(CHILD, ""));
@@ -70,6 +72,7 @@ public class UserPreferences {
         editor.clear();
         try {
             editor.putString(USERID, user.getString(USERID));
+            editor.putString(USERNO, user.getString(USERNO));
             editor.putString(USERNAME, user.getString(USERNAME));
             editor.putString(USERTYPE, user.getString(USERTYPE));
             editor.putString(CHILD, user.getString(CHILD));
@@ -120,6 +123,10 @@ public class UserPreferences {
         String userClass = "";
         userClass = preferences.getString(CLASS, "");
         return userClass;
+    }
+
+    public String getUserNo() {
+        return preferences.getString(USERNO, "");
     }
 
     public void removeUser() {

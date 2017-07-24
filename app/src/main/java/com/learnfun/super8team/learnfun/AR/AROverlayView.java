@@ -55,6 +55,7 @@ public class AROverlayView extends View {
 
     public List<Float> getNavigationPoint (Location location, int i) {
         float[] currentLocationInECEF = LocationHelper.WSG84toECEF(currentLocation);
+//        Log.i(TAG, String.format("curLocation lat: %s, log: %s", currentLocation.getLatitude(), currentLocation.getLongitude()));
         float[] pointInECEF = LocationHelper.WSG84toECEF(arPoints.get(i).getContentLocation());
         float[] pointInENU = LocationHelper.ECEFtoENU(currentLocation, currentLocationInECEF, pointInECEF);
 
@@ -86,9 +87,10 @@ public class AROverlayView extends View {
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
         paint.setTextSize(60);
         for (int i = 0; i < arPoints.size(); i ++) {
-            Log.i(TAG, arPoints.get(i).getContentName()+": "+arPoints.get(i).getVisionable());
+//            Log.i(TAG, arPoints.get(i).getContentName()+": "+arPoints.get(i).getVisionable());
             if(arPoints.get(i).getVisionable()) {
                 float[] currentLocationInECEF = LocationHelper.WSG84toECEF(currentLocation);
+//                Log.i(TAG, String.format("curLocation lat: %s, log: %s", currentLocation.getLatitude(), currentLocation.getLongitude()));
                 float[] pointInECEF = LocationHelper.WSG84toECEF(arPoints.get(i).getContentLocation());
                 float[] pointInENU = LocationHelper.ECEFtoENU(currentLocation, currentLocationInECEF, pointInECEF);
 
@@ -102,6 +104,7 @@ public class AROverlayView extends View {
                     float x = (0.5f + cameraCoordinateVector[0] / cameraCoordinateVector[3]) * canvas.getWidth();
                     float y = (0.5f - cameraCoordinateVector[1] / cameraCoordinateVector[3]) * canvas.getHeight();
 
+//                    Log.d(TAG, "draw x: "+x+", y: "+y);
                     canvas.drawCircle(x, y, radius, paint);
                     canvas.drawText(arPoints.get(i).getContentName(), x - (30 * arPoints.get(i).getContentName().length() / 2), y - 80, paint);
                 }

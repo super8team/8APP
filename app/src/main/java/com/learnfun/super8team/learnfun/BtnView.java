@@ -25,7 +25,7 @@ public class BtnView extends ContentView{
 
     BtnView(JSONObject jobj,View view,String name) throws JSONException {
         this.id     = jobj.getInt("id");
-        this.ContentName = name;
+        this.contentName = name;
         this.name   = jobj.getString("name");
         this.fill   = jobj.getString("fill");
         this.color  = jobj.getString("color");
@@ -77,7 +77,7 @@ public class BtnView extends ContentView{
                 Log.i("리스너 클릭","버튼 클릭");
                 Intent intent = new Intent(contentActivity,Dialog.class);
 
-                contentActivity.startActivityForResult(setActionScript(code,intent,ContentName),3203);
+                contentActivity.startActivityForResult(setActionScript(code,intent,contentName,contentActivity),3203);
                 contentActivity.overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
             }
         });
@@ -91,9 +91,9 @@ public class BtnView extends ContentView{
                 Intent intent = new Intent(contentActivity,Dialog.class);
                     //정답을 맞췄을경우 출력화면
                     if (editview.getText().toString().equals(answer)){
-                        intent = setActionScript(ooo,intent,ContentName);
+                        intent = setActionScript(ooo,intent,contentName,contentActivity);
                     }else { //틀렷을경우 출력화면
-                        intent = setActionScript(xxx,intent,ContentName);
+                        intent = setActionScript(xxx,intent,contentName,contentActivity);
                     }
 
                 contentActivity.startActivityForResult(intent,3203);

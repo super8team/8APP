@@ -36,6 +36,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.load.resource.drawable.DrawableResource;
 import com.learnfun.super8team.learnfun.AR.ARCamera;
 import com.learnfun.super8team.learnfun.AR.AROverlayView;
 import com.learnfun.super8team.learnfun.AR.LocationHelper;
@@ -83,9 +84,15 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     private NetworkAsync requestNetwork;
     private UserPreferences userPreferences = UserPreferences.getUserPreferences(context);
 
-    // GPS/네비게이션 좌표값 확인하는 용도 ㅎ.ㅎ
-    private TextView tvGPS;
-    private TextView tvNAV;
+
+    private LinearLayout countParameter;
+    private LinearLayout scoreParameter;
+    private ImageButton quest;
+    private ImageButton bingo;
+    private ImageButton collection;
+    private ImageButton contentMap;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +100,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         setContentView(R.layout.activity_content);
 
         //DB생성
-        dbManager = new DBManager(getApplicationContext(),"content",null,1);
+        dbManager = new DBManager(getApplicationContext(),"content",null,3);
 //        Log.i("db???",dbManager.toString());
 
         // AR카메라를 위한 초기 설정
@@ -105,7 +112,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         OverlayLayout = (RelativeLayout) findViewById(R.id.overlay_layout);
 
         initContents();
-        requestCameraPermission();
+//        requestCameraPermission();
         // 0607 22:00 여기 있던 권한 설정은 onResume으로 옮겼습니다 ㅎ.ㅎ 카메라 권한 따고 초기화 하는 거랑 같이 하기 위해서!
         // 0607 23:53 권한 획득에 자꾸 실패해서 진아코드로 대체
 
@@ -136,18 +143,23 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     protected void onResume() {
+        Log.i("카메라 상태 ", String.valueOf(camera));
         super.onResume();
         // 권한 획득
         requestLocationPermission();
+        requestCameraPermission();
         registerSensors();
         initAROverlayView();
 
     }
 
     public void onPause() {
-//        releaseCamera();
         super.onPause();
-        locationManager.removeUpdates(this);
+        if (locationManager!=null)
+            locationManager.removeUpdates(this);
+        if (sensorManager!=null)
+            sensorManager.unregisterListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR));
+//        releaseCamera();
     }
 
     private void releaseCamera() {
@@ -173,15 +185,27 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     public void requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            Log.e(TAG, "requestLocationPermission - if");
+            Log.e(TAG, "requestLocationPermission - if");
             this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS_CODE);
         } else {
-//            Log.e(TAG, "requestLocationPermission - else");
+            Log.e(TAG, "requestLocationPermission - else");
             initLocationService();
         }
     }
 
     private void initContents() {
+
+        //상위 메뉴들 선언
+        countParameter = (LinearLayout) findViewById(R.id.countParameter);
+        scoreParameter = (LinearLayout) findViewById(R.id.scoreParameter);
+
+        quest = (ImageButton) findViewById(R.id.questBtn);
+        bingo = (ImageButton) findViewById(R.id.bingoBtn);
+        contentMap = (ImageButton) findViewById(R.id.mapBtn);
+        collection = (ImageButton) findViewById(R.id.collectBtn);
+
+        //로컬 데이터베이스 체크후 진행중이던 메뉴 팝업
+        checkSideMenus();
 
         try {
         JSONObject userInputInfo = new JSONObject();
@@ -192,9 +216,12 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             // 서버에 유저아이디를 넘기고 명세를 넘겨받음
         requestNetwork = new NetworkAsync(context,"getContents",NetworkAsync.POST, userInputInfo);
 
+//            dbManager.testClear();
 
         //로컬 디비에 명세가 없으면 명세를 저장, 명세가 있으면 로컬명세를 읽음
         String data = dbManager.init(call().toString());
+//            String data = "";
+
 //
 //        실제실행 코드
 //        String data = dbManager.init(requestNetwork.execute().get());
@@ -254,10 +281,10 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                     MIN_TIME_BW_UPDATES,
                     MIN_DISTANCE_CHANGE_FOR_UPDATES,
                     this);
-//            if(locationManager != null) {
-//                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//                Log.i(TAG, "gps init from NETWORK provider");
-//            }
+            if(locationManager != null) {
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                Log.i(TAG, "gps init from NETWORK provider");
+            }
         } // end if network envables
 
         if (isGPSEnabled) {
@@ -265,15 +292,15 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
                     MIN_TIME_BW_UPDATES,
                     MIN_DISTANCE_CHANGE_FOR_UPDATES,
                     this);
-//            if (locationManager != null) {
-//                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//                Log.i(TAG, "gps init from GPS provider");
-//            }
+            if (locationManager != null) {
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Log.i(TAG, "gps init from GPS provider");
+            }
         } // end if gps enabled
 
-//        if (location != null ) {
-//            updateLatestLocation();
-//        } // end if location is not null
+        if (location != null ) {
+            updateLatestLocation();
+        } // end if location is not null
     } // end function initLocationService
 
     private void updateLatestLocation() {
@@ -388,21 +415,37 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i("리절트 실행", "===================================");
+        Log.i("토스트 내용물", "aaa"+String.valueOf(data));
         if(resultCode == 3203){
             Log.i("코드 일치", String.valueOf(resultCode));
-            String contentName = data.getStringExtra("name");
 
-            for(int i=0;i<contents.size();i++){
-                //반환값의 이름과 같은 이름의 컨텐츠를 찾는다.
-                if(contents.get(i).getContentName().equals(contentName)){
-                    //찾아서 종료,
-                    contents.get(i).unsetContentView();
+            if(data.hasExtra("name")){
+                String contentName = data.getStringExtra("name");
+                Log.i("반환 이름?",contentName);
+                for(int i=0;i<contents.size();i++){
+                    //반환값의 이름과 같은 이름의 컨텐츠를 찾는다.
+                    if(contents.get(i).getContentName().equals(contentName)){
+                        //찾아서 종료,
+                        contents.get(i).unsetContentView();
+                    }
                 }
             }
+
+            if(data.hasExtra("toast")){
+                Toast.makeText(this,data.getStringExtra("toast"),Toast.LENGTH_SHORT).show();
+            }
+        }else if( resultCode==7732){
+            //한번 들어갔다가 나오면 아이콘 원상태로 복귀
+            quest.setBackgroundResource(R.drawable.quest);
+        }else if( resultCode==4132){
+            bingo.setBackgroundResource(R.drawable.bingo);
+        }else if( resultCode==5229){
+            contentMap.setBackgroundResource(R.drawable.map);
+        }else if (resultCode==3073){
+            collection.setBackgroundResource(R.drawable.inventory);
         }
-        if(resultCode == 1717){
-            Toast.makeText(this,"test용 톳트",Toast.LENGTH_SHORT).show();
-        }
+
+
     }
 
     @Override
@@ -421,6 +464,22 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             Matrix.multiplyMM(rotatedProjectionMatrix, 0, projectionMatrix, 0, rotationMatrixFromVector, 0);
             this.arOverlayView.updateRotatedProjectionMatrix(rotatedProjectionMatrix);
         }
+
+
+        double accX = sensorEvent.values[0];
+        double accY = sensorEvent.values[1];
+        double accZ = sensorEvent.values[2];
+
+        double angleXZ = Math.atan2(accX,  accZ) * 180/Math.PI;
+        double angleYZ = Math.atan2(accY,  accZ) * 180/Math.PI;
+
+        Log.e("LOG", "ACCELOMETER           [X]:" + String.format("%.4f", sensorEvent.values[0])
+                + "           [Y]:" + String.format("%.4f", sensorEvent.values[1])
+                + "           [Z]:" + String.format("%.4f", sensorEvent.values[2])
+                + "           [angleXZ]: " + String.format("%.4f", angleXZ)
+                + "           [angleYZ]: " + String.format("%.4f", angleYZ));
+
+
     }
 
     @Override
@@ -480,13 +539,12 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         int y = (int)event.getY()-130;
         Location contentsLocation;
 
-//        Log.e(TAG, "onTouch: "+x+", "+y);
-//        Effect effect = new Effect(this,x,y);
-//
-//        if (effect.getParent() != null) {
-//            ((ViewGroup) effect.getParent()).removeView(effect);
-//        }
-//        OverlayLayout.addView(effect);
+        Log.e(TAG, "onTouch: "+x+", "+y);
+
+        Effect effect = new Effect(this,x,y);
+
+        OverlayLayout.addView(effect);
+
 
         if (!locationServiceAvailable) return super.onTouchEvent(event);
 
@@ -541,9 +599,136 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         }
     }
 
+    public void setContentStatus(String contentName,boolean visionable, boolean clickable, boolean disable){
+        for(int i =0;i<contents.size();i++){
+            if(contents.get(i).getContentName().equals(contentName)){
+                //로컬데이터베이스 명세 변경
+                Log.i("컨텐츠명 :"+contents.get(i).getContentName(),"비교 명 :"+contentName);
+                contents.get(i).setContentVisionable(visionable);
+                contents.get(i).setContentClickable(clickable);
+                contents.get(i).setContentDisable(disable);
+                getDB().update(contentName,visionable,clickable,disable);
+            }
+        }
+    }
 
     public DBManager getDB(){
         return dbManager;
     }
     public RelativeLayout getOverlayLayout() {return OverlayLayout; }
+
+    public void checkSideMenus(){
+        if(!dbManager.select("quest").equals("null")){
+            //퀘스트 컨텐츠가 on 상태일때
+            onQuestButton();
+        }
+        if(dbManager.select("bingo").length() > 1){
+            //빙고 컨텐츠 길이가 2이상일때
+            onBingoButton();
+        }
+        if(dbManager.select("collect").equals("on")){
+            //수집 컨텐츠가 on 상태일때
+            onCollectButton();
+        }
+        if(dbManager.select("map").equals("on")){
+            //맵 컨텐츠가 on 상태일때
+            onMapButton();
+        }
+    }
+
+    public void onQuestButton() {
+        Log.i("뷰띄우는부분","체크됨");
+        quest.setBackgroundResource(R.drawable.quest_mark);
+        quest.setVisibility(View.VISIBLE);
+        quest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String msg = dbManager.select("quest");
+                Intent intent = new Intent(ContentActivity.this,ContentQuest.class);
+                intent.putExtra("message",msg);
+                startActivityForResult(intent,7732);
+                overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
+            }
+        });
+    }
+    public void closeQuestButton(){
+        quest.setVisibility(View.GONE);
+
+        dbManager.reset("quest");
+    }
+
+    public void onBingoButton(){
+
+        bingo.setBackgroundResource(R.drawable.bingo_mark);
+        bingo.setVisibility(View.VISIBLE);
+        bingo.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //현재 빙고정보를 로컬디비에서 들고온다
+                //저장은 ContentView에서 스크립트가 호출될때 함
+                final String data = dbManager.select("bingo");
+                Intent intent = new Intent(ContentActivity.this,ContentBingo.class);
+                intent.putExtra("data",data);
+                startActivityForResult(intent,4132);
+                overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
+
+            }
+        });
+    }
+    public void closeBingoButton(){
+        bingo.setVisibility(View.GONE);
+        //빙고디비 초기화
+        dbManager.reset("bingo");
+    }
+
+    public void onMapButton(){
+        contentMap.setBackgroundResource(R.drawable.map_mark);
+        contentMap.setVisibility(View.VISIBLE);
+        contentMap.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                //컨텐츠 위치값들 받아오기
+                ArrayList<Location> locations = new ArrayList<Location>();
+                String names[] = new String[contents.size()];
+                for (int i=0;i<contents.size();i++){
+                    locations.add(i,contents.get(i).getContentLocation());
+                    names[i] = contents.get(i).getContentName();
+                }
+
+
+                Intent intent = new Intent(ContentActivity.this,ContentMap.class);
+                intent.putExtra("locations",locations);
+                intent.putExtra("names",names);
+                startActivityForResult(intent,5229);
+                overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
+            }
+        });
+    }
+
+    public void closeMapButton(){
+        contentMap.setVisibility(View.GONE);
+
+        dbManager.reset("map");
+    }
+
+    public void onCollectButton(){
+        collection.setBackgroundResource(R.drawable.inventory_mark);
+        collection.setVisibility(View.VISIBLE);
+        collection.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ContentActivity.this,ContentCollection.class);
+
+                startActivityForResult(intent,3073);
+                overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
+            }
+        });
+    }
+
+    public void closeCollectButton(){
+        collection.setVisibility(View.GONE);
+
+        dbManager.reset("collect");
+    }
 }
