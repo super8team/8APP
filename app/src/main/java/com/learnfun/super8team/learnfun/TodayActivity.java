@@ -12,6 +12,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -67,7 +68,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     private static int MY_LOCATION_REQUEST_CODE = 2000;
     public static final int REQUEST_CODE_WRITE = 1001;
     private LocationManager locationManager;
-    View marker_root_view;
     MarkerOptions myMarker=null;
     private Socket socket=null;
     boolean isPageOpen = false;
@@ -91,14 +91,12 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     ArrayList<Marker> classThreeMarker = new ArrayList();
     ArrayList<Marker> studentMarkerArray = new ArrayList();
     private Button slidingPageClose,writeHistory,logBtn;
-    ArrayAdapter<String> adapter;
     Spinner spinner;
     Switch histroySwitch;
     boolean mSwc = true;    // 스위치 상태를 기억할 변수
     boolean emitSwitch = false;
-    TextView contentView;
+    Boolean placeInCheck=true;
     String logContent = "";
-    ImageView historyImage;
     int spinnerChoice=1;
 
     //히스토리에 이미지를 뿌려주기 위한 변수들
@@ -109,6 +107,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     Bitmap bitmap;
     public ImageView mImageView;
     public TextView mTextView;
+    JSONObject placeList = null;
 
     //dialog
     AppCompatDialog progressDialog;
@@ -183,10 +182,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         chkGpsService(); //GPS sensor on / off check
 
 
-
-
-
-
         slidingPageClose.setOnClickListener(new View.OnClickListener() {//발자취창 눌렀을때 슬라이딩이벤트
             @Override
             public void onClick(View v) {
@@ -212,7 +207,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                     mMap.clear();
 
                     if(parent.getItemAtPosition(position).equals("1반")){
-                        Log.e("planResult", "1반 받았나!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                        Log.e("planResult", "1반 받았나!@");
                         classOneMarker.clear();
 
                         spinnerChoice = 1;
@@ -241,6 +236,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
                 }
             });
+        placeList = getPlaceList();
     }//oncreate function end
 
     //로그를 보여주기 위한 dialog
@@ -254,7 +250,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             // 다이얼로그 메세지 생성 setMessage에 서버에서 로그 기록을 가지고 와서 뿌려줘야함
             alertDialogBuilder
-                    .setMessage("10:00 - 상모고등학교에서 출발했습니다.\n11:30 - 영진전문대학에 진입했습니다.")
+                    .setMessage(getLog())
                     .setCancelable(false)
                     .setNegativeButton("취소", //Negative 버튼 기능 작성
                             new DialogInterface.OnClickListener() {
@@ -393,11 +389,12 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                                         //getImageFromURL(dataJsonObject.getString("url")),dataJsonObject.getString("content")
 
 //                                        myDataset.add(new MyData(dataJsonObject.getString("content"),getImageFromURL("http://163.44.166.91/LEARnFUN/storage/app/historyImgs/1-1.png")));
-                                        imageUrl[i] = dataJsonObject.getString("url");
-                                        content[i] = dataJsonObject.getString("content");
+//                                        imageUrl[i] = dataJsonObject.getString("url");
+//                                        content[i] = dataJsonObject.getString("content");
+                                        myDataset.add(new MyData(dataJsonObject.getString("content"),dataJsonObject.getString("url"),TodayActivity.this));
                                     }
-                                        ImageAsync getImage = new ImageAsync(TodayActivity.this,imageUrl);
-                                        Bitmap[] imageBit = getImage.execute().get();
+//                                        ImageAsync getImage = new ImageAsync(TodayActivity.this,imageUrl);
+//                                        Bitmap[] imageBit = getImage.execute().get();
 //                                        myDataset.add(new MyData(dataJsonObject.getString("content"),bitmap));
 //                                        final String finalImageUrl = imageUrl;
 //                                        Thread mThread = new Thread(){
@@ -425,9 +422,10 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 //
 //                                        try{
 //                                            mThread.join();
-                                    for(int i = 0 ; i < contentList.length();i++){
-                                        myDataset.add(new MyData(content[i],imageBit[i]));
-                                    }
+//                                    for(int i = 0 ; i < contentList.length();i++){
+//
+//                                        myDataset.add(new MyData(content[i],imageBit[i]));
+//                                    }
 
 //
 //
@@ -515,29 +513,45 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                         //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
                             //제이슨 객체안의 데이터를 빼온다
                             Log.d("studentname", obj.getString("class"));
-                        for(int i =0; i < studentMarkerArray.size(); i++){
+                        int studentMarkerSize=0;
+                        if(studentMarkerArray.isEmpty()){
+                            studentMarkerSize = 0;
+                        }else{
+                            studentMarkerSize=studentMarkerArray.size();
+                        }
+                        boolean isStudentMarker=false;
 
+                        for(int i =0; i < studentMarkerSize; i++){
+                            Log.d("포문", "포문안에들어옴");
                             if(studentMarkerArray.get(i).getTitle().equals(obj.getString("name"))){
+                                isStudentMarker=true;
 
+                            }else{
+                                isStudentMarker=false;
+                            }
+                        }
+
+                            if(isStudentMarker){
+                                Log.d("이미있다", "이미마커가 있어");
                                 LatLng latLng = new LatLng(obj.getDouble("lat"), obj.getDouble("lng"));
-                                studentMarkerArray.get(i).setPosition(latLng);
+
 
                                 if(obj.getString("class").equals("1")){
                                     for(int j=0; j<classOneMarker.size();j++){
-                                        if(classOneMarker.get(i).getTitle().equals(obj.getString("name"))){
-                                            classOneMarker.get(i).setPosition(latLng);
+                                        if(classOneMarker.get(j).getTitle().equals(obj.getString("name"))){
+                                            classOneMarker.get(j).setPosition(latLng);
                                         }
                                     }
                                 }else if(obj.getString("class").equals("2")){
                                     for(int j=0; j<classTwoMarker.size();j++){
-                                        if(classTwoMarker.get(i).getTitle().equals(obj.getString("name"))){
-                                            classTwoMarker.get(i).setPosition(latLng);
+                                        if(classTwoMarker.get(j).getTitle().equals(obj.getString("name"))){
+                                            classTwoMarker.get(j).setPosition(latLng);
                                         }
                                     }
                                 }else{
                                     for(int j=0; j<classThreeMarker.size();j++){
-                                        if(classThreeMarker.get(i).getTitle().equals(obj.getString("name"))){
-                                            classThreeMarker.get(i).setPosition(latLng);
+                                        if(classThreeMarker.get(j).getTitle().equals(obj.getString("name"))){
+                                            classThreeMarker.get(j).setPosition(latLng);
                                         }
                                     }
 
@@ -545,10 +559,10 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
                             }else{
-
-                                if(obj.getString("class").equals("1") && spinnerChoice==1){
+                                Log.d("마커생", "마커를생성하려시도중");
+                                if(obj.getString("class").equals("1") || spinnerChoice==1){
                                     addStudentMarker(obj, "#21ff3f", "1반");
-                                }else if(obj.getString("class").equals("2") && spinnerChoice==2){
+                                }else if(obj.getString("class").equals("2") || spinnerChoice==2){
                                     addStudentMarker(obj,"#ebf224","2반");
                                 }else{
                                     addStudentMarker(obj,"#24d8b4","3반");
@@ -556,7 +570,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                                 }
                             }
 
-                        }
+
 
 
                     } catch (JSONException e) {
@@ -593,29 +607,13 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
     public void getPlanGPS(){ // 히스토리부분
 
-        String userid = userPreferences.getUserId();
 
-        sendData = new JSONObject();
 
-        try {
-
-            //recentDate.put("date",getDate());
-            sendData.put("userID",userid);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        requestNetwork = new NetworkAsync(this, "getPlan",  NetworkAsync.POST, sendData);
 
         try {
             // 네트워크 통신 후 json 획득
-            String returnString = requestNetwork.execute().get();
-            Log.e("planResult", "result is "+returnString);
-            planGPS = new JSONObject(returnString);
 
-            //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
-            JSONObject placeGPS = new JSONObject(planGPS.getString("gps"));
+            JSONObject placeGPS = getPlaceList();
             PolygonOptions rectOptions = new PolygonOptions();
             Log.e("planResult", "result is "+ placeGPS);
 
@@ -777,6 +775,41 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             Log.d("TAG", "onLocationChanged에 들어왔다");
 
             LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+            try{ //현재 교사의 gps를 가지고 장소의 gps 와 비교하여 로그를 남김
+                for(int i = 0 ; i < placeList.length();i++){
+
+                    //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+                    String placeNum = "place" + (i+1);
+                    JSONObject dataJsonObject = placeList.getJSONObject(placeNum);
+                    //JSONObject placeData = new JSONObject(dataJsonObject);
+                    Log.d("TAG", dataJsonObject.getString("name"));
+
+
+                    if(dataJsonObject.getDouble("lat")-0.001<location.getLatitude() && dataJsonObject.getDouble("lat")+0.001>location.getLatitude() && dataJsonObject.getDouble("lng")-0.001 <location.getLongitude() && dataJsonObject.getDouble("lng")+0.001 > location.getLongitude()){
+                        if(!placeInCheck) {
+                            logContent = dataJsonObject.getString("name") + "에 도착했습니다.";
+                            setLog(logContent);
+                            placeInCheck = true;
+                        }
+
+                    }else{
+                        if(placeInCheck) {
+                            logContent = dataJsonObject.getString("name") + "에서 출발했습니다.";
+                            setLog(logContent);
+                            placeInCheck = false;
+                        }
+                    }
+
+
+
+
+                }
+
+            }catch (Exception e){
+
+            }
+
             //Toast.makeText(TodayActivity.this, (int) location.getLatitude()+" 좌표변경",Toast.LENGTH_SHORT).show();
             if(myMarker==null){
                 addMyMarker(myLatLng);
@@ -1074,6 +1107,84 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             }
         }, 3500);
 
+    }
+
+    public JSONObject getPlaceList(){
+        String userid = userPreferences.getUserId();
+
+        sendData = new JSONObject();
+
+        try {
+
+            //recentDate.put("date",getDate());
+            sendData.put("userID",userid);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject placeGPS=null;
+        requestNetwork = new NetworkAsync(this, "getPlan",  NetworkAsync.POST, sendData);
+
+        try {
+            // 네트워크 통신 후 json 획득
+            String returnString = requestNetwork.execute().get();
+            Log.e("planResult", "result is " + returnString);
+            planGPS = new JSONObject(returnString);
+
+            //JSONArray planGPSArray = new JSONArray(planGPS.getString("gps"));
+            placeGPS = new JSONObject(planGPS.getString("gps"));
+            PolygonOptions rectOptions = new PolygonOptions();
+            Log.e("planResult", "result is " + placeGPS);
+
+        }catch (Exception e){
+
+        }
+        return placeGPS;
+    }
+
+    public void setLog(String log){
+        String userid = userPreferences.getUserId();
+
+        sendData = new JSONObject();
+
+        try {
+
+            //recentDate.put("date",getDate());
+            sendData.put("userID",userid);
+            sendData.put("log",log);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        requestNetwork = new NetworkAsync(this, "setLog",  NetworkAsync.POST, sendData);
+
+    }
+    public String getLog(){
+        String userid = userPreferences.getUserId();
+        String returnString="";
+        sendData = new JSONObject();
+
+        try {
+
+            //recentDate.put("date",getDate());
+            sendData.put("userID",userid);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        requestNetwork = new NetworkAsync(this, "setLog",  NetworkAsync.POST, sendData);
+        try {
+            // 네트워크 통신 후 json 획득
+            returnString = requestNetwork.execute().get();
+
+
+        }catch (Exception e){
+
+        }
+        return returnString;
     }
 
 
