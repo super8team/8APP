@@ -75,7 +75,8 @@
             android:name=".ContentCollection"
             android:label="@string/title_activity_content_collection"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NoticeListActivity"></activity>
+        <activity android:name=".NoticeListActivity" />
+        <activity android:name=".NoticeDetailActivity"></activity>
     </application>
 
 </manifest>

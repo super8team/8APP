@@ -88,15 +88,23 @@ public class NoticeListActivity extends AppCompatActivity {
                     text[tr][td].setGravity(Gravity.CENTER);
                     text[tr][td].setWidth(200);
                     text[tr][td].setClickable(true);
-                    text[tr][td].setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Log.i(TAG, "click");
-                            Intent intent = new Intent(NoticeListActivity.this, NoticeDetailActivity.class);
-                            startActivity(intent);
-                        }
-                    });
-//                    Log.i(TAG, "tr: "+tr+", td: "+td+", value: "+(String)notice.get(key));
+                    if (key.equals(new String("title"))) {
+                        Log.i(TAG, "button create");
+                        text[tr][td].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Log.i(TAG, "click");
+                                Intent intent = new Intent(NoticeListActivity.this, NoticeDetailActivity.class);
+                                try {
+                                    intent.putExtra("notice", (String)notice.get("no"));
+                                    startActivity(intent);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                    Log.i(TAG, "tr: "+tr+", td: "+td+", value: "+notice.get(key));
                     row[tr].addView(text[tr][td]);
                     td++;
                 } // td for end

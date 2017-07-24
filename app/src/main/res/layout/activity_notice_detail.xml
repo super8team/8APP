@@ -6,44 +6,123 @@
     android:layout_height="match_parent"
     tools:context="com.learnfun.super8team.learnfun.NoticeDetailActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:weightSum="1"
+        android:id="@+id/relativeLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:id="@+id/titleLine">
 
-            <LinearLayout
-                android:layout_width="73dp"
+            <TextView
+                android:id="@+id/title_name"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/editText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:text="Name" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_weight="0.2"
+                android:text="@string/title"/>
+            <TextView
+                android:id="@+id/title_value"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_weight="0.8"
+                android:layout_alignLeft="@+id/title_name"/>
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="TextView" />
-            </LinearLayout>
         </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/conceptLine"
+            android:layout_below="@+id/titleLine">
+
+            <TextView
+                android:id="@+id/writer_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="@string/writer"/>
+            <TextView
+                android:id="@+id/writer_value"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:layout_alignLeft="@+id/writer_name" />
+
+            <TextView
+                android:id="@+id/date_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="@string/date"
+                android:layout_alignLeft="@+id/writer_value"/>
+            <TextView
+                android:id="@+id/date_value"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:layout_alignLeft="@+id/date_name"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/substanceLine"
+            android:layout_below="@+id/conceptLine">
+
+            <TextView
+                android:id="@+id/respond_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:text="@string/notice_respond"
+                android:layout_alignLeft="@+id/writer_value"/>
+            <TextView
+                android:id="@+id/respond_value"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:layout_alignLeft="@+id/date_name"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/respondLine"
+            android:layout_below="@+id/substanceLine">
+
+            <TextView
+                android:id="@+id/respond"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/respondLine">
+
+            <Button
+                android:id="@+id/confirmBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="1"
+                android:text="@string/agree"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
 </RelativeLayout>

@@ -126,4 +126,11 @@
     </string>
     <string name="action_settings">Settings</string>
 
+    <string name="title">제목</string>
+    <string name="writer">작성자</string>
+    <string name="agree">동의</string>
+    <string name="degree">비동의</string>
+    <string name="date">일시</string>
+    <string name="notice_respond">응답결과</string>
+
 </resources>
