@@ -14,7 +14,9 @@ import static android.view.Window.FEATURE_NO_TITLE;
 
 public class ContentBingo extends AppCompatActivity {
     private ArrayList<ImageView> bingoBoard = new ArrayList<>();
-
+    private final int ON = 1;
+    private final int OFF = 0;
+    private int boardStatus[] = {OFF,OFF,OFF,OFF,OFF,OFF,OFF,OFF,OFF};
     @Override
     public View findViewById(@IdRes int id) {
         return super.findViewById(id);
@@ -51,55 +53,72 @@ public class ContentBingo extends AppCompatActivity {
         for (int i=0;i<pointer.length;i++){
             switch (pointer[i]){
                 case "1":
-                    bingoBoard.get(0).setVisibility(View.VISIBLE);
+                    bingoBoard.get(0).setBackgroundResource(R.drawable.bingocheck);
+                    boardStatus[0] = ON;
                     break;
                 case "2":
-                    bingoBoard.get(1).setVisibility(View.VISIBLE);
+                    bingoBoard.get(1).setBackgroundResource(R.drawable.bingocheck);
+                    boardStatus[1] = ON;
                     break;
                 case "3":
-                    bingoBoard.get(2).setVisibility(View.VISIBLE);
+                    bingoBoard.get(2).setBackgroundResource(R.drawable.bingocheck);
+                    boardStatus[2] = ON;
                     break;
                 case "4":
-                    bingoBoard.get(3).setVisibility(View.VISIBLE);
+                    bingoBoard.get(3).setBackgroundResource(R.drawable.bingocheck);
+                    boardStatus[3] = ON;
                     break;
                 case "5":
-                    bingoBoard.get(4).setVisibility(View.VISIBLE);
+                    bingoBoard.get(4).setBackgroundResource(R.drawable.bingocheck);
+                    boardStatus[4] = ON;
                     break;
                 case "6":
-                    bingoBoard.get(5).setVisibility(View.VISIBLE);
+                    bingoBoard.get(5).setBackgroundResource(R.drawable.bingocheck);
+                    boardStatus[5] = ON;
                     break;
                 case "7":
-                    bingoBoard.get(6).setVisibility(View.VISIBLE);
+                    bingoBoard.get(6).setBackgroundResource(R.drawable.bingocheck);
+                    boardStatus[6] = ON;
                     break;
                 case "8":
-                    bingoBoard.get(7).setVisibility(View.VISIBLE);
+                    bingoBoard.get(7).setBackgroundResource(R.drawable.bingocheck);
+                    boardStatus[7] = ON;
                     break;
                 case "9":
-                    bingoBoard.get(8).setVisibility(View.VISIBLE);
+                    bingoBoard.get(8).setBackgroundResource(R.drawable.bingocheck);
+                    boardStatus[8] = ON;
                     break;
             }
         }
 //        Log.i("빙고뷰 상태", String.valueOf(bingoBoard.get(0).getVisibility()));
         for(int i=0,j=0;j<3;i+=3,j++){
-            if(bingoBoard.get(0+i).getVisibility()==View.VISIBLE && bingoBoard.get(1+i).getVisibility()==View.VISIBLE && bingoBoard.get(2+i).getVisibility()==View.VISIBLE){
-                bingoBoard.get(0+i).setBackgroundResource(R.drawable.inventory);
-                bingoBoard.get(1+i).setBackgroundResource(R.drawable.inventory);
-                bingoBoard.get(2+i).setBackgroundResource(R.drawable.inventory);
+            if(     boardStatus[0+i] == ON &&
+                    boardStatus[1+i] == ON &&
+                    boardStatus[2+i] == ON){
+                bingoBoard.get(0+i).setBackgroundResource(R.drawable.bingoclear);
+                bingoBoard.get(1+i).setBackgroundResource(R.drawable.bingoclear);
+                bingoBoard.get(2+i).setBackgroundResource(R.drawable.bingoclear);
             }
-            if(bingoBoard.get(0+j).getVisibility()==View.VISIBLE && bingoBoard.get(3+j).getVisibility()==View.VISIBLE && bingoBoard.get(6+j).getVisibility()==View.VISIBLE ){
-                bingoBoard.get(0+j).setBackgroundResource(R.drawable.inventory);
-                bingoBoard.get(3+j).setBackgroundResource(R.drawable.inventory);
-                bingoBoard.get(6+j).setBackgroundResource(R.drawable.inventory);
+            if(     boardStatus[0+j] == ON &&
+                    boardStatus[3+j] == ON &&
+                    boardStatus[6+j] == ON ){
+                bingoBoard.get(0+j).setBackgroundResource(R.drawable.bingoclear);
+                bingoBoard.get(3+j).setBackgroundResource(R.drawable.bingoclear);
+                bingoBoard.get(6+j).setBackgroundResource(R.drawable.bingoclear);
             }
-            if(bingoBoard.get(0).getVisibility()==View.VISIBLE && bingoBoard.get(4).getVisibility()==View.VISIBLE && bingoBoard.get(8).getVisibility()==View.VISIBLE ){
-                bingoBoard.get(0).setBackgroundResource(R.drawable.inventory);
-                bingoBoard.get(4).setBackgroundResource(R.drawable.inventory);
-                bingoBoard.get(8).setBackgroundResource(R.drawable.inventory);
+            if(     boardStatus[0] == ON &&
+                    boardStatus[4] == ON &&
+                    boardStatus[8] == ON  ){
+                bingoBoard.get(0).setBackgroundResource(R.drawable.bingoclear);
+                bingoBoard.get(4).setBackgroundResource(R.drawable.bingoclear);
+                bingoBoard.get(8).setBackgroundResource(R.drawable.bingoclear);
             }
-            if(bingoBoard.get(2).getVisibility()==View.VISIBLE && bingoBoard.get(4).getVisibility()==View.VISIBLE && bingoBoard.get(6).getVisibility()==View.VISIBLE ){
-                bingoBoard.get(2).setBackgroundResource(R.drawable.inventory);
-                bingoBoard.get(4).setBackgroundResource(R.drawable.inventory);
-                bingoBoard.get(6).setBackgroundResource(R.drawable.inventory);
+            if(     boardStatus[2] == ON  &&
+                    boardStatus[4] == ON  &&
+                    boardStatus[6] == ON  ){
+                bingoBoard.get(2).setBackgroundResource(R.drawable.bingoclear);
+                bingoBoard.get(4).setBackgroundResource(R.drawable.bingoclear);
+                bingoBoard.get(6).setBackgroundResource(R.drawable.bingoclear);
             }
         }
         setResult(4132);

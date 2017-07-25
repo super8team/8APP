@@ -67,7 +67,9 @@
         <activity
             android:name=".ContentQuest"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        <activity android:name=".ContentBingo" />
+        <activity
+            android:name=".ContentBingo"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity
             android:name=".ContentMap"
             android:label="@string/title_activity_content_map" />
@@ -75,7 +77,8 @@
             android:name=".ContentCollection"
             android:label="@string/title_activity_content_collection"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NoticeListActivity"></activity>
+        <activity android:name=".NoticeListActivity" />
+        <activity android:name=".StarRating"></activity>
     </application>
 
 </manifest>

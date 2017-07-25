@@ -25,6 +25,8 @@ import static android.view.Window.FEATURE_NO_TITLE;
 public class ContentMap extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
+    private final int CAM_MOVED = 0;
+    private int cam = 0;
     private Location mygps = null;
     private ArrayList<Location> locations;
     private String[] names;
@@ -95,7 +97,11 @@ public class ContentMap extends FragmentActivity implements OnMapReadyCallback, 
             LatLng Me = new LatLng(mygps.getLatitude(), mygps.getLongitude());
             mMap.addMarker(new MarkerOptions().position(Me).title("Marker in Me"));
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(Me));
+            if(cam == CAM_MOVED){
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Me,16));
+                cam++;
+            }
+
         }
 
 

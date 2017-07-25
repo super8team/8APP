@@ -434,6 +434,9 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             if(data.hasExtra("toast")){
                 Toast.makeText(this,data.getStringExtra("toast"),Toast.LENGTH_SHORT).show();
             }
+            Intent intent = new Intent(ContentActivity.this,StarRating.class);
+            startActivityForResult(intent,9191);
+
         }else if( resultCode==7732){
             //한번 들어갔다가 나오면 아이콘 원상태로 복귀
             quest.setBackgroundResource(R.drawable.quest);
