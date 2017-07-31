@@ -42,8 +42,8 @@ public class DBManager extends SQLiteOpenHelper{
     public void testClear(){
         SQLiteDatabase db = getWritableDatabase();
 
-        db.execSQL("drop table JSON_CODE");
-        db.execSQL("drop table CONTENT");
+        db.execSQL("delete from JSON_CODE");
+        db.execSQL("delete from CONTENT");
         db.close();
     }
 

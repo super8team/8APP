@@ -407,10 +407,11 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
                         //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
                         Log.d("child", String.valueOf(childObject));
-
+                        JSONObject childArray = new JSONObject(userPreferences.getUserChild());
+                        JSONObject child = new JSONObject(childArray.getString("child1"));
                             //JSONObject dataJsonObject = jsonArray.getJSONObject(i);// 0에 cho 객체가 있음
                             //제이슨 객체안의 데이터를 빼온다
-                        if(userPreferences.getUserChild().equals(childObject.getString("name"))) { //받아온 학생의 이름과 자식의 이름이 같다면
+                        if(child.getString("name").equals(childObject.getString("name"))) { //받아온 학생의 이름과 자식의 이름이 같다면
                             Log.d("studentname", childObject.getString("name"));
                             Double lat = childObject.getDouble("lat");
                             Double lng = childObject.getDouble("lng");
@@ -589,60 +590,58 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                                     mAdapter = new MyAdapter(myDataset);
                                     mRecyclerView.setAdapter(mAdapter);
                                     historyContent = new String[contentList.length()];
-                                    bitmap = new Bitmap[contentList.length()];
+                                    String[] imageUrl,content;
+                                    imageUrl = new String[contentList.length()];
+                                    content = new String[contentList.length()];
+
                                     for(int i = 0 ; i < contentList.length();i++){
 
                                         //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
                                         String contentNum = "content" + (i+1);
                                         JSONObject dataJsonObject = contentList.getJSONObject(contentNum);
-                                        //JSONObject placeData = new JSONObject(dataJsonObject);
-                                        String imageUrl="";
-                                        imageUrl = dataJsonObject.getString("url");
+                                        //JSONObject placeData = new JSONObject(dataJsonObject);sumContent
 
-                                        historyContent[i] = dataJsonObject.getString("content");
+                                        //sumContent += "content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather")+ "\n";
+                                        //contentView.setText("content : " + dataJsonObject.getString("content") + "\nweather : " +dataJsonObject.getString("weather"));
+                                        //getImageFromURL(dataJsonObject.getString("url")),dataJsonObject.getString("content")
 
-                                        final String finalImageUrl = imageUrl;
-                                        final int finalI = i;
-                                        Thread mThread = new Thread(){
-                                            @Override
-                                            public void run() {
-                                                try{//baseShoppingURL
-
-                                                    URL url = new URL(finalImageUrl); //URL주소를 이용해서 URL객체를 생성
-                                                    //아래 코드는 웹에서 이미지를 가져온뒤
-                                                    //이미지 뷰에 지정할 Bitmap을 생성하는 과정
-                                                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-                                                    conn.setDoInput(true);
-                                                    conn.connect();
-
-                                                    InputStream is = conn.getInputStream();
-                                                    bitmap[finalI] = BitmapFactory.decodeStream(is);
-
-                                                }catch (IOException ex){
-
-                                                }
-                                            }
-                                        };
-
-                                        mThread.start();
-
-                                        try{
-                                            mThread.join();
-
-
-
-
-                                        }catch (InterruptedException e){
-
-                                        }
-
-
-
+//                                        myDataset.add(new MyData(dataJsonObject.getString("content"),getImageFromURL("http://163.44.166.91/LEARnFUN/storage/app/historyImgs/1-1.png")));
+//                                        imageUrl[i] = dataJsonObject.getString("url");
+//                                        content[i] = dataJsonObject.getString("content");
+                                        myDataset.add(new MyData(dataJsonObject.getString("content"),dataJsonObject.getString("url"),HistoryDetailActivity.this));
                                     }
-                                    for(int i =0; i<bitmap.length;i++){
-                                        myDataset.add(new MyData(historyContent[i],bitmap[i]));
-                                    }
-                                    //contentView.setText(sumContent);
+//                                    ImageAsync getImage = new ImageAsync(HistoryDetailActivity.this,imageUrl);
+//                                    Bitmap[] imageBit = getImage.execute().get();
+//                                        myDataset.add(new MyData(dataJsonObject.getString("content"),bitmap));
+//                                        final String finalImageUrl = imageUrl;
+//                                        Thread mThread = new Thread(){
+//                                            @Override
+//                                            public void run() {
+//                                                try{//baseShoppingURL
+//
+//                                                    URL url = new URL(finalImageUrl); //URL주소를 이용해서 URL객체를 생성
+//                                                    //아래 코드는 웹에서 이미지를 가져온뒤
+//                                                    //이미지 뷰에 지정할 Bitmap을 생성하는 과정
+//                                                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+//                                                    conn.setDoInput(true);
+//                                                    conn.connect();
+//
+//                                                    InputStream is = conn.getInputStream();
+//                                                    bitmap = BitmapFactory.decodeStream(is);
+//
+//                                                }catch (IOException ex){
+//
+//                                                }
+//                                            }
+//                                        };
+//
+//                                        mThread.start();
+//
+//                                        try{
+//                                            mThread.join();
+//                                    for(int i = 0 ; i < contentList.length();i++){
+//                                        myDataset.add(new MyData(content[i],imageBit[i]));
+//                                    }
 
 
                                 } catch (Exception e) {

@@ -72,7 +72,6 @@ public class ImageAsync extends AsyncTask<Object, Object, Bitmap[]> {
 
                     InputStream is = conn.getInputStream();
                     bitmapImage[i] = BitmapFactory.decodeStream(is);
-
 //                // 요청
 //                int responseCode = conn.getResponseCode();
 //                Log.d(TAG, "requestCode = "+responseCode);

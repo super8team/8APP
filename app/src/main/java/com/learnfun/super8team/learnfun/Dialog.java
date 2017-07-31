@@ -43,9 +43,9 @@ public class Dialog extends AppCompatActivity  {
         Intent back = new Intent();
 
         if(intent.hasExtra("end") || intent.hasExtra("toast")){
-            if(intent.hasExtra("name")){
-                String   name  = intent.getExtras().getString("name");
-                back.putExtra("name", name);
+            if(intent.hasExtra("number")){
+                int  num  = intent.getExtras().getInt("number");
+                back.putExtra("number", num);
             }
             if(intent.hasExtra("toast")){
                 String message = intent.getExtras().getString("toast");

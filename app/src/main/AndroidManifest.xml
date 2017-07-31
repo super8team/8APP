@@ -78,7 +78,11 @@
             android:label="@string/title_activity_content_collection"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NoticeListActivity" />
-        <activity android:name=".StarRating"></activity>
+
+        <activity android:name=".StarRating"
+                   android:theme="@style/Theme.AppCompat.Light.Dialog" />
+
+        <activity android:name=".NoticeDetailActivity"></activity>
     </application>
 
 </manifest>

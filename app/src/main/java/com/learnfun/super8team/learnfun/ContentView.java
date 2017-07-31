@@ -17,7 +17,7 @@ abstract public class ContentView {
 //    protected
     protected int id;
     protected String name;
-    protected String contentName;
+    protected int contentNum;
 
 
 
@@ -37,7 +37,7 @@ abstract public class ContentView {
     abstract public void actionClear();
 
     //액션코드 구분 코드
-    public Intent setActionScript(JSONObject code , Intent intent, String contentName, ContentActivity contentActivity){
+    public Intent setActionScript(JSONObject code , Intent intent, int contentNumber, ContentActivity contentActivity){
         try{
 
                 Log.i("액션 스크립트 길이 :", String.valueOf(code.names()));
@@ -51,7 +51,7 @@ abstract public class ContentView {
                     intent.putExtra("image", image);
                 }
                 if (code.has("end")) {
-                    intent.putExtra("name", contentName);
+                    intent.putExtra("number", contentNumber);
                     intent.putExtra("end", "true");
                 }
                 if (code.has("config")) {

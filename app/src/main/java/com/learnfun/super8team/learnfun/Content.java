@@ -22,8 +22,9 @@ import java.util.ArrayList;
 
 public class Content {
     public static boolean CONTENT_USED = false;
-    public static String ONLINE_CONTENT_NAME = "";
+    public static int ONLINE_CONTENT_NUM;
     private String name;
+    private int number;
     private String vertical;
     private String horizontal;
     private boolean visionable;
@@ -50,6 +51,7 @@ public class Content {
         this.contentActivity = contentActivity;
         this.jobj        = jobj;
         this.name        = jobj.getString("name");
+        this.number      = jobj.getInt("number");
         this.vertical   = jobj.getString("vertical");
         this.horizontal = jobj.getString("horizontal");
         this.visionable = jobj.getBoolean("visionable");
@@ -71,7 +73,7 @@ public class Content {
         //컨텐츠 배열들을 ArrayList에 저장
         //이미지 컨텐츠 배열
         for(int i=0;i<jobj.getJSONArray("image").length();i++){
-            ImgView imgView = new ImgView(jobj.getJSONArray("image").getJSONObject(i), contentActivity.findViewById(imgviews[i]),this.name,contentActivity);
+            ImgView imgView = new ImgView(jobj.getJSONArray("image").getJSONObject(i), contentActivity.findViewById(imgviews[i]),this.number,contentActivity);
 
             this.views.add(imgView);
 
@@ -82,13 +84,13 @@ public class Content {
             if(jobj.getJSONArray("text").getJSONObject(i).getInt("id") == 1){
                 //텍스트 컨텐츠 헤더
 //                Log.i("텍스트 컨텐츠 헤더 값 ::",Integer.toString(jobj.getJSONArray("text").getJSONObject(i).getInt("id")));
-                TxtView txtView = new TxtView(jobj.getJSONArray("text").getJSONObject(i), contentActivity.findViewById(R.id.header_text),this.name);
+                TxtView txtView = new TxtView(jobj.getJSONArray("text").getJSONObject(i), contentActivity.findViewById(R.id.header_text),this.number);
 
                 this.views.add(txtView);
             }else{
                 //텍스트 컨텐츠 바텀
 //                Log.i("텍스트 컨텐츠 바텀 값 ::",Integer.toString(jobj.getJSONArray("text").getJSONObject(i).getInt("id")));
-                TxtView txtView = new TxtView(jobj.getJSONArray("text").getJSONObject(i), contentActivity.findViewById(R.id.bottom_text),this.name);
+                TxtView txtView = new TxtView(jobj.getJSONArray("text").getJSONObject(i), contentActivity.findViewById(R.id.bottom_text),this.number);
 
                 this.views.add(txtView);
             }
@@ -106,7 +108,7 @@ public class Content {
         //버튼 컨텐츠 배열
         for(int i=0;i<jobj.getJSONArray("button").length();i++){
 //            Log.i("버튼 컨텐츠 길이 ::",Integer.toString(jobj.getJSONArray("button").length()));
-            BtnView btnView = new BtnView(jobj.getJSONArray("button").getJSONObject(i), contentActivity.findViewById(btnviews[i]),this.name);
+            BtnView btnView = new BtnView(jobj.getJSONArray("button").getJSONObject(i), contentActivity.findViewById(btnviews[i]),this.number);
 
             this.views.add(btnView);
         }
@@ -173,7 +175,7 @@ public class Content {
     public void setContentView() throws InterruptedException {
         if(!CONTENT_USED){
             CONTENT_USED = true;
-            ONLINE_CONTENT_NAME = this.name;
+            ONLINE_CONTENT_NUM = this.number;
             //컨텐츠 뷰 활성화
             for(int i=0;i<views.size();i++){
                 Log.e("Content", "visible");
@@ -238,15 +240,12 @@ public class Content {
 
     public boolean getVisionable() { return this.visionable; }
     public void setContentVisionable(boolean flag){ this.visionable = flag; }
-    //컨텐츠 지우기
 
-//    //컨텐츠 위도 반환
-//    public double getContentLatitude() { return this.latitude; }
-//    //컨텐츠 경도 반환
-//    public double getContentLongitude() { return this.longitude; }
     public Location getContentLocation() {
         return location;
     }
+
+    public int getNumber() { return this.number; }
 
     private void addScript() {
         //스크립트 읽어들이기
@@ -271,7 +270,7 @@ public class Content {
                         for (int j = 0; j < views.size(); j++) {
 //                            Log.i("제이슨 네임  ",name);
 //                            Log.i("뷰 네임 ", views.get(j).name);
-                            if (name.equals(views.get(j).name) && ONLINE_CONTENT_NAME.equals(views.get(j).contentName)) {
+                            if (name.equals(views.get(j).name) && ONLINE_CONTENT_NUM == views.get(j).contentNum) {
                                 //이름이 같은 컨텐츠 발견시 액션코드를 해당 컨텐츠에 삽입
                                 //반복종료
                                 Log.i("9SS", views.get(j).toString());
@@ -289,7 +288,7 @@ public class Content {
                         for (int j = 0; j < views.size(); j++) {
                             Log.i("체크1-------", name);
                             Log.i("체크1-------", views.get(j).name);
-                            if (name.equals(views.get(j).name) && ONLINE_CONTENT_NAME.equals(views.get(j).contentName)) {
+                            if (name.equals(views.get(j).name) && ONLINE_CONTENT_NUM == views.get(j).contentNum) {
                                 Log.i("9SS", views.get(j).toString() );
                                 views.get(j).setCheckEditAction(editview, answer, ooo, xxx, contentActivity);
 

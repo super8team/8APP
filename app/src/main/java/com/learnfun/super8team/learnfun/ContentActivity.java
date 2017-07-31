@@ -211,7 +211,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         JSONObject userInputInfo = new JSONObject();
             //유저 정보를 가져온다.
 //            Log.i("유저정보   ",userPreferences.getUserId());
-        userInputInfo.put("inputID",userPreferences.getUserId());
+        userInputInfo.put("inputID",userPreferences.getUserNo());
 
             // 서버에 유저아이디를 넘기고 명세를 넘겨받음
         requestNetwork = new NetworkAsync(context,"getContents",NetworkAsync.POST, userInputInfo);
@@ -219,12 +219,13 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 //            dbManager.testClear();
 
         //로컬 디비에 명세가 없으면 명세를 저장, 명세가 있으면 로컬명세를 읽음
-        String data = dbManager.init(call().toString());
+//         String data = dbManager.init(call().toString());
 //            String data = "";
 
 //
 //        실제실행 코드
-//        String data = dbManager.init(requestNetwork.execute().get());
+       String data = dbManager.init(requestNetwork.execute().get());
+            Log.i("네트워크 데이터 ","::"+data);
 
 
 
@@ -249,10 +250,9 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
-//        catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
     }
 
     private void initLocationService() {
@@ -419,23 +419,28 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         if(resultCode == 3203){
             Log.i("코드 일치", String.valueOf(resultCode));
 
-            if(data.hasExtra("name")){
-                String contentName = data.getStringExtra("name");
-                Log.i("반환 이름?",contentName);
+            if(data.hasExtra("number")){
+                int contentNum = data.getIntExtra("number",-1);
+                Log.i("반환 넘버==?", String.valueOf(contentNum));
                 for(int i=0;i<contents.size();i++){
-                    //반환값의 이름과 같은 이름의 컨텐츠를 찾는다.
-                    if(contents.get(i).getContentName().equals(contentName)){
+                    //반환값의 넘버와 같은 컨텐츠를 찾는다.
+                    if(contents.get(i).getNumber() == contentNum){
                         //찾아서 종료,
                         contents.get(i).unsetContentView();
                     }
                 }
+
+                //만족도 조사
+                Intent intent = new Intent(ContentActivity.this,StarRating.class);
+                intent.putExtra("number",contentNum);
+                startActivityForResult(intent,9191);
             }
 
             if(data.hasExtra("toast")){
                 Toast.makeText(this,data.getStringExtra("toast"),Toast.LENGTH_SHORT).show();
             }
-            Intent intent = new Intent(ContentActivity.this,StarRating.class);
-            startActivityForResult(intent,9191);
+
+
 
         }else if( resultCode==7732){
             //한번 들어갔다가 나오면 아이콘 원상태로 복귀
@@ -446,6 +451,38 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             contentMap.setBackgroundResource(R.drawable.map);
         }else if (resultCode==3073){
             collection.setBackgroundResource(R.drawable.inventory);
+        }else if (resultCode==9191){
+            //데이터베이스에 만족도 저장
+            //사용자 No, 콘텐츠 No, 별점을 서버로 전송
+            String userNo = userPreferences.getUserNo();
+            int contentNo = data.getIntExtra("number",-1);
+            int score     = data.getIntExtra("score",0);
+
+            JSONObject scoreInputInfo = new JSONObject();
+            //유저 정보를 가져온다.
+//            Log.i("유저정보   ",userPreferences.getUserId());
+            try {
+                scoreInputInfo.put("userNo",userNo);
+                scoreInputInfo.put("contentNo",contentNo);
+                scoreInputInfo.put("score",score);
+
+                Log.i(" 만족도 타겟 유저","::"+userNo);
+                Log.i(" 만족도 타겟 콘텐츠","::"+contentNo);
+                Log.i(" 만족도 점수","::"+score);
+
+            // 서버에 데이터들을 넘김
+            requestNetwork = new NetworkAsync(context,"contentScore",NetworkAsync.POST, scoreInputInfo);
+
+            //잘 입력되었으면 잘입력되었다는 문자열 얻음 (임시)
+            Log.i("잘입력되었다 :: ","::"+requestNetwork.execute().get());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -476,11 +513,11 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
         double angleXZ = Math.atan2(accX,  accZ) * 180/Math.PI;
         double angleYZ = Math.atan2(accY,  accZ) * 180/Math.PI;
 
-        Log.e("LOG", "ACCELOMETER           [X]:" + String.format("%.4f", sensorEvent.values[0])
-                + "           [Y]:" + String.format("%.4f", sensorEvent.values[1])
-                + "           [Z]:" + String.format("%.4f", sensorEvent.values[2])
-                + "           [angleXZ]: " + String.format("%.4f", angleXZ)
-                + "           [angleYZ]: " + String.format("%.4f", angleYZ));
+//        Log.e("LOG", "ACCELOMETER           [X]:" + String.format("%.4f", sensorEvent.values[0])
+//                + "           [Y]:" + String.format("%.4f", sensorEvent.values[1])
+//                + "           [Z]:" + String.format("%.4f", sensorEvent.values[2])
+//                + "           [angleXZ]: " + String.format("%.4f", angleXZ)
+//                + "           [angleYZ]: " + String.format("%.4f", angleYZ));
 
 
     }
@@ -693,10 +730,12 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
             public void onClick(View v) {
                 //컨텐츠 위치값들 받아오기
                 ArrayList<Location> locations = new ArrayList<Location>();
-                String names[] = new String[contents.size()];
+                ArrayList<String> names = new ArrayList<String>();
                 for (int i=0;i<contents.size();i++){
-                    locations.add(i,contents.get(i).getContentLocation());
-                    names[i] = contents.get(i).getContentName();
+                    if(!contents.get(i).getContentDisable()){
+                        locations.add(contents.get(i).getContentLocation());
+                        names.add(contents.get(i).getContentName());
+                    }
                 }
 
 
