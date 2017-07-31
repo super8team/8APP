@@ -782,9 +782,12 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                     JSONObject dataJsonObject = placeList.getJSONObject(placeNum);
                     //JSONObject placeData = new JSONObject(dataJsonObject);
                     Log.d("TAG", dataJsonObject.getString("name"));
+                    Double latDown = dataJsonObject.getDouble("lat")-0.0006;
+                    Double latUp = dataJsonObject.getDouble("lat")+0.0006;
+                    Double lngLeft = dataJsonObject.getDouble("lng")-0.0006;
+                    Double lngRight = dataJsonObject.getDouble("lng")+0.0006;
 
-
-                    if(dataJsonObject.getDouble("lat")-0.001<location.getLatitude() && dataJsonObject.getDouble("lat")+0.001>location.getLatitude() && dataJsonObject.getDouble("lng")-0.001 <location.getLongitude() && dataJsonObject.getDouble("lng")+0.001 > location.getLongitude()){
+                    if(  latDown < location.getLatitude() && latUp >location.getLatitude()    &&    lngLeft <location.getLongitude() && lngRight > location.getLongitude()   ){
                         if(!placeInCheck) {
                             logContent = dataJsonObject.getString("name") + "에 도착했습니다.";
                             setLog(logContent);
@@ -1161,6 +1164,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     public String getLog(){
         String userNo = userPreferences.getUserNo();
         String returnString="";
+
         sendData = new JSONObject();
 
         try {
@@ -1172,12 +1176,13 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             e.printStackTrace();
         }
 
-        requestNetwork = new NetworkAsync(this, "setLog",  NetworkAsync.POST, sendData);
+        requestNetwork = new NetworkAsync(this, "getLog",  NetworkAsync.POST, sendData);
         try {
             // 네트워크 통신 후 json 획득
             returnString = requestNetwork.execute().get();
 
-
+            JSONObject result = new JSONObject(returnString);
+            returnString = result.getString("log");
         }catch (Exception e){
 
         }

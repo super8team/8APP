@@ -2,15 +2,18 @@ package com.learnfun.super8team.learnfun;
 
 import android.content.Context;
 import android.content.Intent;
+import android.renderscript.Sampler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +23,8 @@ import java.util.ArrayList;
 
 public class HistoryListRecyclerAdapter extends RecyclerView.Adapter<HistoryListRecyclerAdapter.ViewHolder>{
     private ArrayList<HistoryListRecycleItem> mDataset;
-
+    Intent intent;
+    private Context context;
 
 
     // Provide a reference to the views for each data item
@@ -51,8 +55,9 @@ public class HistoryListRecyclerAdapter extends RecyclerView.Adapter<HistoryList
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HistoryListRecyclerAdapter(ArrayList<HistoryListRecycleItem> myDataset) {
+    public HistoryListRecyclerAdapter(ArrayList<HistoryListRecycleItem> myDataset,Context context) {
         mDataset = myDataset;
+        this.context = context;
     }
 
     // Create new views (invoked by the layout manager)
@@ -68,12 +73,28 @@ public class HistoryListRecyclerAdapter extends RecyclerView.Adapter<HistoryList
         return vh;
     }
 
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         holder.noTextView.setText(String.valueOf(mDataset.get(position).no));
         holder.titleTextView.setText(mDataset.get(position).title);
         holder.dateTextView.setText(mDataset.get(position).date);
+
+        final HistoryListRecycleItem item = mDataset.get(position);
+        holder.titleTextView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                System.out.println("아이템@@@@@@@@@@@@@@"+item.no);
+                intent = new Intent(context,BeforeHistoryActivity.class);
+                intent.putExtra("planNo", item.no);
+                context.startActivity(intent);
+            }
+        });
+
 
 
     }
@@ -87,6 +108,7 @@ public class HistoryListRecyclerAdapter extends RecyclerView.Adapter<HistoryList
     public int getItemCount() {
         return mDataset.size();
     }
+
 
 }
 

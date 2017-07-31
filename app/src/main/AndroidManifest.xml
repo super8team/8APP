@@ -78,13 +78,12 @@
             android:label="@string/title_activity_content_collection"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NoticeListActivity" />
-        <activity android:name=".StarRating"
-                   android:theme="@style/Theme.AppCompat.Light.Dialog" />
-
-        <activity android:name=".NoticeDetailActivity"></activity>
-
-        <activity android:name=".SurveyDetailActivity"></activity>
-
+        <activity
+            android:name=".StarRating"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity android:name=".NoticeDetailActivity" />
+        <activity android:name=".SurveyDetailActivity" />
+        <activity android:name=".BeforeHistoryActivity"></activity>
     </application>
 
 </manifest>

@@ -34,6 +34,7 @@ public class HistoryListActivity extends AppCompatActivity {
 
         try {
             //recentDate.put("date",getDate());
+            sendData.put("userType",userPreferences.getUserType());
             sendData.put("userNo",userPreferences.getUserNo());
 
         } catch (JSONException e) {
@@ -64,7 +65,7 @@ public class HistoryListActivity extends AppCompatActivity {
 
             // specify an adapter (see also next example)
             myDataset = new ArrayList<>();
-            mAdapter = new HistoryListRecyclerAdapter(myDataset);
+            mAdapter = new HistoryListRecyclerAdapter(myDataset,HistoryListActivity.this);
             mRecyclerView.setAdapter(mAdapter);
 
 

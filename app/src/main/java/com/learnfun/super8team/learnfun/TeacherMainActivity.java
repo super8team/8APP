@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 public class TeacherMainActivity extends AppCompatActivity {
-    private Button goToToday , goToPlanTable , goToStudentList , goToContens , goToCheckList;
+    private Button goToToday , goToPlanTable , goToStudentList , goToContens , goToCheckList, goToHistory;
 
 
 
@@ -22,14 +22,14 @@ public class TeacherMainActivity extends AppCompatActivity {
         goToStudentList = (Button)findViewById(R.id.goToStudentList);
         goToContens = (Button)findViewById(R.id.goToContens);
         goToCheckList = (Button)findViewById(R.id.goToCheckList);
-
+        goToHistory = (Button)findViewById(R.id.goToHistory);
 
         goToToday.setOnClickListener(mainListener);
         goToPlanTable.setOnClickListener(mainListener);
         goToStudentList.setOnClickListener(mainListener);
         goToContens.setOnClickListener(mainListener);
         goToCheckList.setOnClickListener(mainListener);
-
+        goToHistory.setOnClickListener(mainListener);
 
     }
 
@@ -66,6 +66,11 @@ public class TeacherMainActivity extends AppCompatActivity {
 
                 case R.id.goToCheckList:
                     intent = new Intent(TeacherMainActivity.this, CheckListActivity.class);
+                    startActivity(intent);
+
+                    break;
+                case R.id.goToHistory:
+                    intent = new Intent(TeacherMainActivity.this, HistoryListActivity.class);
                     startActivity(intent);
 
                     break;

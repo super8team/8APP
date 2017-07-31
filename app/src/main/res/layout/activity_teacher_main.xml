@@ -107,6 +107,22 @@
                 android:textSize="20dp"
                 android:layout_weight="0.93" />
         </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.25">
+
+        <Button
+            android:id="@+id/goToHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="86dp"
+            android:layout_weight="1.00"
+            android:background="@color/colorAccent"
+            android:textColor="@color/colorWrite"
+            android:textSize="20dp"
+            android:text="@string/history_List" />
+    </LinearLayout>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
