@@ -373,9 +373,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                                     myDataset = new ArrayList<>();
                                     mAdapter = new MyAdapter(myDataset);
                                     mRecyclerView.setAdapter(mAdapter);
-                                    String[] imageUrl,content;
-                                    imageUrl = new String[contentList.length()];
-                                    content = new String[contentList.length()];
+
 
                                     for(int i = 0 ; i < contentList.length();i++){
 

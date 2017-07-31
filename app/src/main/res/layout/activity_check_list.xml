@@ -6,23 +6,14 @@
     android:layout_height="match_parent"
     tools:context="com.learnfun.super8team.learnfun.CheckListActivity">
 
-    <ScrollView
-        android:id="@+id/scrollPage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/checkList"
+        <android.support.v7.widget.RecyclerView
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:id="@+id/checkList_recycler_view"
+            >
+        </android.support.v7.widget.RecyclerView>
 
-        </RelativeLayout>
-        </HorizontalScrollView>
-</ScrollView>
 
 </RelativeLayout>
 
