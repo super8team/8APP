@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -62,9 +63,19 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        final CheckListItem data = mDataset.get(position);
 
         holder.dateTextView.setText(mDataset.get(position).substance);
 
+        holder.substanceCheckBox.setOnCheckedChangeListener(null);
+        holder.substanceCheckBox.setChecked(data.isSelected());
+        holder.substanceCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//set your object's last status
+                data.setSelected(isChecked);
+            }
+        });
 
     }
 
@@ -83,10 +94,17 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
 class CheckListItem {
 
     public String substance;
-
+    private boolean isSelected;
     public CheckListItem(String substance){
 
         this.substance = substance;
+    }
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
 
