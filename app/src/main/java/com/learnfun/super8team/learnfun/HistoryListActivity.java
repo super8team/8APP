@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.TableLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +51,6 @@ public class HistoryListActivity extends AppCompatActivity {
             JSONArray planList = new JSONArray(returnString);
             //JSONObject contentList = new JSONObject(place.getString("place"));
 
-            String sumContent = "";
 
             //cardView를 만들기위한 코드
             mRecyclerView = (RecyclerView) findViewById(R.id.history_recycler_view);
