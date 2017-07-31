@@ -31,15 +31,15 @@ public class ImgView extends ContentView {
     private ImageView imageView;
 
     private ContentActivity contentActivity;
-    ImgView(JSONObject jobj, View view, String name,ContentActivity contentActivity) throws JSONException, InterruptedException {
+    ImgView(JSONObject jobj, View view, int number,ContentActivity contentActivity) throws JSONException, InterruptedException {
         //이미지컨텐츠 제이슨 받아서 값 분배
-        this.id = jobj.getInt("id");
-        this.contentName = name;
-        this.name = jobj.getString("name");
-        this.src = jobj.getString("src");
-        this.width = jobj.getInt("width");
-        this.height = jobj.getInt("height");
-        this.contentActivity = contentActivity;
+        this.id                 = jobj.getInt("id");
+        this.contentNum        = number;
+        this.name               = jobj.getString("name");
+        this.src                = jobj.getString("src");
+        this.width              = jobj.getInt("width");
+        this.height             = jobj.getInt("height");
+        this.contentActivity   = contentActivity;
         imageView = (ImageView) view;
 
         Log.i("이미지뷰 설정완료 -----", this.name);
@@ -80,14 +80,14 @@ public class ImgView extends ContentView {
 
     @Override
     public void setClickAction(final JSONObject code, final ContentActivity contentActivity) {
-        Log.i("이미지뷰 클릭 리스너 설정 ","설정된 컨텐츠 "+contentName);
+        Log.i("이미지뷰 클릭 리스너 설정 ","설정된 컨텐츠 "+contentNum);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("이미지뷰 클릭 ", contentName);
+                Log.i("이미지뷰 클릭 ", String.valueOf(contentNum));
                 Intent intent = new Intent(contentActivity,Dialog.class);
 
-                contentActivity.startActivityForResult(setActionScript(code,intent,contentName,contentActivity),3203);
+                contentActivity.startActivityForResult(setActionScript(code,intent,contentNum,contentActivity),3203);
                 contentActivity.overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
             }
         });
@@ -95,18 +95,18 @@ public class ImgView extends ContentView {
 
     @Override
     public void setCheckEditAction(final EditText editview, final String answer, final JSONObject ooo, final JSONObject xxx, final ContentActivity contentActivity) {
-        Log.i("이미지뷰 에디트 리스너 설정 ","설정된 컨텐츠 "+contentName);
+        Log.i("이미지뷰 에디트 리스너 설정 ","설정된 컨텐츠 "+contentNum);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("이미지뷰 에디트 ", contentName);
+                Log.i("이미지뷰 에디트 ", String.valueOf(contentNum));
                 Intent intent = new Intent(contentActivity,Dialog.class);
 
                 //정답을 맞췄을경우 출력화면
                 if (editview.getText().toString().equals(answer)){
-                    intent = setActionScript(ooo,intent,contentName,contentActivity);
+                    intent = setActionScript(ooo,intent,contentNum,contentActivity);
                 }else { //틀렷을경우 출력화면
-                    intent = setActionScript(xxx,intent,contentName,contentActivity);
+                    intent = setActionScript(xxx,intent,contentNum,contentActivity);
                 }
 
                 contentActivity.startActivityForResult(intent,3203);

@@ -25,9 +25,11 @@ import static android.view.Window.FEATURE_NO_TITLE;
 public class ContentMap extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
+    private final int CAM_MOVED = 0;
+    private int cam = 0;
     private Location mygps = null;
     private ArrayList<Location> locations;
-    private String[] names;
+    private ArrayList<String> names;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class ContentMap extends FragmentActivity implements OnMapReadyCallback, 
 
         Intent intent = getIntent();
         locations = (ArrayList<Location>) intent.getSerializableExtra("locations");
-        names = intent.getStringArrayExtra("names");
+        names = (ArrayList<String>) intent.getSerializableExtra("names");
 //        mygps = new Location("mygps");
 //        mygps.setLatitude(127.267);
 //        mygps.setLongitude(37.413);
@@ -95,14 +97,18 @@ public class ContentMap extends FragmentActivity implements OnMapReadyCallback, 
             LatLng Me = new LatLng(mygps.getLatitude(), mygps.getLongitude());
             mMap.addMarker(new MarkerOptions().position(Me).title("Marker in Me"));
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(Me));
+            if(cam == CAM_MOVED){
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Me,16));
+                cam++;
+            }
+
         }
 
 
         //컨텐츠 갯수많큼 위치생성
         for(int i=0;i<locations.size();i++){
             LatLng contents = new LatLng(locations.get(i).getLatitude(),locations.get(i).getLongitude());
-            mMap.addMarker(new MarkerOptions().position(contents).title("Marker in "+names[i]));
+            mMap.addMarker(new MarkerOptions().position(contents).title("Marker in "+names.get(i)));
             //각 컨텐츠위치를 저장후 마킹
         }
 

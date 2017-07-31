@@ -1,104 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:gravity="center|top">
-            <ImageView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/bingo_mark"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
             <GridLayout
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bingoboard"
                 android:rowCount="3"
                 android:columnCount="3">
                 <ImageView
                     android:id="@+id/bingoBoard1"
-                    android:src="@drawable/bkarrow"
+                    android:background="@drawable/white"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_column="0"
                     android:layout_row="0"
-                    android:visibility="invisible"
+                    android:layout_margin="5dp"
                     />
                 <ImageView
                     android:id="@+id/bingoBoard2"
-                    android:src="@drawable/bkarrow"
+                    android:background="@drawable/white"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_column="1"
                     android:layout_row="0"
-                    android:visibility="invisible"
+                    android:layout_margin="5dp"
                     />
                 <ImageView
                     android:id="@+id/bingoBoard3"
-                    android:src="@drawable/bkarrow"
+                    android:background="@drawable/white"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_column="2"
                     android:layout_row="0"
-                    android:visibility="invisible"
+                    android:layout_margin="5dp"
                     />
                 <ImageView
                     android:id="@+id/bingoBoard4"
-                    android:src="@drawable/bkarrow"
+                    android:background="@drawable/white"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_column="0"
                     android:layout_row="1"
-                    android:visibility="invisible"
+                    android:layout_margin="5dp"
                     />
                 <ImageView
                     android:id="@+id/bingoBoard5"
-                    android:src="@drawable/bkarrow"
+                    android:background="@drawable/white"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_column="1"
                     android:layout_row="1"
-                    android:visibility="invisible"
+                    android:layout_margin="5dp"
                     />
                 <ImageView
                     android:id="@+id/bingoBoard6"
-                    android:src="@drawable/bkarrow"
+                    android:background="@drawable/white"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_column="2"
                     android:layout_row="1"
-                    android:visibility="invisible"
+                    android:layout_margin="5dp"
                     />
                 <ImageView
                     android:id="@+id/bingoBoard7"
-                    android:src="@drawable/bkarrow"
+                    android:background="@drawable/white"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_column="0"
                     android:layout_row="2"
-                    android:visibility="invisible"
+                    android:layout_margin="5dp"
                     />
                 <ImageView
                     android:id="@+id/bingoBoard8"
-                    android:src="@drawable/bkarrow"
+                    android:background="@drawable/white"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_column="1"
                     android:layout_row="2"
-                    android:visibility="invisible"
+                    android:layout_margin="5dp"
                     />
                 <ImageView
                     android:id="@+id/bingoBoard9"
-                    android:src="@drawable/bkarrow"
+                    android:background="@drawable/white"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_column="2"
                     android:layout_row="2"
-                    android:visibility="invisible"
+                    android:layout_margin="5dp"
                     />
             </GridLayout>
-        </LinearLayout>
-
-    </RelativeLayout>
-
 </LinearLayout>

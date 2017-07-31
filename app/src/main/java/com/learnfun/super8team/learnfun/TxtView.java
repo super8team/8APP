@@ -22,9 +22,9 @@ public class TxtView extends ContentView{
     private float alpha;
     private TextView textView;
 
-    TxtView(JSONObject jobj,View view,String name) throws JSONException {
+    TxtView(JSONObject jobj,View view,int number) throws JSONException {
         this.id           = jobj.getInt("id");
-        this.contentName = name;
+        this.contentNum  = number;
         this.name         = jobj.getString("name");
         this.description = jobj.getString("description");
         this.size         = jobj.getInt("size");
@@ -66,7 +66,7 @@ public class TxtView extends ContentView{
                 Log.i("리스너 클릭","버튼 클릭");
                 Intent intent = new Intent(contentActivity,Dialog.class);
 
-                contentActivity.startActivityForResult(setActionScript(code,intent,contentName,contentActivity),3203);
+                contentActivity.startActivityForResult(setActionScript(code,intent,contentNum,contentActivity),3203);
                 contentActivity.overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_right);
             }
         });
@@ -81,9 +81,9 @@ public class TxtView extends ContentView{
 
                 //정답을 맞췄을경우 출력화면
                 if (editview.getText().toString().equals(answer)){
-                    intent = setActionScript(ooo,intent,contentName,contentActivity);
+                    intent = setActionScript(ooo,intent,contentNum,contentActivity);
                 }else { //틀렷을경우 출력화면
-                    intent = setActionScript(xxx,intent,contentName,contentActivity);
+                    intent = setActionScript(xxx,intent,contentNum,contentActivity);
                 }
 
                 contentActivity.startActivityForResult(intent,3203);
