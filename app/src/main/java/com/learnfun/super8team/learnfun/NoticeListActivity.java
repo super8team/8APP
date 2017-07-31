@@ -27,7 +27,6 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public class NoticeListActivity extends AppCompatActivity {
     final static String TAG = "NoticeListActivity";
     final String NOTICEURI = "noticeList";
-    final String ANSWER = "answer";
 
     RelativeLayout tableLayout;
     NetworkAsync requestNetwork;
