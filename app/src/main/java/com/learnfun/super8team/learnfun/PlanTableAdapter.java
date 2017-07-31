@@ -13,8 +13,8 @@ import java.util.ArrayList;
  * Created by cho on 2017-07-31.
  */
 
-public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.ViewHolder>{
-    private ArrayList<CheckListItem> mDataset;
+public class PlanTableAdapter extends RecyclerView.Adapter<PlanTableAdapter.ViewHolder>{
+    private ArrayList<PlanListItem> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -22,15 +22,19 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         // each data item is just a string in this case
 
-        public TextView dateTextView;
-        public CheckBox substanceCheckBox;
+        public TextView planDetailNo;
+        public TextView planDetailName;
+        public TextView planDetailDate;
+
 
         public ViewHolder(View view) {
             super(view);
             view.setOnClickListener(this);
 
-            dateTextView = (TextView)view.findViewById(R.id.substance);
-            substanceCheckBox= (CheckBox) view.findViewById(R.id.checkList_checkBox);
+            planDetailNo = (TextView)view.findViewById(R.id.plan_detail_no);
+            planDetailName = (TextView)view.findViewById(R.id.plan_detail_name);
+            planDetailDate = (TextView)view.findViewById(R.id.plan_detail_date);
+
         }
         @Override
         public void onClick(View v) {
@@ -43,17 +47,17 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public CheckListAdapter(ArrayList<CheckListItem> myDataset) {
+    public PlanTableAdapter(ArrayList<PlanListItem> myDataset) {
         mDataset = myDataset;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public CheckListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                    int viewType) {
+    public PlanTableAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                          int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_checklist_recycle_view, parent, false);
+                .inflate(R.layout.item_plan_recycle_view, parent, false);
         // set the view's size, margins, paddings and layout parameters
 
         ViewHolder vh = new ViewHolder(v);
@@ -63,7 +67,9 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.dateTextView.setText(mDataset.get(position).substance);
+        holder.planDetailNo.setText(String.valueOf(mDataset.get(position).no));
+        holder.planDetailName.setText(mDataset.get(position).name);
+        holder.planDetailDate.setText(mDataset.get(position).date);
 
 
     }
@@ -80,13 +86,17 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
 
 }
 
-class CheckListItem {
+class PlanListItem {
 
-    public String substance;
+    public int no;
+    public String name;
+    public String date;
 
-    public CheckListItem(String substance){
+    public PlanListItem(int no,String name,String date){
 
-        this.substance = substance;
+        this.no = no;
+        this.name = name;
+        this.date = date;
     }
 
 

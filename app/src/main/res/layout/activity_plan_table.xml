@@ -5,22 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.learnfun.super8team.learnfun.PlanTableActivity">
-    <ScrollView
-        android:id="@+id/scrollPage"
+    <android.support.v7.widget.RecyclerView
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/planDetail_recycler_view"
         >
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RelativeLayout
-                android:id="@+id/plan_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </RelativeLayout>
-        </HorizontalScrollView>
-    </ScrollView>
+    </android.support.v7.widget.RecyclerView>
 </RelativeLayout>
 

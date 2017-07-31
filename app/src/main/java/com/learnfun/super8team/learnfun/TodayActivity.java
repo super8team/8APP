@@ -812,8 +812,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             if(myMarker==null){
                 addMyMarker(myLatLng);
 
-            }
-            else{
+            }else{
                 myMarker.position(myLatLng);
 
             }
