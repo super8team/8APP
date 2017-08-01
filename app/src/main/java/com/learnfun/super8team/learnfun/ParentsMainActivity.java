@@ -47,6 +47,7 @@ public class ParentsMainActivity extends AppCompatActivity {
                 case R.id.goToNoticeList:
                     intent = new Intent(ParentsMainActivity.this, NoticeListActivity.class);
                     startActivity(intent);
+                    break;
 
                 case R.id.goToHistory:
                     intent = new Intent(ParentsMainActivity.this, HistoryListActivity.class);

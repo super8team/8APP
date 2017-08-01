@@ -1,12 +1,18 @@
 package com.learnfun.super8team.learnfun;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -16,7 +22,10 @@ import java.util.ArrayList;
 
 public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.ViewHolder>{
     private ArrayList<CheckListItem> mDataset;
-
+    private Button save;
+    private Context context;
+    UserPreferences userPreferences;
+    NetworkAsync requestNetwork;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -44,8 +53,10 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public CheckListAdapter(ArrayList<CheckListItem> myDataset) {
+    public CheckListAdapter(ArrayList<CheckListItem> myDataset,Button save,Context context) {
         mDataset = myDataset;
+        this.save = save;
+        this.context = context;
     }
 
     // Create new views (invoked by the layout manager)
@@ -62,23 +73,72 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         final CheckListItem data = mDataset.get(position);
 
         holder.dateTextView.setText(mDataset.get(position).substance);
 
         holder.substanceCheckBox.setOnCheckedChangeListener(null);
         holder.substanceCheckBox.setChecked(data.isSelected());
+        final ArrayList<Integer> checked = new ArrayList<>();
+        final ArrayList<Integer> noChecked = new ArrayList<>();
         holder.substanceCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 //set your object's last status
                 data.setSelected(isChecked);
+                if(data.isSelected()){
+                System.out.println("position : "+ mDataset.get(position).substance +"   no : " + mDataset.get(position).no );
+
+                    checked.add(mDataset.get(position).no);
+                    for(int i =0; i < noChecked.size();i++){
+                        if(noChecked.get(i)==mDataset.get(position).no){
+                            noChecked.remove(i);
+                        }
+                    }
+                }else{
+
+                    noChecked.add(mDataset.get(position).no);
+                    for(int i =0; i < checked.size();i++){
+                        if(checked.get(i)==mDataset.get(position).no){
+                            checked.remove(i);
+                        }
+                    }
+                }
             }
         });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONArray checkedArray = new JSONArray(checked);
+                JSONArray noCheckedArray = new JSONArray(noChecked);
+
+            JSONObject sendData = new JSONObject();
+            userPreferences = UserPreferences.getUserPreferences(context);
+
+            try {
+                //recentDate.put("date",getDate());
+                sendData.put("userNo", userPreferences.getUserNo());
+                sendData.put("checked",checkedArray);
+                sendData.put("noChecked",noCheckedArray);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            requestNetwork = new NetworkAsync(context, "setCheckList",  NetworkAsync.POST, sendData);
+
+                //저장버튼 클릭시 저장되었습니다 표시 출력
+                String save = context.getString(R.string.saved);
+
+                Toast toast = Toast.makeText(context, save,
+                        Toast.LENGTH_SHORT);
+                toast.show();
+
+            }
 
 
-
+        });
     }
 
 
@@ -97,9 +157,12 @@ class CheckListItem {
 
     public String substance;
     private boolean isSelected;
-    public CheckListItem(String substance){
+    public int no;
+
+    public CheckListItem(String substance, int no){
 
         this.substance = substance;
+        this.no = no;
     }
     public boolean isSelected() {
         return isSelected;

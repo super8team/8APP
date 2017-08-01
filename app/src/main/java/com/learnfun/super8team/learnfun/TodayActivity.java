@@ -68,7 +68,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     private static int MY_LOCATION_REQUEST_CODE = 2000;
     public static final int REQUEST_CODE_WRITE = 1001;
     private LocationManager locationManager;
-    MarkerOptions myMarker=null;
     private Socket socket=null;
     boolean isPageOpen = false;
     String placeNum="";
@@ -79,11 +78,11 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     ScrollView scrollPage;
 
     LatLng SEOUL = new LatLng(35.896687, 128.620512);
-
+    Marker myMarker=null;
     JSONObject sendData,planGPS;
     UserPreferences userPreferences;
     NetworkAsync requestNetwork;
-    //ArrayList<LatLng> classOne = new ArrayList();
+
     ArrayList<Marker> classOneMarker = new ArrayList();
     //ArrayList<LatLng> classTwo = new ArrayList();
     ArrayList<Marker> classTwoMarker = new ArrayList();
@@ -98,7 +97,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     Boolean placeInCheck=true;
     String logContent = "";
     int spinnerChoice=1;
-
+    int   startPoint = 0;
     //히스토리에 이미지를 뿌려주기 위한 변수들
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -108,7 +107,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     public ImageView mImageView;
     public TextView mTextView;
     JSONObject placeList = null;
-
+    LatLng myLatLng=null;
     //dialog
     AppCompatDialog progressDialog;
 
@@ -212,23 +211,24 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
                         spinnerChoice = 1;
 
-                        if(myMarker!=null) mMap.addMarker(myMarker);
+
 
                     }else if(parent.getItemAtPosition(position).equals("2반")){
                         classTwoMarker.clear();
 
                         spinnerChoice=2;
 
-                        if(myMarker!=null) mMap.addMarker(myMarker);
+
 
                     }else{
                         classThreeMarker.clear();
 
                         spinnerChoice=3;
 
-                        if(myMarker!=null) mMap.addMarker(myMarker);
+
 
                     }
+                    addMyMarker();
                 }
 
                 @Override
@@ -307,7 +307,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 
             mSwc = isChecked;
-            if(isChecked == true){ //처음 화면은 학생들의 위치를 나타내주는 화면
+            if(isChecked == true){ //히스토리화면
                 histroySwitch.setText("발자취");
                 mMap.clear();
 
@@ -315,7 +315,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                 classOneMarker.clear();
                 classTwoMarker.clear();
                 classThreeMarker.clear();
-                if(myMarker!=null) mMap.addMarker(myMarker);
+                if(myMarker!=null) addMyMarker();
                 getPlanGPS();
 
 
@@ -448,11 +448,11 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                 });
 
 
-            } else{// 히스토리를 나타내는 화면
+            } else{// 학생화면
                 histroySwitch.setText("학생위치");
                 mMap.clear();
                 spinner.setVisibility(View.VISIBLE); // 화면에보임
-                if(myMarker!=null) mMap.addMarker(myMarker);
+                if(myMarker!=null) addMyMarker();
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
@@ -535,8 +535,10 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
                                 if(obj.getString("class").equals("1")){
+                                    System.out.println("들어옴");
                                     for(int j=0; j<classOneMarker.size();j++){
                                         if(classOneMarker.get(j).getTitle().equals(obj.getString("name"))){
+                                            System.out.println("이름이 같으니 위치변경!!!!!!!");
                                             classOneMarker.get(j).setPosition(latLng);
                                         }
                                     }
@@ -772,46 +774,96 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             //setCustomMarkerView();
             Log.d("TAG", "onLocationChanged에 들어왔다");
 
-            LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             if(myMarker==null){
-                addMyMarker(myLatLng);
+                addMyMarker();
 
             }else{
-                myMarker.position(myLatLng);
+                //myMarkers.get(0).position(myLatLng);
+
+                myMarker.setPosition(myLatLng);
 
             }
+            Boolean logChecked = true;
             try{ //현재 교사의 gps를 가지고 장소의 gps 와 비교하여 로그를 남김
-                for(int i = 0 ; i < placeList.length();i++){
+//                for(int i = 0 ; i < placeList.length();i++){
+//
+//                    //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+//                    String placeNum = "place" + (i+1);
+//                    JSONObject dataJsonObject = placeList.getJSONObject(placeNum);
+//                    //JSONObject placeData = new JSONObject(dataJsonObject);
+//                    Log.d("TAG", dataJsonObject.getString("name"));
+//                    Double latDown = dataJsonObject.getDouble("lat")-0.0006;
+//                    Double latUp = dataJsonObject.getDouble("lat")+0.0006;
+//                    Double lngLeft = dataJsonObject.getDouble("lng")-0.0006;
+//                    Double lngRight = dataJsonObject.getDouble("lng")+0.0006;
+//
+//
+//                        if(  latDown < location.getLatitude() && latUp >location.getLatitude()    &&    lngLeft <location.getLongitude() && lngRight > location.getLongitude()   ){
+//                            if(!placeInCheck) {
+//                                logContent = dataJsonObject.getString("name") + "에 도착했습니다.";
+//                                System.out.println(placeInCheck+"    "+logContent);
+//                                setLog(logContent);
+//                                placeInCheck = true;
+//                            }
+//
+//                        }else{
+//                            if(placeInCheck) {
+//                                logContent = dataJsonObject.getString("name") + "에서 출발했습니다.";
+//                                System.out.println(placeInCheck+"    "+logContent);
+//                                setLog(logContent);
+//                                placeInCheck = false;
+//                            }
+//                        }
+//
+//                    }
 
-                    //제이슨배열을 만든것을 하나씩 제이슨 객체로 만듬
+                String rLog  = "" ;
+                Double rLatDown =0.0  ;
+                Double rLatUp  =0.0 ;
+                Double rLngLeft  =0.0 ;
+                Double rLngRight=0.0;
+
+                for(int i = startPoint ; i < placeList.length();i++){
                     String placeNum = "place" + (i+1);
                     JSONObject dataJsonObject = placeList.getJSONObject(placeNum);
                     //JSONObject placeData = new JSONObject(dataJsonObject);
                     Log.d("TAG", dataJsonObject.getString("name"));
-                    Double latDown = dataJsonObject.getDouble("lat")-0.0006;
-                    Double latUp = dataJsonObject.getDouble("lat")+0.0006;
-                    Double lngLeft = dataJsonObject.getDouble("lng")-0.0006;
-                    Double lngRight = dataJsonObject.getDouble("lng")+0.0006;
-
-                    if(  latDown < location.getLatitude() && latUp >location.getLatitude()    &&    lngLeft <location.getLongitude() && lngRight > location.getLongitude()   ){
-                        if(!placeInCheck) {
+                    Double latDown = dataJsonObject.getDouble("lat")-0.002;
+                    Double latUp = dataJsonObject.getDouble("lat")+0.002;
+                    Double lngLeft = dataJsonObject.getDouble("lng")-0.002;
+                    Double lngRight = dataJsonObject.getDouble("lng")+0.002;
+                    if(i==startPoint){
+                        rLog = dataJsonObject.getString("name");
+                         rLatDown   = latDown;
+                         rLatUp   = latUp;
+                         rLngLeft   = lngLeft;
+                         rLngRight= lngRight;
+                    }
+                    if(!placeInCheck){
+                        if( i> 0 && latDown < location.getLatitude() && latUp >location.getLatitude()    &&    lngLeft <location.getLongitude() && lngRight > location.getLongitude() ){
                             logContent = dataJsonObject.getString("name") + "에 도착했습니다.";
+                            System.out.println(placeInCheck+"    "+logContent);
                             setLog(logContent);
                             placeInCheck = true;
+                            rLog = dataJsonObject.getString("name");
+                             rLatDown   = latDown;
+                             rLatUp   = latUp;
+                             rLngLeft   = lngLeft;
+                             rLngRight= lngRight;
                         }
-
                     }else{
-                        if(placeInCheck) {
-                            logContent = dataJsonObject.getString("name") + "에서 출발했습니다.";
+                        if(!(rLatDown    < location.getLatitude() && rLatUp    >location.getLatitude()    &&    rLngLeft   <location.getLongitude() && rLngRight> location.getLongitude())){
+                            logContent = rLog  + "에서 출발했습니다.";
+                            System.out.println(placeInCheck+"    "+logContent);
                             setLog(logContent);
                             placeInCheck = false;
+                            startPoint++;
                         }
                     }
-
-
-
-
                 }
+
+
 
             }catch (Exception e){
 
@@ -855,20 +907,21 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 //        return bitmap;
 //    }
 
-    private void addMyMarker(LatLng latLng){
+    private void addMyMarker(){
         Log.d("TAG", "마커생성!!!!!!!!!!!!!!!!!");
         //현재 위치에 마커 생성
 
-        myMarker = new MarkerOptions();
-        myMarker.position(latLng);
-        myMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.mymarkerd)); // change the color of marker(red)
-        myMarker.title("현재위치");
-        mMap.addMarker(myMarker);
+        if(myLatLng!=null) {
+            myMarker = mMap.addMarker(new MarkerOptions()
+                    .position(myLatLng)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.mymarkerd)) // change the color of marker(red)
+                    .title("현재위치"));
 
-        //지도 상에서 보여주는 영역 이동
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-        //mGoogleApiClient.connect();
+            //지도 상에서 보여주는 영역 이동
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            //mGoogleApiClient.connect();
+        }
     }
 
     private void addStudentMarker(JSONObject studentObj,String markerColor,String className) throws JSONException {
@@ -1159,7 +1212,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         }
 
         requestNetwork = new NetworkAsync(this, "setLog",  NetworkAsync.POST, sendData);
-
+        requestNetwork.execute();
     }
     public String getLog(){
         String userNo = userPreferences.getUserNo();

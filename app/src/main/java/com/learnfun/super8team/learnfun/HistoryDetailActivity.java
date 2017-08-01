@@ -76,7 +76,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     private static int MY_LOCATION_REQUEST_CODE = 2000;
     public static final int REQUEST_CODE_WRITE = 1001;
     private LocationManager locationManager;
-    MarkerOptions myMarker=null;
+
     MarkerOptions cMarker=null;
     private Socket socket=null;
     UserPreferences userPreferences;
@@ -88,12 +88,12 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     LinearLayout slidingPage01;
     ScrollView scrollPage;
     private Button slidingPageClose,writeHistory,logBtn;
-
+    LatLng myLatLng=null;
     String placeNum="";
     boolean isPageOpen = false;
     AppCompatDialog progressDialog;
     TextView contentView;
-
+    Marker myMarker=null;
     //히스토리에 이미지를 뿌려주기 위한 변수들
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -254,7 +254,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
             Log.d("TAG", "onLocationChanged에 들어왔다");
 
-            LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             JSONObject gps = new JSONObject();
             Log.d("TAG", "로케이션안에 들어옴");
             Log.d("TAG", String.valueOf(location));
@@ -276,8 +276,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             socket.emit("childGPSToServer",gps);
             socket.emit("studentGPSToServer",gps);
 
-            if(myMarker==null) addMyMarker(myLatLng);
-            else myMarker.position(myLatLng);
+            if(myMarker==null) addMyMarker();
+            else myMarker.setPosition(myLatLng);
 
         }
 
@@ -738,20 +738,21 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 //        }
 
 
-    private void addMyMarker(LatLng latLng){
+    private void addMyMarker(){
         Log.d("TAG", "마커생성!!!!!!!!!!!!!!!!!");
         //현재 위치에 마커 생성
 
-        myMarker = new MarkerOptions();
-        myMarker.position(latLng);
-        myMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.mymarkerd));
-        myMarker.title("현재위치");
-        mMap.addMarker(myMarker);
+        if(myLatLng!=null) {
+            myMarker = mMap.addMarker(new MarkerOptions()
+                    .position(myLatLng)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.mymarkerd)) // change the color of marker(red)
+                    .title("현재위치"));
 
-        //지도 상에서 보여주는 영역 이동
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-        //mGoogleApiClient.connect();
+            //지도 상에서 보여주는 영역 이동
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            //mGoogleApiClient.connect();
+        }
     }
 
 

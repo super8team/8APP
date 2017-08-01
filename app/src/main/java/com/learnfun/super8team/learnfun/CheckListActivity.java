@@ -50,10 +50,18 @@ public class CheckListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_check_list);
         save = (Button)findViewById(R.id.save_checkList);
 
-        save.setOnClickListener(mainListener);
+        //save.setOnClickListener(mainListener);
         userPreferences = UserPreferences.getUserPreferences(this);
 
-        requestNetwork = new NetworkAsync(CheckListActivity.this, "getCheckList",  NetworkAsync.POST);
+        sendData = new JSONObject();
+            try {
+                //recentDate.put("date",getDate());
+                sendData.put("userNo",userPreferences.getUserNo());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        requestNetwork = new NetworkAsync(CheckListActivity.this, "getCheckList",  NetworkAsync.POST, sendData);
         //cardView를 만들기위한 코드
         mRecyclerView = (RecyclerView) findViewById(R.id.checkList_recycler_view);
         // use this setting to improve performance if you know that changes
@@ -66,7 +74,7 @@ public class CheckListActivity extends AppCompatActivity {
 
         // specify an adapter (see also next example)
         myDataset = new ArrayList<>();
-        mAdapter = new CheckListAdapter(myDataset);
+        mAdapter = new CheckListAdapter(myDataset,save,CheckListActivity.this);
         mRecyclerView.setAdapter(mAdapter);
 
         try {
@@ -86,7 +94,7 @@ public class CheckListActivity extends AppCompatActivity {
 
                         //JSONObject placeData = new JSONObject(dataJsonObject);sumContent
 
-                        myDataset.add(new CheckListItem(check.getString("substance")));
+                        myDataset.add(new CheckListItem(check.getString("substance"),check.getInt("no"))); //respond
                     }
 
                 }catch (Exception e){
