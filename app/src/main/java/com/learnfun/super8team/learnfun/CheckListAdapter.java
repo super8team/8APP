@@ -77,6 +77,8 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
             }
         });
 
+
+
     }
 
 

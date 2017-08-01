@@ -773,7 +773,13 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             Log.d("TAG", "onLocationChanged에 들어왔다");
 
             LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            if(myMarker==null){
+                addMyMarker(myLatLng);
 
+            }else{
+                myMarker.position(myLatLng);
+
+            }
             try{ //현재 교사의 gps를 가지고 장소의 gps 와 비교하여 로그를 남김
                 for(int i = 0 ; i < placeList.length();i++){
 
@@ -812,13 +818,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             }
 
             //Toast.makeText(TodayActivity.this, (int) location.getLatitude()+" 좌표변경",Toast.LENGTH_SHORT).show();
-            if(myMarker==null){
-                addMyMarker(myLatLng);
 
-            }else{
-                myMarker.position(myLatLng);
-
-            }
 
         }
 
