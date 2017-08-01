@@ -22,6 +22,7 @@
     <string name="not_ready">준비중입니다...</string>
     <string name="save">저장</string>
     <string name="saved">저장되었습니다.</string>
+    <string name="notice">공지</string>
 
     <string name="prompt">반을 선택하세요</string>
     <string-array name="class_Name">

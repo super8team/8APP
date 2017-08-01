@@ -77,7 +77,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     public static final int REQUEST_CODE_WRITE = 1001;
     private LocationManager locationManager;
 
-    MarkerOptions cMarker=null;
+    Marker cMarker=null;
     private Socket socket=null;
     UserPreferences userPreferences;
     LatLng SEOUL = new LatLng(35.896687, 128.620512);
@@ -416,18 +416,17 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                             Double lng = childObject.getDouble("lng");
                             LatLng latLng = new LatLng(lat, lng);
                             if (cMarker == null) {
-                                cMarker = new MarkerOptions();
-                                cMarker.position(latLng);
-                                cMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.boyd));
-                                cMarker.title(childObject.getString("name"));
-                                mMap.addMarker(cMarker);
+                                cMarker = mMap.addMarker(new MarkerOptions()
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.boyd))
+                                        .title(childObject.getString("name"))
+                                );
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                                 mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                             } else {
-                                cMarker.position(latLng);
+                                cMarker.setPosition(latLng);
                             }
                         }
-                            //지도 상에서 보여주는 영역 이동
 
 
 
@@ -470,15 +469,16 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                             Double lng = teacherObject.getDouble("lng");
                             LatLng latLng = new LatLng(lat, lng);
                             if (cMarker == null) {
-                                cMarker = new MarkerOptions();
-                                cMarker.position(latLng);
-                                cMarker.title(teacherObject.getString("name"));
-                                mMap.addMarker(cMarker);
+                                cMarker = mMap.addMarker(new MarkerOptions()
+                                        .position(latLng)
+                                        .title(teacherObject.getString("name"))
+                                );
+
                                 //지도 상에서 보여주는 영역 이동
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                                 mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                             }else{
-                                cMarker.position(latLng);
+                                cMarker.setPosition(latLng);
                             }
                         }
 

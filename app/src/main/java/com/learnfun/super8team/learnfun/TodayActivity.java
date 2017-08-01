@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -84,12 +85,10 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     NetworkAsync requestNetwork;
 
     ArrayList<Marker> classOneMarker = new ArrayList();
-    //ArrayList<LatLng> classTwo = new ArrayList();
     ArrayList<Marker> classTwoMarker = new ArrayList();
-    //ArrayList<LatLng> classThree = new ArrayList();
     ArrayList<Marker> classThreeMarker = new ArrayList();
-    ArrayList<Marker> studentMarkerArray = new ArrayList();
-    private Button slidingPageClose,writeHistory,logBtn;
+    ArrayList<String> studentMarkerArray = new ArrayList();
+    private Button slidingPageClose,writeHistory,logBtn,noticeBtn;
     Spinner spinner;
     Switch histroySwitch;
     boolean mSwc = true;    // 스위치 상태를 기억할 변수
@@ -103,9 +102,6 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<MyData> myDataset;
-    Bitmap bitmap;
-    public ImageView mImageView;
-    public TextView mTextView;
     JSONObject placeList = null;
     LatLng myLatLng=null;
     //dialog
@@ -125,6 +121,8 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         writeHistory = (Button)findViewById(R.id.writeHistory);
         logBtn = (Button)findViewById(R.id.logBtn);
         logBtn.setOnClickListener(logListener);
+        noticeBtn = (Button)findViewById(R.id.noticeBtn);
+        noticeBtn.setOnClickListener(noticeListener);
 
         slidingPage01 = (LinearLayout) findViewById(R.id.slidingPage01);
         scrollPage = (ScrollView) findViewById(R.id.scrollPage);
@@ -261,6 +259,44 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             // 다이럴로그 객체 얻어오기
             AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // 다이얼로그 보여주기
+            alertDialog.show();
+
+        }
+    };
+    //로그를 보여주기 위한 dialog
+    private View.OnClickListener noticeListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final EditText etEdit = new EditText(TodayActivity.this);
+            AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(TodayActivity.this); // 빌더 얻기
+
+            // 제목 설정
+            DialogBuilder.setTitle(getString(R.string.notice));
+            DialogBuilder.setView(etEdit);
+
+            // 다이얼로그 메세지 생성 setMessage에 서버에서 로그 기록을 가지고 와서 뿌려줘야함
+            DialogBuilder
+                    .setPositiveButton("전송", //Negative 버튼 기능 작성
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    String inputValue = etEdit.getText().toString();
+
+
+                                    dialog.cancel(); // 메세지전송 푸시처리
+                                }
+                            })
+                    .setCancelable(false)
+                    .setNegativeButton("취소", //Negative 버튼 기능 작성
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel(); // 다이얼로그 취소
+                                }
+                            });
+
+            // 다이럴로그 객체 얻어오기
+            AlertDialog alertDialog = DialogBuilder.create();
 
             // 다이얼로그 보여주기
             alertDialog.show();
@@ -521,7 +557,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
                         for(int i =0; i < studentMarkerSize; i++){
                             Log.d("포문", "포문안에들어옴");
-                            if(studentMarkerArray.get(i).getTitle().equals(obj.getString("name"))){
+                            if(studentMarkerArray.get(i).equals(obj.getString("name"))){
                                 isStudentMarker=true;
 
                             }else{
@@ -772,7 +808,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         @Override
         public void onLocationChanged(Location location) {
             //setCustomMarkerView();
-            Log.d("TAG", "onLocationChanged에 들어왔다");
+            //Log.d("TAG", "onLocationChanged에 들어왔다");
 
             myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             if(myMarker==null){
@@ -828,7 +864,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                     String placeNum = "place" + (i+1);
                     JSONObject dataJsonObject = placeList.getJSONObject(placeNum);
                     //JSONObject placeData = new JSONObject(dataJsonObject);
-                    Log.d("TAG", dataJsonObject.getString("name"));
+                    //Log.d("TAG", dataJsonObject.getString("name"));
                     Double latDown = dataJsonObject.getDouble("lat")-0.002;
                     Double latUp = dataJsonObject.getDouble("lat")+0.002;
                     Double lngLeft = dataJsonObject.getDouble("lng")-0.002;
@@ -929,35 +965,40 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         ArrayList<Student> student = helper.selectAll();
 
 
+//        myMarker = mMap.addMarker(new MarkerOptions()
+//                .position(myLatLng)
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mymarkerd)) // change the color of marker(red)
+//                .title("현재위치"));
 
-            Log.d("TAG", String.valueOf(studentObj.getDouble("lat")));
             LatLng studentGPS = new LatLng(studentObj.getDouble("lat"), studentObj.getDouble("lng"));
-            Log.d("TAG", "좌표객체만들었다");
-            MarkerOptions markerOptions = new MarkerOptions();
-            Log.d("TAG", "마커옵션 만들었다");
-            markerOptions.position(studentGPS);
-            Log.d("TAG", "마커에 좌표넣었다");
+
+
+
+            String color="";
             for(int j =0; j < student.size();j++){
                 if(studentObj.getString("name").equals(student.get(j).name)){
-                    markerOptions.icon(getMarkerIcon(student.get(j).color)); // change the color of marker
-                    Log.d("dbColor=", student.get(j).color);
-                    Log.d("TAG", "아이콘색변경했다");
+                    color=student.get(j).color; // change the color of marker
+
                 }
             }
             //markerOptions.icon(getMarkerIcon("red")); // change the color of marker
-            markerOptions.title(studentObj.getString("name"));
-            Log.d("TAG", "마커이름 바꿨다");
-            Marker studentMarker = mMap.addMarker(markerOptions);
-            Log.d("TAG", "마커 생성하고 맵에 추가했다");
-            studentMarkerArray.add(studentMarker);
+
+
+            Marker studentMarker = mMap.addMarker( new MarkerOptions()
+                    .position(studentGPS)
+                    .title(studentObj.getString("name"))
+                    .icon(getMarkerIcon(color))
+            );
+
+            studentMarkerArray.add(studentObj.getString("name"));
             if(className.equals("1반")){
-                Log.d("tag", "1반 마커배열에 넣음");
+
                 classOneMarker.add(studentMarker);
             }else if(className.equals("2반")){
-                Log.d("tag", "2반 마커배열에 넣음");
+
                 classTwoMarker.add(studentMarker);
             }else{
-                Log.d("tag", "3반 마커배열에 넣음");
+
                 classThreeMarker.add(studentMarker);
             }
 

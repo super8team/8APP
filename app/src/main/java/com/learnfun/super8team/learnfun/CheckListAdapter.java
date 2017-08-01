@@ -75,10 +75,13 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final CheckListItem data = mDataset.get(position);
-
+        boolean checkBox = false;
         holder.dateTextView.setText(mDataset.get(position).substance);
+        if(mDataset.get(position).respond==1) checkBox=true;
+        else checkBox = false;
 
         holder.substanceCheckBox.setOnCheckedChangeListener(null);
+        holder.substanceCheckBox.setChecked(checkBox);
         holder.substanceCheckBox.setChecked(data.isSelected());
         final ArrayList<Integer> checked = new ArrayList<>();
         final ArrayList<Integer> noChecked = new ArrayList<>();
@@ -158,11 +161,13 @@ class CheckListItem {
     public String substance;
     private boolean isSelected;
     public int no;
+    public int respond;
 
-    public CheckListItem(String substance, int no){
+    public CheckListItem(String substance, int no,int respond){
 
         this.substance = substance;
         this.no = no;
+        this.respond = respond;
     }
     public boolean isSelected() {
         return isSelected;
