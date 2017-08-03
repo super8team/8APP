@@ -95,7 +95,7 @@ public class SurveyDetailActivity extends AppCompatActivity {
 
                 text = new TextView(this);
                 text.setText((String) article.get("question"));
-                text.setWidth(50);
+                text.setWidth(200);
                 row[tr].addView(text);
                 Log.i(TAG, "tr: "+tr+", question: "+article.get("question"));
 
@@ -103,11 +103,12 @@ public class SurveyDetailActivity extends AppCompatActivity {
 
                 if (JSONArray.class == article.get("answers").getClass()) {
 //                    if (!article.get("answers").equals(new String(""))) {
-                    final JSONArray answers = (JSONArray) article.get("answers");
+//                    final JSONArray answers = (JSONArray) article.get("answers");
                     for (int i=0; i<answers.length(); i++) {
                         text = new TextView(this);
                         text.setText((String) answers.get(i));
-                        text.setWidth(500);
+                        final String content = (String) answers.get(i);
+                        text.setWidth(300);
                         row[tr].addView(text);
 
                         text.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +116,7 @@ public class SurveyDetailActivity extends AppCompatActivity {
                             public void onClick(View v) {
 //                                answers.put();
 //                                (TextView) v.getText();
-                                Log.i(TAG, "click: "+v.toString());
+//                                Log.i(TAG, "click: "+article.get());
                             }
                         });
                     }
