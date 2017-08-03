@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class TeacherMainActivity extends AppCompatActivity {
@@ -36,7 +37,9 @@ public class TeacherMainActivity extends AppCompatActivity {
 
 //        //추가한 라인
 //        FirebaseMessaging.getInstance().subscribeToTopic("news");
-//        FirebaseInstanceId.getInstance().getToken();
+          FirebaseInstanceId.getInstance().getToken();
+          FirebaseInstanceIdService fb = new MyFirebaseInstanceIDService();
+            fb.onTokenRefresh();
 
     }
 
