@@ -2,6 +2,7 @@ package com.learnfun.super8team.learnfun;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by cho on 2017-07-31.
  */
 
 public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.ViewHolder>{
+    final ArrayList<Integer> checked = new ArrayList<>();
+    final ArrayList<Integer> noChecked = new ArrayList<>();
+
     private ArrayList<CheckListItem> mDataset;
     private Button save;
     private Context context;
@@ -83,8 +88,7 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
         holder.substanceCheckBox.setOnCheckedChangeListener(null);
         holder.substanceCheckBox.setChecked(checkBox);
         holder.substanceCheckBox.setChecked(data.isSelected());
-        final ArrayList<Integer> checked = new ArrayList<>();
-        final ArrayList<Integer> noChecked = new ArrayList<>();
+
         holder.substanceCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -108,40 +112,95 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
                         }
                     }
                 }
+                save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        JSONArray checkedArray = new JSONArray(checked);
+                        JSONArray noCheckedArray = new JSONArray(noChecked);
+
+                        JSONObject sendData = new JSONObject();
+                        userPreferences = UserPreferences.getUserPreferences(context);
+
+                        try {
+                            //recentDate.put("date",getDate());
+                            sendData.put("userNo", userPreferences.getUserNo());
+                            sendData.put("checked",checkedArray);
+                            Log.i("checked: ", String.valueOf(checkedArray.length()));
+                            Log.i("ChecklistAdapter", "nochecked");
+                            sendData.put("noChecked",noCheckedArray);
+                            Log.i("noChecked: ", String.valueOf(noCheckedArray.length()));
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                        try {
+                            requestNetwork = new NetworkAsync(context, "setCheckList",  NetworkAsync.POST, sendData);
+                            String resultString = requestNetwork.execute().get();
+                            Log.i("request result: ", resultString);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        //저장버튼 클릭시 저장되었습니다 표시 출력
+                        String save = context.getString(R.string.saved);
+
+                        Toast toast = Toast.makeText(context, save,
+                                Toast.LENGTH_SHORT);
+                        toast.show();
+
+                    }
+
+
+                });        save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        JSONArray checkedArray = new JSONArray(checked);
+                        JSONArray noCheckedArray = new JSONArray(noChecked);
+
+                        JSONObject sendData = new JSONObject();
+                        userPreferences = UserPreferences.getUserPreferences(context);
+
+                        try {
+                            //recentDate.put("date",getDate());
+                            sendData.put("userNo", userPreferences.getUserNo());
+                            sendData.put("checked",checkedArray);
+                            Log.i("checked: ", String.valueOf(checkedArray.length()));
+                            sendData.put("noChecked",noCheckedArray);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+                        try {
+                            requestNetwork = new NetworkAsync(context, "setCheckList",  NetworkAsync.POST, sendData);
+                            String resultString = requestNetwork.execute().get();
+                            Log.i("request result: ", resultString);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        //저장버튼 클릭시 저장되었습니다 표시 출력
+                        String save = context.getString(R.string.saved);
+
+                        Toast toast = Toast.makeText(context, save,
+                                Toast.LENGTH_SHORT);
+                        toast.show();
+
+                    }
+
+
+                });
             }
+
+
         });
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JSONArray checkedArray = new JSONArray(checked);
-                JSONArray noCheckedArray = new JSONArray(noChecked);
 
-            JSONObject sendData = new JSONObject();
-            userPreferences = UserPreferences.getUserPreferences(context);
-
-            try {
-                //recentDate.put("date",getDate());
-                sendData.put("userNo", userPreferences.getUserNo());
-                sendData.put("checked",checkedArray);
-                sendData.put("noChecked",noCheckedArray);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            requestNetwork = new NetworkAsync(context, "setCheckList",  NetworkAsync.POST, sendData);
-
-                //저장버튼 클릭시 저장되었습니다 표시 출력
-                String save = context.getString(R.string.saved);
-
-                Toast toast = Toast.makeText(context, save,
-                        Toast.LENGTH_SHORT);
-                toast.show();
-
-            }
-
-
-        });
     }
 
 
