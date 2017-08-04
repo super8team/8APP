@@ -265,12 +265,14 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
         }
     };
-    //로그를 보여주기 위한 dialog
+
+    //공지를 보내기위한 dialog
     private View.OnClickListener noticeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             final EditText etEdit = new EditText(TodayActivity.this);
             AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(TodayActivity.this); // 빌더 얻기
+
 
             // 제목 설정
             DialogBuilder.setTitle(getString(R.string.notice));
@@ -282,7 +284,23 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     String inputValue = etEdit.getText().toString();
+                                    //여기서 senData json오브젝트로 줄것
+                                    JSONObject tokenObj = new JSONObject();
 
+                                    try {
+
+
+                                        tokenObj.put("name", userPreferences.getUserName());
+                                        tokenObj.put("school", userPreferences.getUserSchool());
+                                        tokenObj.put("grade", userPreferences.getUserGrade());
+                                        tokenObj.put("class", userPreferences.getUserClass());
+                                        tokenObj.put("userType", userPreferences.getUserType());
+                                        tokenObj.put("msg", inputValue);
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    socket.emit("sendMsg", tokenObj);
 
                                     dialog.cancel(); // 메세지전송 푸시처리
                                 }
@@ -303,6 +321,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
         }
     };
+
     //GPS 설정 체크
     private boolean chkGpsService() {
 

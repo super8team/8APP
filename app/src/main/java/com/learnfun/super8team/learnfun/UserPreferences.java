@@ -30,6 +30,8 @@ public class UserPreferences {
     final static String SCHOOLNAME = "schoolName";
     final static String GRADE = "grade";
     final static String CLASS = "class";
+    final static String TOKEN = "token";
+    final static Boolean ISTOKEN = false;
 
     private UserPreferences(Context context) {
         // 단말 어플리케이션 설정을 저장하는 프리퍼런스 키(LEARnFUN) 세팅
@@ -62,10 +64,12 @@ public class UserPreferences {
             user.put(SCHOOLNAME, preferences.getString(SCHOOLNAME, ""));
             user.put(GRADE, preferences.getString(GRADE, ""));
             user.put(CLASS, preferences.getString(CLASS, ""));
+            user.put(TOKEN, preferences.getBoolean(TOKEN, ISTOKEN));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 
     public void setUser(JSONObject user) {
         // 프리퍼런스 갱신
@@ -79,8 +83,19 @@ public class UserPreferences {
             editor.putString(SCHOOLNAME, user.getString(SCHOOLNAME));
             editor.putString(GRADE, user.getString(GRADE));
             editor.putString(CLASS, user.getString(CLASS));
+            editor.putBoolean(TOKEN, ISTOKEN);
             editor.commit();
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public void setToken(boolean token) {
+        try {
+            editor.putBoolean(TOKEN, token);
+            editor.commit();
+            user.put(TOKEN, preferences.getBoolean(TOKEN, token));
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -127,6 +142,11 @@ public class UserPreferences {
 
     public String getUserNo() {
         return preferences.getString(USERNO, "");
+    }
+
+    public Boolean getToken() {
+
+        return preferences.getBoolean(TOKEN, ISTOKEN);
     }
 
     public void removeUser() {

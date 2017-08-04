@@ -66,50 +66,50 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 //            e.printStackTrace();
 //        }
 
-        try{
-
-            socket = IO.socket("http://163.44.166.91:8000");
-            //socket.on(Socket.EVENT_CONNECT, listenStartPerson);
-            //.on("getclass1", listen_start_person)
-        } catch(Exception e){
-            Log.i("ERROR", "ERROR : Socket connection failed");
-        }
-
-        socket.connect();
-
-        if(socket.connected()){
-            Log.i("SocketCheck", "Socket connection successful");
-        }
-        else{
-            Log.i("SocketCheck", "Socket connection failed");
-        }
-
-        JSONObject tokenObj = new JSONObject();
-
-        try {
-
-            tokenObj.put("token",token);
-            tokenObj.put("name",userPreferences.getUserName());
-            tokenObj.put("school",userPreferences.getUserSchool());
-            tokenObj.put("grade",userPreferences.getUserGrade());
-            tokenObj.put("class",userPreferences.getUserClass());
-            tokenObj.put("userType",userPreferences.getUserType());
-
-//            create table fcm(
-//                    id int(20) not null auto_increment,
-//                    token varchar(200) not null,
-//                    name varchar(200) not null,
-//                    school varchar(200),
-//                    grade varchar(200),
-//                    class varchar(200),
-//                    userType varchar(200),
+//        try{
 //
-//                    primary key(id),
-//                    unique key(token)
-//              );
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//            socket = IO.socket("http://163.44.166.91:8000");
+//            //socket.on(Socket.EVENT_CONNECT, listenStartPerson);
+//            //.on("getclass1", listen_start_person)
+//        } catch(Exception e){
+//            Log.i("ERROR", "ERROR : Socket connection failed");
+//        }
+//
+//        socket.connect();
+//
+//        if(socket.connected()){
+//            Log.i("SocketCheck", "Socket connection successful");
+//        }
+//        else{
+//            Log.i("SocketCheck", "Socket connection failed");
+//        }
+//
+//        JSONObject tokenObj = new JSONObject();
+//
+//        try {
+//
+//            tokenObj.put("token",token);
+//            tokenObj.put("name",userPreferences.getUserName());
+//            tokenObj.put("school",userPreferences.getUserSchool());
+//            tokenObj.put("grade",userPreferences.getUserGrade());
+//            tokenObj.put("class",userPreferences.getUserClass());
+//            tokenObj.put("userType",userPreferences.getUserType());
+//
+////            create table fcm(
+////                    id int(20) not null auto_increment,
+////                    token varchar(200) not null,
+////                    name varchar(200) not null,
+////                    school varchar(200),
+////                    grade varchar(200),
+////                    class varchar(200),
+////                    userType varchar(200),
+////
+////                    primary key(id),
+////                    unique key(token)
+////              );
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 
        // socket.emit("saveTheToken",tokenObj);
 

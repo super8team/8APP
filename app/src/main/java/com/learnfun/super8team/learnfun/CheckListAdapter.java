@@ -82,12 +82,13 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.View
         final CheckListItem data = mDataset.get(position);
         boolean checkBox = false;
         holder.dateTextView.setText(mDataset.get(position).substance);
+        System.out.println("체크박스 유무" + mDataset.get(position).respond);
         if(mDataset.get(position).respond==1) checkBox=true;
         else checkBox = false;
 
         holder.substanceCheckBox.setOnCheckedChangeListener(null);
         holder.substanceCheckBox.setChecked(checkBox);
-        holder.substanceCheckBox.setChecked(data.isSelected());
+        //holder.substanceCheckBox.setChecked(true);
 
         holder.substanceCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
