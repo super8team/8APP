@@ -2,14 +2,22 @@ package com.learnfun.super8team.learnfun;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +38,10 @@ public class SurveyDetailActivity extends AppCompatActivity {
     final JSONArray answers = new JSONArray();
 
     TextView title, date, question, answer;
+
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     UserPreferences user;
     NetworkAsync request;
@@ -81,11 +93,8 @@ public class SurveyDetailActivity extends AppCompatActivity {
     }
 
     private void inputValue() {
-        // notice, title, substance, writer, date, respond, responddate
         try {
-//            addSurveyTable((JSONArray)survey.get("question"));
             table = new TableLayout(this);
-            Log.i(TAG, "length: "+questions.length());
             TableRow row[] = new TableRow[questions.length()];
             TextView text;
 
@@ -93,50 +102,38 @@ public class SurveyDetailActivity extends AppCompatActivity {
                 article = (JSONObject) questions.get(tr);
                 row[tr] = new TableRow(this);
 
+                // 문제
                 text = new TextView(this);
-                text.setText((String) article.get("question"));
-                text.setWidth(200);
+                text.setText((String)article.get("question"));
+                text.setWidth(150);
                 row[tr].addView(text);
-                Log.i(TAG, "tr: "+tr+", question: "+article.get("question"));
 
-
-
-                if (JSONArray.class == article.get("answers").getClass()) {
-//                    if (!article.get("answers").equals(new String(""))) {
-//                    final JSONArray answers = (JSONArray) article.get("answers");
-                    for (int i=0; i<answers.length(); i++) {
+                // 답안
+                if (JSONArray.class == article.get("answers").getClass()) { // 객관식일 때 배치
+                    JSONArray answers = (JSONArray) article.get("answers");
+                    for (int i=0; i<answers.length(); i++) { // 답안 각각
                         text = new TextView(this);
                         text.setText((String) answers.get(i));
-                        final String content = (String) answers.get(i);
-                        text.setWidth(300);
-                        row[tr].addView(text);
+                        text.setWidth(200);
+                        text.setGravity(Gravity.CENTER);
+                        text.setBackgroundColor(Color.LTGRAY);
 
+                        final TextView finalText = text;
                         text.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-//                                answers.put();
-//                                (TextView) v.getText();
-//                                Log.i(TAG, "click: "+article.get());
+//                                Toast.makeText(SurveyDetailActivity.this, finalText.getText(), Toast.LENGTH_SHORT).show();
+
                             }
                         });
+
+                        row[tr].addView(text);
                     }
+                } else { // 주관식일때 배치
+                    EditText subAnswer = new EditText(this);
+                    subAnswer.setWidth(200);
+                    row[tr].addView(subAnswer);
                 } // end of if
-
-
-//                text[tr][td].setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Log.i(TAG, "click");
-//                        Intent intent = new Intent(SurveyListActivity.this, SurveyDetailActivity.class);
-//                        try {
-//                            intent.putExtra("survey", (String)survey.get("no"));
-//                            intent.putExtra("title", (String)survey.get("title"));
-//                            startActivity(intent);
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
 
                 table.addView(row[tr]);
 
