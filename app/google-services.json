@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "430960653878",
+    "firebase_url": "https://learnfun-ecdb8.firebaseio.com",
+    "project_id": "learnfun-ecdb8",
+    "storage_bucket": "learnfun-ecdb8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:430960653878:android:e1a703a4a5850b53",
+        "android_client_info": {
+          "package_name": "com.learnfun.super8team.learnfun"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "430960653878-kbusbfog2vb2h3f7sqnekma3fqg1peqo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtQQTSjYDw6tZNm3LFcYl1MITStc7MTBs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
