@@ -889,13 +889,14 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     public String getLog(){
         String userNo = userPreferences.getUserNo();
         String returnString="";
-
+        String userType = userPreferences.getUserType();
         sendData = new JSONObject();
 
         try {
 
             //recentDate.put("date",getDate());
             sendData.put("userNo",userNo);
+            sendData.put("userType",userType);
 
         } catch (JSONException e) {
             e.printStackTrace();
