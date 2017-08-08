@@ -215,7 +215,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
             // 서버에 유저아이디를 넘기고 명세를 넘겨받음
         requestNetwork = new NetworkAsync(context,"getContents",NetworkAsync.POST, userInputInfo);
-
+        Log.i("유저정보",userInputInfo.toString());
 //            dbManager.testClear();
 
         //로컬 디비에 명세가 없으면 명세를 저장, 명세가 있으면 로컬명세를 읽음
@@ -231,7 +231,7 @@ public class ContentActivity extends AppCompatActivity implements SensorEventLis
 
             //문자열을 제이슨 배열로 변환
             json = new JSONArray(data);
-
+            Log.i("제이슨 체크", json.toString());
 //            Log.i("컨텐츠 길이","asdadsads"+String.valueOf(json.length()));
             for (int i = 0; i < json.length(); i++) {
                 //전체 컨텐츠 갯수 뽑아내고 분리
