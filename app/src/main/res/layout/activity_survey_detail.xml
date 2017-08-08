@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.learnfun.super8team.learnfun.SurveyDetailActivity">
+    tools:context="com.learnfun.super8team.learnfun.Activity.SurveyDetailActivity">
 <!--TextView title, date, quest, answer;-->
     <RelativeLayout
         android:layout_width="match_parent"

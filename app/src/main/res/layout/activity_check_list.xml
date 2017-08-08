@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.learnfun.super8team.learnfun.CheckListActivity"
+    tools:context="com.learnfun.super8team.learnfun.Activity.CheckListActivity"
     android:weightSum="1">
 
         <LinearLayout

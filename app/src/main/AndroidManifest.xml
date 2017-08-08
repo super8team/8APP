@@ -23,14 +23,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TeacherMainActivity" />
+        <activity android:name=".Activity.TeacherMainActivity" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -45,55 +45,55 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".TodayActivity"
+            android:name=".Activity.TodayActivity"
             android:label="@string/title_activity_today" />
-        <activity android:name=".PlanTableActivity" />
-        <activity android:name=".StudentListActivity" />
-        <activity android:name=".CheckListActivity" />
-        <activity android:name=".SelectColorActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".ParentsMainActivity" />
-        <activity android:name=".StudentMainActivity" />
+        <activity android:name=".Activity.PlanTableActivity" />
+        <activity android:name=".Activity.StudentListActivity" />
+        <activity android:name=".Activity.CheckListActivity" />
+        <activity android:name=".Activity.SelectColorActivity" />
+        <activity android:name=".Activity.MainActivity" />
+        <activity android:name=".Activity.ParentsMainActivity" />
+        <activity android:name=".Activity.StudentMainActivity" />
         <activity
-            android:name=".HistoryDetailActivity"
+            android:name=".Activity.HistoryDetailActivity"
             android:label="@string/title_activity_history_detail" />
-        <activity android:name=".WriteHistoryActivity" />
-        <activity android:name=".ContentActivity" />
+        <activity android:name=".Activity.WriteHistoryActivity" />
+        <activity android:name=".Activity.ContentActivity" />
         <activity
-            android:name=".Dialog"
+            android:name=".Service.Dialog"
             android:theme="@style/Base.Theme.AppCompat.Dialog" />
-        <activity android:name=".SurveyListActivity" />
-        <activity android:name=".HistoryListActivity" />
+        <activity android:name=".Activity.SurveyListActivity" />
+        <activity android:name=".Activity.HistoryListActivity" />
         <activity
-            android:name=".ContentQuest"
+            android:name=".Content.ContentQuest"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity
-            android:name=".ContentBingo"
+            android:name=".Content.ContentBingo"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity
-            android:name=".ContentMap"
+            android:name=".Content.ContentMap"
             android:label="@string/title_activity_content_map" />
         <activity
-            android:name=".ContentCollection"
+            android:name=".Content.ContentCollection"
             android:label="@string/title_activity_content_collection"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NoticeListActivity" />
+        <activity android:name=".Activity.NoticeListActivity" />
         <activity
-            android:name=".StarRating"
+            android:name=".Content.StarRating"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        <activity android:name=".NoticeDetailActivity" />
-        <activity android:name=".SurveyDetailActivity" />
-        <activity android:name=".BeforeHistoryActivity"></activity>
+        <activity android:name=".Activity.NoticeDetailActivity" />
+        <activity android:name=".Activity.SurveyDetailActivity" />
+        <activity android:name=".Activity.BeforeHistoryActivity"></activity>
         <!--아래 두개의 서비스 태그를 추가한다.-->
         <service
-            android:name=".MyFirebaseMessagingService">
+            android:name=".Service.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name=".MyFirebaseInstanceIDService">
+            android:name=".Service.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>

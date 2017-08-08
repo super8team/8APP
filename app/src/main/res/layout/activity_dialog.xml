@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="#fff"
     android:orientation="vertical"
-    tools:context="com.learnfun.super8team.learnfun.Dialog">
+    tools:context="com.learnfun.super8team.learnfun.Service.Dialog">
 
     <ImageView
         android:id="@+id/dialog_img"

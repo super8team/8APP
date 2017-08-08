@@ -7,14 +7,11 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.opengl.Matrix;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
-import com.learnfun.super8team.learnfun.Content;
+import com.learnfun.super8team.learnfun.Content.Content;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
