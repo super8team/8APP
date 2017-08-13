@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-public class SurveyListActivity extends AppCompatActivity {
+public class SurveyListActivity2 extends AppCompatActivity {
     final static String TAG = "SurveyListActivity";
     final String URI = "getSurveyList";
 
@@ -87,18 +87,17 @@ public class SurveyListActivity extends AppCompatActivity {
                     text[tr][td].setClickable(true);
                     if (key.equals(new String("title"))) {
                         Log.i(TAG, "button create");
+                        final String surveyNo = (String) survey.get("no");
+                        final String surveyTitle = (String)survey.get("title");
                         text[tr][td].setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Log.i(TAG, "click");
-                                Intent intent = new Intent(SurveyListActivity.this, SurveyDetailActivity.class);
-                                try {
-                                    intent.putExtra("survey", (String)survey.get("no"));
-                                    intent.putExtra("title", (String)survey.get("title"));
-                                    startActivity(intent);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                Intent intent = new Intent(SurveyListActivity2.this, SurveyDetailActivity.class);
+                                intent.putExtra("survey", surveyNo);
+                                intent.putExtra("title", surveyTitle);
+//                                    Toast.makeText(context, surveyNo, Toast.LENGTH_SHORT).show();
+                                startActivity(intent);
                             }
                         });
                     }

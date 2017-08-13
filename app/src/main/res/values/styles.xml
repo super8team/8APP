@@ -18,4 +18,37 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="initWidthNHeight">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InputForLogin" parent="initWidthNHeight">
+        <item name="android:textColorHint">@color/hint</item>
+        <item name="android:colorControlActivated">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="InputId" parent="InputForLogin">
+        <item name="android:hint">아이디를 입력하세요</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="InputPw" parent="InputForLogin">
+        <item name="android:hint">패스워드를 입력하세요</item>
+        <item name="android:focusable">false</item>
+
+    </style>
+
+    <style name="menuHalf" parent="initWidthNHeight">
+        <item name="android:weightSum">1</item>
+    </style>
+
+    <style name="btnMainMenus" parent="initWidthNHeight">
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:layout_height">80dp</item>
+    </style>
+
+    <style name="btnMainMenusHalf" parent="btnMainMenus">
+        <item name="android:layout_weight">0.5</item>
+    </style>
 </resources>
