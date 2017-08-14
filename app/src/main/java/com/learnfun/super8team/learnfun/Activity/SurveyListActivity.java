@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutionException;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-public class SurveyListActivity2 extends AppCompatActivity {
+public class SurveyListActivity extends AppCompatActivity {
     final static String TAG = "SurveyListActivity";
     final String URI = "getSurveyList";
 
@@ -93,7 +93,7 @@ public class SurveyListActivity2 extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 Log.i(TAG, "click");
-                                Intent intent = new Intent(SurveyListActivity2.this, SurveyDetailActivity.class);
+                                Intent intent = new Intent(SurveyListActivity.this, SurveyDetailActivity.class);
                                 intent.putExtra("survey", surveyNo);
                                 intent.putExtra("title", surveyTitle);
 //                                    Toast.makeText(context, surveyNo, Toast.LENGTH_SHORT).show();
