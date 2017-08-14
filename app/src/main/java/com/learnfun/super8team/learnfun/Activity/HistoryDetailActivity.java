@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -69,7 +70,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     Marker cMarker=null;
     private Socket socket=null;
     UserPreferences userPreferences;
-    LatLng SEOUL = new LatLng(35.896687, 128.620512);
+    LatLng DEAGU = new LatLng(35.896687, 128.620512);
+    LatLng GYUNGZOO = new LatLng(35.789932, 129.331438);
     NetworkAsync requestNetwork;
     JSONObject sendData,planGPS;
     Animation translateLeftAnim;
@@ -243,7 +245,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
             Log.d("TAG", "onLocationChanged에 들어왔다");
 
-            myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            //myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            myLatLng = new LatLng(35.789932, 129.331438); //시연용 경주 불국사
             JSONObject gps = new JSONObject();
             Log.d("TAG", "로케이션안에 들어옴");
             Log.d("TAG", String.valueOf(location));
@@ -403,7 +406,9 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                             Log.d("studentname", childObject.getString("name"));
                             Double lat = childObject.getDouble("lat");
                             Double lng = childObject.getDouble("lng");
+
                             LatLng latLng = new LatLng(lat, lng);
+                            //LatLng latLng = new LatLng(35.789932, 129.331438);//시연용 경주 불국사
                             if (cMarker == null) {
                                 cMarker = mMap.addMarker(new MarkerOptions()
                                         .position(latLng)
@@ -456,7 +461,9 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                             Log.d("studentname", teacherObject.getString("class"));
                             Double lat = teacherObject.getDouble("lat");
                             Double lng = teacherObject.getDouble("lng");
-                            LatLng latLng = new LatLng(lat, lng);
+                            //LatLng latLng = new LatLng(lat, lng);
+                            LatLng latLng = new LatLng(35.789653, 129.331266);//시연용 경주 불국사
+
                             if (cMarker == null) {
                                 cMarker = mMap.addMarker(new MarkerOptions()
                                         .position(latLng)
@@ -466,6 +473,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                                 //지도 상에서 보여주는 영역 이동
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                                 mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+
                             }else{
                                 cMarker.setPosition(latLng);
                             }
@@ -510,7 +518,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(GYUNGZOO));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
 
@@ -521,13 +529,21 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             @Override
             public void onMapLoaded() {
                 getPlanGPS();
+                if(userPreferences.getUserType().equals("parents")){
+                    forKidsInspection();
+                }else{
+                    forTeacherInspection();
+                }
+
+
+
 
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
                         Log.d("markerTitle = ",marker.getTitle());
 
-                        if(!marker.getTitle().equals(userPreferences.getUserName()) && !marker.getTitle().equals("현재위치")){
+                        if(!marker.getTitle().equals(userPreferences.getUserName()) && !marker.getTitle().equals("현재위치") && !marker.getTitle().equals("선생님") && !marker.getTitle().equals("김봉춘")){
                             Log.d("김봉춘 체크 = ","김봉춘체크");
                             placeNum = marker.getTitle();
                             if (isPageOpen) {
@@ -739,7 +755,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
             //지도 상에서 보여주는 영역 이동
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             //mGoogleApiClient.connect();
         }
     }
@@ -913,5 +929,27 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
         }
         return returnString;
+    }
+
+    public void forKidsInspection(){
+        LatLng latLng = new LatLng(35.789653, 129.331266);//시연용 경주 불국사
+        mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.boyd))
+                .title("김봉춘")
+        );
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+    }
+    public void forTeacherInspection(){
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor("#0732f2"), hsv);
+        LatLng latLng = new LatLng(35.789331, 129.330794);//시연용 경주 불국사
+        mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.defaultMarker(hsv[0]))
+                .title("선생님")
+        );
+
     }
 }

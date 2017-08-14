@@ -62,6 +62,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import io.socket.client.Socket;
 import io.socket.client.IO;
@@ -83,7 +84,8 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     LinearLayout slidingPage01;
     ScrollView scrollPage;
 
-    LatLng SEOUL = new LatLng(35.896687, 128.620512);
+    LatLng DEAGU = new LatLng(35.896687, 128.620512);
+    LatLng GYUNGZOO = new LatLng(35.789932, 129.331438);
     Marker myMarker=null;
     JSONObject sendData,planGPS;
     UserPreferences userPreferences;
@@ -214,7 +216,11 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                         classOneMarker.clear();
 
                         spinnerChoice = 1;
+                        String name[] = {"김봉춘" , "이기춘" , "함초롬" , "강물맑음" ,"정수철"};
 
+                        for(int i =0 ; i < name.length; i++){
+                            createStudent(name[i],"1");
+                        }
 
 
                     }else if(parent.getItemAtPosition(position).equals("2반")){
@@ -222,13 +228,22 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
                         spinnerChoice=2;
 
-
+                        spinnerChoice = 1;
+                        String name[] = {"김봄", "이여름" , "박가을" , "정겨울" , "김소피아"};
+                        for(int i =0 ; i < name.length; i++){
+                            createStudent(name[i],"2");
+                        }
 
                     }else{
                         classThreeMarker.clear();
 
                         spinnerChoice=3;
+                        spinnerChoice = 1;
+                        String name[] = { "이산" , "김바다" , "양초원" , "심들판" , "강사막"};
 
+                        for(int i =0 ; i < name.length; i++){
+                            createStudent(name[i],"3");
+                        }
 
 
                     }
@@ -649,11 +664,11 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                             }else{
                                 Log.d("마커생", "마커를생성하려시도중");
                                 if(obj.getString("class").equals("1") || spinnerChoice==1){
-                                    addStudentMarker(obj, "#21ff3f", "1반");
+                                    addStudentMarker(obj, "1반");
                                 }else if(obj.getString("class").equals("2") || spinnerChoice==2){
-                                    addStudentMarker(obj,"#ebf224","2반");
+                                    addStudentMarker(obj,"2반");
                                 }else{
-                                    addStudentMarker(obj,"#24d8b4","3반");
+                                    addStudentMarker(obj,"3반");
 
                                 }
                             }
@@ -743,7 +758,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(GYUNGZOO));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -862,7 +877,9 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             //setCustomMarkerView();
             //Log.d("TAG", "onLocationChanged에 들어왔다");
 
-            myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            //myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            myLatLng = new LatLng(35.789932, 129.331438); //시연용 경주 불국사
+
             if(myMarker==null){
                 addMyMarker();
 
@@ -1007,12 +1024,51 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             //지도 상에서 보여주는 영역 이동
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
             //mGoogleApiClient.connect();
         }
     }
+    public void createStudent(String name,String classNo){
+        JSONObject gps = new JSONObject();
 
-    private void addStudentMarker(JSONObject studentObj,String markerColor,String className) throws JSONException {
+        Double lat = random(35.788974,35.790645,6);
+        Double lng = random(129.330215,129.332768,6);
+        System.out.println("lat= " + lat+"lng = " + lng);
+        try{
+            gps.put("id", "dicta");
+            gps.put("name", name);
+            gps.put("schoolName","영진고등학교");
+            gps.put("grade","1");
+            gps.put("class",classNo);
+            gps.put("lat",lat);
+            gps.put("lng",lng);
+
+            addStudentMarker(gps,"2");
+        }catch (Exception e){
+
+        }
+
+
+    }
+    public static int random(int min, int max)
+    {
+        return new Random().nextInt((max - min) + 1) + min;
+    }
+
+    /**
+     * 랜던 float 구하기
+     *
+     * @param min 최소값(이상)
+     * @param max 최대값(이하)
+     * @param count 소수점 이하 자릿수
+     * @return
+     */
+    public static Double random(Double min, Double max, int count)
+    {
+        Double value = new Random().nextDouble() * (max - min) + min;
+        return Double.valueOf(String.format("%." + count + "f", value));
+    }
+    private void addStudentMarker(JSONObject studentObj,String className) throws JSONException {
         Log.d("TAG", "학생마커 생성");
         ArrayList<Student> student = helper.selectAll();
 
