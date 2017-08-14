@@ -26,7 +26,10 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
         //추가한것
-        sendNotification(remoteMessage.getData().get("message"));
+        sendNotification(remoteMessage.getData().get("body"));
+        System.out.println("메세지"+remoteMessage.getData().get("body"));
+        System.out.println("메세지"+remoteMessage.getData());
+        System.out.println("어디서 오는가"+remoteMessage.getFrom());
     }
 
     private void sendNotification(String messageBody) {
@@ -34,10 +37,10 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
-
+        System.out.println(messageBody);
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.logo)
                 .setContentTitle("공지")
                 .setContentText(messageBody)
                 .setAutoCancel(true)
