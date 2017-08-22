@@ -100,6 +100,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     Switch histroySwitch;
     boolean mSwc = true;    // 스위치 상태를 기억할 변수
     boolean emitSwitch = false;
+    boolean pauseCheck = false;
     Boolean placeInCheck=true;
     String logContent = "";
     int spinnerChoice=1;
@@ -575,6 +576,8 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     @Override
     protected void onDestroy() {
 //        socket.emit("disconnection");
+        listenGetMessagePerson=null;
+        pauseCheck=true;
         socket.on(Socket.EVENT_DISCONNECT, listenDisconnectPerson);
         super.onDestroy();
     }
@@ -600,6 +603,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     private Emitter.Listener listenGetMessagePerson = new Emitter.Listener() {
 
         public void call(Object... args) {
+            if(pauseCheck) return;
             Log.d("loglog", "class 받았다@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             final JSONObject obj = (JSONObject)args[0];
 
@@ -686,6 +690,14 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             });
         }
     };
+    @Override
+    protected void onPause() {
+        pauseCheck=true;
+        locationListener=null;
+        listenGetMessagePerson=null;
+        super.onPause();
+    }
+
     private Emitter.Listener listenDisconnectPerson = new Emitter.Listener() {
 
         public void call(Object... args) {
@@ -795,8 +807,11 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
     protected void onStop() {
         //mGoogleApiClient.disconnect();
+        pauseCheck=true;
+        listenGetMessagePerson=null;
         super.onStop();
     }
+
 
 
 
@@ -1082,7 +1097,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
 
-            String color="";
+            String color="blue";
             for(int j =0; j < student.size();j++){
                 if(studentObj.getString("name").equals(student.get(j).name)){
                     color=student.get(j).color; // change the color of marker

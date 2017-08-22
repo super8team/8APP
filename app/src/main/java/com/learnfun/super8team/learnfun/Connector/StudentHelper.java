@@ -45,15 +45,15 @@ public class StudentHelper extends SQLiteOpenHelper {
         while(cursor.moveToNext()){
             Student item = new Student();
             item.num = cursor.getInt(cursor.getColumnIndex("num"));
-            Log.d("num", String.valueOf(cursor.getInt(cursor.getColumnIndex("num"))));
+            //Log.d("num", String.valueOf(cursor.getInt(cursor.getColumnIndex("num"))));
             item.name = cursor.getString(cursor.getColumnIndex("name"));
-            Log.d("name", cursor.getString(cursor.getColumnIndex("name")));
+            //Log.d("name", cursor.getString(cursor.getColumnIndex("name")));
             item.id = cursor.getString(cursor.getColumnIndex("id"));
-            Log.d("id", cursor.getString(cursor.getColumnIndex("id")));
+            //Log.d("id", cursor.getString(cursor.getColumnIndex("id")));
             item.color = cursor.getString(cursor.getColumnIndex("color"));
-            Log.d("color", cursor.getString(cursor.getColumnIndex("color")));
+            //Log.d("color", cursor.getString(cursor.getColumnIndex("color")));
             item.className = cursor.getInt(cursor.getColumnIndex("className"));
-            Log.d("className", String.valueOf(cursor.getInt(cursor.getColumnIndex("className"))));
+            //Log.d("className", String.valueOf(cursor.getInt(cursor.getColumnIndex("className"))));
             result.add(item);
         }
         return result;
@@ -66,7 +66,7 @@ public class StudentHelper extends SQLiteOpenHelper {
         //String table,String[] columns,String selection,String[] selectionArgs,String groupBy,String having,String orderBy,String limit
         while(cursor.moveToNext()){
             int className = cursor.getInt(cursor.getColumnIndex("className"));
-            Log.d("className", String.valueOf(cursor.getInt(cursor.getColumnIndex("className"))));
+            //Log.d("className", String.valueOf(cursor.getInt(cursor.getColumnIndex("className"))));
             result.add(className);
         }
         return result;
@@ -106,7 +106,7 @@ public class StudentHelper extends SQLiteOpenHelper {
             //String table,String[] columns,String selection,String[] selectionArgs,String groupBy,String having,String orderBy,String limit
             while(cursor.moveToNext()){
                 className = cursor.getInt(cursor.getColumnIndex("className"));
-                Log.d("className", String.valueOf(cursor.getInt(cursor.getColumnIndex("className"))));
+                //Log.d("className", String.valueOf(cursor.getInt(cursor.getColumnIndex("className"))));
 
             }
 
