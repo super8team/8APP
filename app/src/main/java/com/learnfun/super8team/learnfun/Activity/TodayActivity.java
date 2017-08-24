@@ -1326,6 +1326,11 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         }
 
         JSONObject placeGPS=null;
+        try {
+            Log.i("send id", (String) sendData.get("userID"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         requestNetwork = new NetworkAsync(this, "getPlan",  NetworkAsync.POST, sendData);
 
         try {

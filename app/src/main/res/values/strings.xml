@@ -5,7 +5,7 @@
     <string name="go_to_today">체험학습 바로가기</string>
     <string name="go_to_plantable">학습 일정</string>
     <string name="go_to_studentlist">학생 관리</string>
-    <string name="go_to_contents">콘텐츠 실행</string>
+    <string name="go_to_contents">미션박스</string>
     <string name="go_to_checklist">체크리스트</string>
     <string name="go_to_recommend">주변장소</string>
     <string name="history_List">이전 히스토리 목록</string>
@@ -38,6 +38,9 @@
     <string name="date">일시</string>
     <string name="limitdate">종료일</string>
     <string name="notice_respond">응답결과</string>
+    <string name="no"></string>
+    <string name="place">장소</string>
+    <string name="time">시간</string>
 
     <!--msg-->
     <string name="write_Content">내용을 입력해주세요</string>
@@ -45,6 +48,8 @@
     <string name="not_ready">준비중입니다...</string>
     <string name="saved">저장되었습니다.</string>
     <string name="prompt">반을 선택하세요</string>
+    <string name="id_hint">아이디를 입력하세요</string>
+    <string name="pw_hint">패스워드를 입력하세요</string>
 
 
     <!--contents-->

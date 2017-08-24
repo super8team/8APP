@@ -4,12 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/border"
     tools:context="com.learnfun.super8team.learnfun.Activity.PlanTableActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:id="@+id/today"/>
+
+    <LinearLayout style="@style/initWidthNHeight"
+        android:orientation="horizontal"
+        android:background="@drawable/borderlineth"
+        android:id="@+id/titleLine"
+        android:layout_marginTop="7dp"
+        >
+        <TextView style="@style/table"
+            android:id="@+id/plan_detail_no"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:text="@string/no"
+            android:textColor="@color/colorBlack"
+            />
+
+        <TextView style="@style/table"
+            android:id="@+id/plan_detail_date"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:textColor="@color/colorBlack"
+            android:text="@string/time"/>
+
+        <TextView style="@style/table"
+            android:id="@+id/plan_detail_name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:textColor="@color/colorBlack"
+            android:text="@string/place"/>
+    </LinearLayout>
+
+
     <android.support.v7.widget.RecyclerView
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/planDetail_recycler_view"
-        >
+        android:layout_below="@+id/titleLine"
+        android:layout_alignParentStart="true">
+
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>
 

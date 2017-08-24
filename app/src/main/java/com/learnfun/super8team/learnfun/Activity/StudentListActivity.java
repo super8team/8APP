@@ -219,7 +219,9 @@ public class StudentListActivity extends AppCompatActivity {
                         }
                     }
                 });
-            //builder.setIcon(R.drawable.socon);  <-- 다이얼로그 나왔을때 '안내'라는 글자 옆에 생성되는 아이콘
+
+        builder.setIcon(R.drawable.color_icon);
+//            builder.setIcon(R.drawable.socon);  <-- 다이얼로그 나왔을때 '안내'라는 글자 옆에 생성되는 아이콘
 
             // msg 는 그저 String 타입의 변수, tv 는 onCreate 메서드에 글을 뿌려줄 TextView
 //        builder.setPositiveButton("그래", new DialogInterface.OnClickListener(){
@@ -241,6 +243,8 @@ public class StudentListActivity extends AppCompatActivity {
 //        });
 
         AlertDialog dialog = builder.create();
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
 
         return dialog;
 

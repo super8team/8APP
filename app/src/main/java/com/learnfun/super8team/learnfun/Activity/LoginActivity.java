@@ -85,19 +85,19 @@ public class LoginActivity extends AppCompatActivity {
 
                 case R.id.quickTeacher:
 
-                    idEdit.setText("Illum");
+                    idEdit.setText("ano");
                     pwEdit.setText("123456");
 
                     break;
 
                 case R.id.quickParents:
-                    idEdit.setText("desmond21");
+                    idEdit.setText("ak77");
                     pwEdit.setText("123456");
 
                     break;
 
                 case R.id.quickStudent:
-                    idEdit.setText("dicta");
+                    idEdit.setText("soyoun54");
                     pwEdit.setText("123456");
 
                     break;
