@@ -217,7 +217,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                         classOneMarker.clear();
 
                         spinnerChoice = 1;
-                        String name[] = {"김봉춘" , "이기춘" , "함초롬" , "강물맑음" ,"정수철"};
+                        String name[] = {"문수연" , "손은택" , "김현정" , "김은서" ,"강희원"};
 
                         for(int i =0 ; i < name.length; i++){
                             createStudent(name[i],"1");
@@ -230,7 +230,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                         spinnerChoice=2;
 
                         spinnerChoice = 1;
-                        String name[] = {"김봄", "이여름" , "박가을" , "정겨울" , "김소피아"};
+                        String name[] = {"한성은", "임은경" , "송희경" , "홍진수" , "홍재혁"};
                         for(int i =0 ; i < name.length; i++){
                             createStudent(name[i],"2");
                         }
@@ -240,7 +240,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
                         spinnerChoice=3;
                         spinnerChoice = 1;
-                        String name[] = { "이산" , "김바다" , "양초원" , "심들판" , "강사막"};
+                        String name[] = { "류성미" , "강서준" , "최수원" , "서예지" , "조지우"};
 
                         for(int i =0 ; i < name.length; i++){
                             createStudent(name[i],"3");
@@ -320,6 +320,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         @Override
         public void onClick(View v) {
             final EditText etEdit = new EditText(TodayActivity.this);
+            etEdit.setText("7시까지 판도라로 집합!");
             AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(TodayActivity.this); // 빌더 얻기
 
 
