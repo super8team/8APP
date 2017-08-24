@@ -153,6 +153,7 @@ public class WriteHistoryActivity extends AppCompatActivity {
             String uploadId = UUID.randomUUID().toString();
             Log.d("context",contentHistory.getText().toString());
             //Creating a multi part request
+            Log.i("write", userPreferences.getUserId()+"번, "+placeNum+"장소에 "+ contentHistory.getText().toString()+":를!");
             new MultipartUploadRequest(this, uploadId, Constants.UPLOAD_URL)
                     .addFileToUpload(path, "image") //Adding file
                     //.addParameter("imageName", name) //Adding text parameter to the request

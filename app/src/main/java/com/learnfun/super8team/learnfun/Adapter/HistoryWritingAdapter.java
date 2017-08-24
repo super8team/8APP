@@ -1,6 +1,7 @@
 package com.learnfun.super8team.learnfun.Adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,7 @@ public class HistoryWritingAdapter extends RecyclerView.Adapter<HistoryWritingAd
         holder.mTextView.setText(mDataset.get(position).text);
         //holder.mImageView.setImageURI(mDataset.get(position).uri); //setImageBitmap(mDataset.get(position).img);
         String src = mDataset.get(position).uri;
-
+        Log.i("src: ", src);
         if(src.substring(src.length()-3,src.length()).equals("gif") || src.substring(src.length()-3,src.length()).equals("GIF")){
 
             Glide.with(mDataset.get(position).cont).asGif().load(src).into(holder.mImageView);
