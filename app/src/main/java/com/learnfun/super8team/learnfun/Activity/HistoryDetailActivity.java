@@ -191,10 +191,18 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
             // 제목 설정
             alertDialogBuilder.setTitle("로그");
-
+            String dump = "04:00 영진전문대학에서 출발하였습니다.\n" +
+                    "07:00 국립경주박물관에 도착하였습니다.\n" +
+                    "08:30 국립경주박물관에서 출발하였습니다.\n" +
+                    "09:00 황룡사지에 도착하였습니다.\n" +
+                    "10:00 황룡사지에서 출발하였습니다.\n" +
+                    "10:30 분황사에 도착하였습니다.\n" +
+                    "12:00 분황사에서 출발하였습니다.\n" +
+                    "1:00 석굴암에 도착하였습니다.";
             // 다이얼로그 메세지 생성 setMessage에 서버에서 로그 기록을 가지고 와서 뿌려줘야함
             alertDialogBuilder
-                    .setMessage(getLog())
+                    //.setMessage(getLog())
+                    .setMessage(dump)
                     .setCancelable(false)
                     .setNegativeButton("취소", //Negative 버튼 기능 작성
                             new DialogInterface.OnClickListener() {

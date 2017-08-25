@@ -163,7 +163,7 @@ public class ImageAsync extends AsyncTask<Object, Object, Bitmap[]> {
             public void run() {
                 progressOFF();
             }
-        }, 3500);
+        }, 2000);
 
     }
 }
