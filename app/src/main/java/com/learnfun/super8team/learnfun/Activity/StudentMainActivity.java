@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.learnfun.super8team.learnfun.R;
@@ -18,17 +19,17 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 
 public class StudentMainActivity extends AppCompatActivity {
-    private Button goToHistoryDetail , goToContens , goToHistory , goToSurvey ;
+    private ImageButton goToHistoryDetail , goToContens , goToHistory , goToSurvey ;
     private Socket socket=null;
     UserPreferences userPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_main);
-        goToHistoryDetail = (Button)findViewById(R.id.goToHistoryDetail);
-        goToHistory = (Button)findViewById(R.id.goToHistory);
-        goToSurvey = (Button)findViewById(R.id.goToSurvey);
-        goToContens = (Button)findViewById(R.id.goToContens);
+        goToHistoryDetail = (ImageButton)findViewById(R.id.goToHistoryDetail);
+        goToHistory = (ImageButton)findViewById(R.id.goToHistory);
+        goToSurvey = (ImageButton)findViewById(R.id.goToSurvey);
+        goToContens = (ImageButton)findViewById(R.id.goToContens);
 
 
         goToHistoryDetail.setOnClickListener(mainListener);

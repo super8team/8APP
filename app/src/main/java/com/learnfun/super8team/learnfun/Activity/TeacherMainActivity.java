@@ -1,11 +1,18 @@
 package com.learnfun.super8team.learnfun.Activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.learnfun.super8team.learnfun.R;
@@ -18,7 +25,8 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 
 public class TeacherMainActivity extends AppCompatActivity {
-    private Button goToToday , goToPlanTable , goToStudentList , goToContens , goToCheckList, goToHistory;
+    private ImageButton goToToday , goToPlanTable , goToStudentList , goToContens , goToCheckList, goToHistory;
+    private TextView welcome;
     private Socket socket=null;
     UserPreferences userPreferences;
 
@@ -29,12 +37,12 @@ public class TeacherMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_main);
 
-        goToToday = (Button)findViewById(R.id.goToToday);
-        goToPlanTable = (Button)findViewById(R.id.goToPlanTable);
-        goToStudentList = (Button)findViewById(R.id.goToStudentList);
-        goToContens = (Button)findViewById(R.id.goToContens);
-        goToCheckList = (Button)findViewById(R.id.goToCheckList);
-        goToHistory = (Button)findViewById(R.id.goToHistory);
+        goToToday = (ImageButton)findViewById(R.id.goToToday);
+        goToPlanTable = (ImageButton)findViewById(R.id.goToPlanTable);
+        goToStudentList = (ImageButton)findViewById(R.id.goToStudentList);
+        goToContens = (ImageButton)findViewById(R.id.goToContens);
+        goToCheckList = (ImageButton)findViewById(R.id.goToCheckList);
+        goToHistory = (ImageButton)findViewById(R.id.goToHistory);
 
         goToToday.setOnClickListener(mainListener);
         goToPlanTable.setOnClickListener(mainListener);
@@ -43,9 +51,23 @@ public class TeacherMainActivity extends AppCompatActivity {
         goToCheckList.setOnClickListener(mainListener);
         goToHistory.setOnClickListener(mainListener);
 
+        userPreferences = UserPreferences.getUserPreferences(this);
+
+        welcome = (TextView)findViewById(R.id.user_main_name);
+        welcome.setText(userPreferences.getUserName()+"선생님 반갑습니다.");
+
+        View view = getWindow().getDecorView();
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            // 21 버전 이상일 때
+            view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().setStatusBarColor(Color.parseColor("#ffffff"));
+        }
+
+
 //        //추가한 라인
 //        FirebaseMessaging.getInstance().subscribeToTopic("news");
-        userPreferences = UserPreferences.getUserPreferences(this);
+
             String token = FirebaseInstanceId.getInstance().getToken();
             System.out.println("token = " + token);
             saveToken(token);

@@ -14,7 +14,8 @@
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#ffffff</color>
     <color name="surveyClicked">#544a4a</color>
-
+    <color name="colorYellow">#ffdf2d</color>
+    <color name="colorTeacherMain">#bcdaf4</color>
     <color name="hint">#d6dbdb</color>
     <!--<color name="editTextUnderlineA"></color>-->
 </resources>

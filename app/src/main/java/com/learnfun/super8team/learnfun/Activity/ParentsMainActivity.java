@@ -5,20 +5,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.learnfun.super8team.learnfun.R;
 
 public class ParentsMainActivity extends AppCompatActivity {
-    private Button goToHistoryDetail , goToSurvey , goToNoticeList,goToHistory ;
+    private ImageButton goToHistoryDetail , goToSurvey , goToNoticeList,goToHistory ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parents_main);
 
-        goToHistoryDetail = (Button)findViewById(R.id.goToHistoryDetail);
-        goToSurvey = (Button)findViewById(R.id.goToSurvey);
-        goToNoticeList = (Button)findViewById(R.id.goToNoticeList);
-        goToHistory = (Button)findViewById(R.id.goToHistory);
+        goToHistoryDetail = (ImageButton)findViewById(R.id.goToHistoryDetail);
+        goToSurvey = (ImageButton)findViewById(R.id.goToSurvey);
+        goToNoticeList = (ImageButton)findViewById(R.id.goToNoticeList);
+        goToHistory = (ImageButton)findViewById(R.id.goToHistory);
 
         goToHistoryDetail.setOnClickListener(mainListener);
         goToSurvey.setOnClickListener(mainListener);
