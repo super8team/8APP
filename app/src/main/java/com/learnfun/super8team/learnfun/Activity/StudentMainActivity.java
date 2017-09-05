@@ -1,12 +1,15 @@
 package com.learnfun.super8team.learnfun.Activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.learnfun.super8team.learnfun.R;
@@ -14,12 +17,14 @@ import com.learnfun.super8team.learnfun.Service.UserPreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
 public class StudentMainActivity extends AppCompatActivity {
     private ImageButton goToHistoryDetail , goToContens , goToHistory , goToSurvey ;
+    private TextView welcome;
     private Socket socket=null;
     UserPreferences userPreferences;
     @Override
@@ -37,6 +42,18 @@ public class StudentMainActivity extends AppCompatActivity {
         goToSurvey.setOnClickListener(mainListener);
         goToContens.setOnClickListener(mainListener);
         userPreferences = UserPreferences.getUserPreferences(this);
+
+        welcome = (TextView)findViewById(R.id.user_main_name);
+        welcome.setText(userPreferences.getUserName()+" 학생 반갑습니다.");
+
+        View view = getWindow().getDecorView();
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            // 21 버전 이상일 때
+            view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().setStatusBarColor(Color.parseColor("#f7f8f9"));
+        }
+
         String token = FirebaseInstanceId.getInstance().getToken();
         System.out.println("token = " + token);
         saveToken(token);

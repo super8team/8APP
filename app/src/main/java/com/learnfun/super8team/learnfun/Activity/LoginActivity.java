@@ -76,6 +76,41 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     };
+
+    public void quickLogin(){
+        if(checkValidInput()) {
+            // 네트워크 통신 모듈 생성
+            requestNetwork = new NetworkAsync(context, LOGINURI,  NetworkAsync.POST, userInputInfo);
+
+            try {
+                // 네트워크 통신 후 json 획득
+                returnString = requestNetwork.execute().get();
+                Log.e(TAG, "result is "+returnString);
+                user = new JSONObject(returnString);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                // 로그인이 성공했으면
+                if (user.get("loginSuccess").equals(true)) {
+                    Log.i(TAG, "login success");
+                    login();
+                } else { // 실패했으면 user객체 초기화
+                    Log.i(TAG, "login Fail");
+                    Toast.makeText(LoginActivity.this, "로그인에 실패했습니다! 아이디와 비밀번호를 확인해주세요!", Toast.LENGTH_LONG).show();
+                    user = null;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     View.OnClickListener quickButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -87,19 +122,19 @@ public class LoginActivity extends AppCompatActivity {
 
                     idEdit.setText("ano");
                     pwEdit.setText("123456");
-
+                    quickLogin();
                     break;
 
                 case R.id.quickParents:
                     idEdit.setText("ak77");
                     pwEdit.setText("123456");
-
+                    quickLogin();
                     break;
 
                 case R.id.quickStudent:
                     idEdit.setText("soyoun54");
                     pwEdit.setText("123456");
-
+                    quickLogin();
                     break;
 
             }
@@ -122,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
         // 로그인 하지 않은 경우, 로그인 UI를 보여줌
         idEdit = (EditText)findViewById(R.id.idEdit);
         pwEdit = (EditText)findViewById(R.id.pwEdit);
-        loginBtn = (Button)findViewById(R.id.loginBtn);
+        //loginBtn = (Button)findViewById(R.id.loginBtn);
 
         //로그인을 빠르게 하기위한 버튼
         teacherBtn = (Button)findViewById(R.id.quickTeacher);
@@ -134,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
         studentBtn.setOnClickListener(quickButtonListener);
 
         // 로그인 버튼을 누른 이벤트처리
-        loginBtn.setOnClickListener(loginListener);
+        //loginBtn.setOnClickListener(loginListener);
     }
 
     private Boolean checkValidInput() {

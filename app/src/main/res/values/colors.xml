@@ -17,5 +17,6 @@
     <color name="colorYellow">#ffdf2d</color>
     <color name="colorTeacherMain">#bcdaf4</color>
     <color name="hint">#d6dbdb</color>
+    <color name="ColorWeakedGray">#f2f1ed</color>
     <!--<color name="editTextUnderlineA"></color>-->
 </resources>

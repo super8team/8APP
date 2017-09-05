@@ -61,7 +61,7 @@ public class TeacherMainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             // 21 버전 이상일 때
             view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            getWindow().setStatusBarColor(Color.parseColor("#ffffff"));
+            getWindow().setStatusBarColor(Color.parseColor("#f7f8f9"));
         }
 
 

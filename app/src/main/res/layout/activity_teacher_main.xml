@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
+    android:weightSum="10"
     android:orientation="vertical"
-    android:weightSum="1"
     tools:context="com.learnfun.super8team.learnfun.Activity.TeacherMainActivity">
-
 
     <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
@@ -27,199 +26,262 @@
 
     <!--</LinearLayout>-->
 
+
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5.5"
+            android:background="#f7f8f9"
+            android:orientation="horizontal"></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="4.5"
+            android:background="@drawable/teacher_main_gradation"
+            android:orientation="horizontal"></LinearLayout>
+    </LinearLayout>
+
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:layout_marginLeft="50dp"
+        app:srcCompat="@drawable/goto100" />
+
+    <ImageButton
+        android:id="@+id/goToToday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="130dp"
+        android:layout_weight="1"
+        android:background="#00ff0000"
+        app:srcCompat="@drawable/today200" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
         android:weightSum="10"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/teacher30" />
+
 
         <TextView
             android:id="@+id/user_main_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
             android:layout_weight="9"
             android:text="test"
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:textSize="20sp"
             android:textColor="@color/colorBlack" />
 
+        <ImageView
+            android:id="@+id/teacher_main_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/teacher30" />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/parent_menu_top_button"
-        android:layout_marginTop="70dp"
-        android:layout_alignParentTop="true"
-        android:weightSum="9"
+        android:id="@+id/teacher_main_bottom_button"
+        android:layout_marginBottom="30dp"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/goToStudentList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:background="#00ff0000"
-            app:srcCompat="@drawable/student60" />
-
-        <ImageButton
-            android:id="@+id/goToCheckList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:background="#00ff0000"
-            app:srcCompat="@drawable/checklist60" />
-
-        <ImageButton
-            android:id="@+id/goToContens"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:background="#00ff0000"
-            app:srcCompat="@drawable/game60" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/parent_menu_top_button"
-        android:weightSum="9"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="@string/go_to_studentlist"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="@string/go_to_checklist"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="@string/go_to_contents"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="20dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="50dp"
-        android:id="@+id/goToToday_layout"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:weightSum="1"
-            android:layout_centerInParent="true"
+            android:layout_weight="3"
+            android:background="@color/colorGray"
+            android:layout_marginLeft="10dp"
+
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/goToToday"
+                android:id="@+id/goToPlanTable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:background="#00ff0000"
-                app:srcCompat="@drawable/today200" />
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/schesule60" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/go_to_plantable"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@color/colorGray"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/goToCheckList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00ff0000"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/checklist60" />
+
+            <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/go_to_checklist"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="20sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@color/colorGray"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/goToHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/go_to_today"
+                android:background="#00ff0000"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/history60" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/history_List"
                 android:textAlignment="center"
+                android:layout_marginBottom="10dp"
                 android:textColor="@color/colorBlack"
-                android:textSize="25dp" />
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_above="@id/teacher_main_bottom_button"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:background="@color/colorGray"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="2sp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/goToStudentList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="#00ff0000"
+                android:layout_marginTop="15dp"
+                app:srcCompat="@drawable/student60" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/go_to_studentlist"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:background="@color/colorGray"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="1dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/goToContens"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00ff0000"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                app:srcCompat="@drawable/game60" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/go_to_contents"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:textColor="@color/colorBlack"
+                android:textSize="20sp" />
+
         </LinearLayout>
 
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/goToToday_layout"
-        android:id="@+id/parent_menu_bottom_button"
-        android:orientation="horizontal"
-        android:weightSum="10">
-
-        <ImageButton
-            android:id="@+id/goToPlanTable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:background="#00ff0000"
-            app:srcCompat="@drawable/schesule60" />
-
-        <ImageButton
-            android:id="@+id/goToHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:background="#00ff0000"
-            app:srcCompat="@drawable/history60" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/parent_menu_bottom_button"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal"
-        android:weightSum="10">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:text="@string/go_to_plantable"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:text="@string/history_List"
-            android:textAlignment="center"
-            android:textColor="@color/colorBlack"
-            android:textSize="20dp" />
-
-    </LinearLayout>
-
-
-
-
+    <!--<TextView-->
+                <!--android:id="@+id/textView7"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/go_to_today"-->
+                <!--android:textAlignment="center"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:textSize="25dp" />-->
+        <!--</LinearLayout>-->
 
 
 </RelativeLayout>
