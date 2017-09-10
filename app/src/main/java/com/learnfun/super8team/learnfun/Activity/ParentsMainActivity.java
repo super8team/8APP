@@ -36,7 +36,7 @@ public class ParentsMainActivity extends AppCompatActivity {
         userPreferences = UserPreferences.getUserPreferences(this);
 
         welcome = (TextView)findViewById(R.id.user_main_name);
-        welcome.setText(userPreferences.getUserName()+" 학부모님 반갑습니다.");
+        welcome.setText(userPreferences.getUserName()+" "+getString(R.string.hello_parent));
 
         View view = getWindow().getDecorView();
 

@@ -2,20 +2,19 @@
     <string name="app_name">LEARnFUN</string>
 
     <!--menu-->
-    <string name="go_to_today">체험학습 바로가기</string>
-    <string name="go_to_plantable">학습 일정</string>
-    <string name="go_to_studentlist">학생 관리</string>
-    <string name="go_to_contents">미션박스</string>
-    <string name="go_to_checklist">체크리스트</string>
-    <string name="go_to_recommend">주변장소</string>
-    <string name="history_List">히스토리</string>
-    <string name="survey_List">설문조사</string>
-    <string name="notice_list">가정통신문</string>
-    <string name="child_history_List">자녀일정보기</string>
-    <string name="teacher_login">교사로 로그인</string>
-    <string name="parent_login">학부모로 로그인</string>
-    <string name="student_login">학생으로 로그인</string>
-
+    <string name="go_to_today">Go to a field trip</string>
+    <string name="go_to_plantable">Schedule</string>
+    <string name="go_to_studentlist">Student Management</string>
+    <string name="go_to_contents">Mission box</string>
+    <string name="go_to_checklist">CheckList</string>
+    <string name="go_to_recommend">Around</string>
+    <string name="history_List">History</string>
+    <string name="survey_List">Survey</string>
+    <string name="notice_list">Newsletter</string>
+    <string name="child_history_List">Go to child Schedule</string>
+    <string name="teacher_login">Teacher Login</string>
+    <string name="parent_login">Parent Login</string>
+    <string name="student_login">Student Login</string>
 
     <!--title-->
     <string name="title_activity_today">Map</string>
@@ -25,70 +24,70 @@
     <string name="title_activity_content_collection">ContentCollection</string>
 
     <!--action-->
-    <string name="close">닫기</string>
-    <string name="write">글쓰기</string>
-    <string name="agree">동의</string>
-    <string name="disagree">비동의</string>
-    <string name="back">뒤로가기</string>
-    <string name="save">저장</string>
+    <string name="close">Close</string>
+    <string name="write">Write</string>
+    <string name="agree">Agree</string>
+    <string name="disagree">Disagree</string>
+    <string name="back">Back</string>
+    <string name="save">Save</string>
     <string name="history">history</string>
-    <string name="student_location">학생위치</string>
-    <string name="log">로그</string>
-    <string name="notice">공지</string>
+    <string name="student_location">Student Location</string>
+    <string name="log">Log</string>
+    <string name="notice">Notice</string>
     <string name="action_settings">Settings</string>
 
     <!--table head-->
-    <string name="title">제목</string>
-    <string name="writer">작성자</string>
-    <string name="date">일시</string>
-    <string name="limitdate">종료일</string>
-    <string name="notice_respond">응답결과</string>
+    <string name="title">Title</string>
+    <string name="writer">Writer</string>
+    <string name="date">Date</string>
+    <string name="limitdate">Closing Date</string>
+    <string name="notice_respond">Result</string>
     <string name="no"></string>
-    <string name="place">장소</string>
-    <string name="time">시간</string>
+    <string name="place">Place</string>
+    <string name="time">Time</string>
 
     <!--msg-->
-    <string name="write_Content">내용을 입력해주세요</string>
-    <string name="none_content">내용이 없습니다.</string>
-    <string name="not_ready">준비중입니다...</string>
-    <string name="saved">저장되었습니다.</string>
-    <string name="prompt">반을 선택하세요</string>
-    <string name="id_hint">아이디를 입력하세요</string>
-    <string name="pw_hint">패스워드를 입력하세요</string>
-    <string name="hello_teacher">선생님 반갑습니다.</string>
-    <string name="hello_parent">학부모님 반갑습니다.</string>
-    <string name="hello_student">학생 반갑습니다.</string>
-    <string name="location_setting">위치 서비스 설정</string>
-    <string name="location_setting_message">무선 네트워크 사용, GPS 위성 사용을 모두 체크하셔야 정확한 위치 서비스가 가능합니다.\n위치 서비스 기능을 설정하시겠습니까?</string>
+    <string name="write_Content">Please fill in a form</string>
+    <string name="none_content">no content</string>
+    <string name="not_ready">Not ready</string>
+    <string name="saved">Saved</string>
+    <string name="prompt">Please select a class</string>
+    <string name="id_hint">Please write the ID</string>
+    <string name="pw_hint">please write the password</string>
+    <string name="hello_teacher">Welcome!!</string>
+    <string name="hello_parent">Welcome!!</string>
+    <string name="hello_student">Welcome!!</string>
+    <string name="location_setting">Location service setting</string>
+    <string name="location_setting_message">Use wireless network,you can get the GPS location more exactly when you all checked.\n Do you want location service?</string>
     <string name="login_fail">Login fail, check the ID and Password</string>
-    <string name="need_pic">사진은 필수입니다.</string>
-    <string name="servey_mission">미션을 평가해주세요.</string>
+    <string name="need_pic">Need to Photo</string>
+    <string name="temp_message">So good weather!!</string>
+    <string name="servey_mission">Please rate the mission</string>
 
     <!--temp-->
-    <string name="bongchun">김봉춘</string>
-    <string name="send_notice">내일 출발 시간 오전 6시로 변경</string>
-    <string name="temp_message">아이들이 열심히 놀고 있네요.</string>
+    <string name="bongchun">Bongchun KIM</string>
+    <string name="send_notice">We gonna go to New York at 4 in the morning</string>
 
     <!--contents-->
     <string-array name="class_Name">
-        <item>1반</item>
-        <item>2반</item>
-        <item>3반</item>
+        <item>Class 1</item>
+        <item>Class 2</item>
+        <item>Class 3</item>
     </string-array>
     <string-array name="color_array">
         <item>RED</item>
         <item>BLUE</item>
         <item>YELLOW</item>
     </string-array>
-    <string name="now">현재위치</string>
-    <string name="teacher">선생님</string>
-    <string name="class1">1반</string>
-    <string name="class2">2반</string>
-    <string name="class3">3반</string>
-    <string name="send">전송</string>
-    <string name="foot_print">발자취</string>
-    <string name="className">반</string>
-    <string name="point"> 점</string>
+    <string name="now">Now</string>
+    <string name="teacher">Teacher</string>
+    <string name="class1">class 1</string>
+    <string name="class2">class 2</string>
+    <string name="class3">class 3</string>
+    <string name="send">send</string>
+    <string name="foot_print">Footprint</string>
+    <string name="className">class</string>
+    <string name="point"> point</string>
 
     <string name="large_text">
         "Material is the metaphor.\n\n"

@@ -123,7 +123,7 @@ public class WriteHistoryActivity extends AppCompatActivity {
 
                 case R.id.inputHistoryContent:
 
-                    contentHistory.setText("아이들이 수확 후 정리정돈까지 하고 있는 모습입니다 ㅎㅎ 사회적 소양을 함양중이네요~");
+                    contentHistory.setText(getString(R.string.temp_message));
                     break;
 
             }
@@ -144,7 +144,7 @@ public class WriteHistoryActivity extends AppCompatActivity {
 
         path=getPath(filePath);
         if(path==null) {
-            Toast.makeText(this, "사진은 필수입니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.need_pic), Toast.LENGTH_SHORT).show();
             return false;
         }
         //Log.d("path",path);

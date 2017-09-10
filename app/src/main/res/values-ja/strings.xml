@@ -2,20 +2,19 @@
     <string name="app_name">LEARnFUN</string>
 
     <!--menu-->
-    <string name="go_to_today">체험학습 바로가기</string>
-    <string name="go_to_plantable">학습 일정</string>
-    <string name="go_to_studentlist">학생 관리</string>
-    <string name="go_to_contents">미션박스</string>
-    <string name="go_to_checklist">체크리스트</string>
-    <string name="go_to_recommend">주변장소</string>
-    <string name="history_List">히스토리</string>
-    <string name="survey_List">설문조사</string>
-    <string name="notice_list">가정통신문</string>
-    <string name="child_history_List">자녀일정보기</string>
-    <string name="teacher_login">교사로 로그인</string>
-    <string name="parent_login">학부모로 로그인</string>
-    <string name="student_login">학생으로 로그인</string>
-
+    <string name="go_to_today">体験学習</string>
+    <string name="go_to_plantable">日程</string>
+    <string name="go_to_studentlist">生徒管理</string>
+    <string name="go_to_contents">Mission Box</string>
+    <string name="go_to_checklist">Check List</string>
+    <string name="go_to_recommend">周りの場所</string>
+    <string name="history_List">History</string>
+    <string name="survey_List">アンケート</string>
+    <string name="notice_list">家庭通信文</string>
+    <string name="child_history_List">子供の日程</string>
+    <string name="teacher_login">先生で入る</string>
+    <string name="parent_login">父兄で入る</string>
+    <string name="student_login">生徒で入る</string>
 
     <!--title-->
     <string name="title_activity_today">Map</string>
@@ -25,70 +24,70 @@
     <string name="title_activity_content_collection">ContentCollection</string>
 
     <!--action-->
-    <string name="close">닫기</string>
-    <string name="write">글쓰기</string>
-    <string name="agree">동의</string>
-    <string name="disagree">비동의</string>
-    <string name="back">뒤로가기</string>
-    <string name="save">저장</string>
+    <string name="close">閉じる</string>
+    <string name="write">作成</string>
+    <string name="agree">同意する</string>
+    <string name="disagree">同意しない</string>
+    <string name="back">戻る</string>
+    <string name="save">貯蔵</string>
     <string name="history">history</string>
-    <string name="student_location">학생위치</string>
-    <string name="log">로그</string>
-    <string name="notice">공지</string>
+    <string name="student_location">生徒位置</string>
+    <string name="log">Log</string>
+    <string name="notice">公知事項</string>
     <string name="action_settings">Settings</string>
 
     <!--table head-->
-    <string name="title">제목</string>
-    <string name="writer">작성자</string>
-    <string name="date">일시</string>
-    <string name="limitdate">종료일</string>
-    <string name="notice_respond">응답결과</string>
+    <string name="title">Title</string>
+    <string name="writer">名前</string>
+    <string name="date">日付</string>
+    <string name="limitdate">締切</string>
+    <string name="notice_respond">応答結果</string>
     <string name="no"></string>
-    <string name="place">장소</string>
-    <string name="time">시간</string>
+    <string name="place">場所</string>
+    <string name="time">時間</string>
 
     <!--msg-->
-    <string name="write_Content">내용을 입력해주세요</string>
-    <string name="none_content">내용이 없습니다.</string>
-    <string name="not_ready">준비중입니다...</string>
-    <string name="saved">저장되었습니다.</string>
-    <string name="prompt">반을 선택하세요</string>
-    <string name="id_hint">아이디를 입력하세요</string>
-    <string name="pw_hint">패스워드를 입력하세요</string>
-    <string name="hello_teacher">선생님 반갑습니다.</string>
-    <string name="hello_parent">학부모님 반갑습니다.</string>
-    <string name="hello_student">학생 반갑습니다.</string>
-    <string name="location_setting">위치 서비스 설정</string>
-    <string name="location_setting_message">무선 네트워크 사용, GPS 위성 사용을 모두 체크하셔야 정확한 위치 서비스가 가능합니다.\n위치 서비스 기능을 설정하시겠습니까?</string>
+    <string name="write_Content">内容を書いてください。</string>
+    <string name="none_content">内容がありません。</string>
+    <string name="not_ready">準備中</string>
+    <string name="saved">Save</string>
+    <string name="prompt">クラスを選択してください。</string>
+    <string name="id_hint">IDを書いてください。</string>
+    <string name="pw_hint">Passwordを書いてください。</string>
+    <string name="hello_teacher">さん　ようこそ！</string>
+    <string name="hello_parent">さん　ようこそ！</string>
+    <string name="hello_student">さん　ようこそ！</string>
+    <string name="location_setting">Location service setting</string>
+    <string name="location_setting_message">Use wireless network, GPS使用を全部Checkしたらもっと正確なサービスができます。\nGPS機能を設定しますか。</string>
     <string name="login_fail">Login fail, check the ID and Password</string>
-    <string name="need_pic">사진은 필수입니다.</string>
-    <string name="servey_mission">미션을 평가해주세요.</string>
+    <string name="need_pic">写真が必要です。</string>
+    <string name="temp_message">生徒が遊んでいます。</string>
+    <string name="servey_mission">Missionを評価してください。</string>
 
     <!--temp-->
-    <string name="bongchun">김봉춘</string>
-    <string name="send_notice">내일 출발 시간 오전 6시로 변경</string>
-    <string name="temp_message">아이들이 열심히 놀고 있네요.</string>
+    <string name="bongchun">キム・ボンチュン</string>
+    <string name="send_notice">明日の出発時間が7時に変わりました。</string>
 
     <!--contents-->
     <string-array name="class_Name">
-        <item>1반</item>
-        <item>2반</item>
-        <item>3반</item>
+        <item>1クラス</item>
+        <item>2クラス</item>
+        <item>3クラス</item>
     </string-array>
     <string-array name="color_array">
         <item>RED</item>
         <item>BLUE</item>
         <item>YELLOW</item>
     </string-array>
-    <string name="now">현재위치</string>
-    <string name="teacher">선생님</string>
-    <string name="class1">1반</string>
-    <string name="class2">2반</string>
-    <string name="class3">3반</string>
-    <string name="send">전송</string>
-    <string name="foot_print">발자취</string>
-    <string name="className">반</string>
-    <string name="point"> 점</string>
+    <string name="now">今位置</string>
+    <string name="teacher">先生</string>
+    <string name="class1">1 クラス</string>
+    <string name="class2">2 クラス</string>
+    <string name="class3">3 クラス</string>
+    <string name="send">転送</string>
+    <string name="foot_print">足跡</string>
+    <string name="className">クラス</string>
+    <string name="point"> 点</string>
 
     <string name="large_text">
         "Material is the metaphor.\n\n"

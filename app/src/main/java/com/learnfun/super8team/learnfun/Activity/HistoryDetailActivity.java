@@ -191,8 +191,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
             // 제목 설정
             alertDialogBuilder.setTitle("로그");
-            String dump = "04:00 영진전문대학에서 출발하였습니다.\n" +
-                    "07:00 국립경주박물관에 도착하였습니다.\n" +
+            String dump = "04:00 永進専門大学から出発しました。\n" +
+                    "07:00 국립경주박물관に着きました\n" +
                     "08:30 국립경주박물관에서 출발하였습니다.\n" +
                     "09:00 황룡사지에 도착하였습니다.\n" +
                     "10:00 황룡사지에서 출발하였습니다.\n" +
@@ -204,7 +204,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                     //.setMessage(getLog())
                     .setMessage(dump)
                     .setCancelable(false)
-                    .setNegativeButton("취소", //Negative 버튼 기능 작성
+                    .setNegativeButton(getString(R.string.close) , //Negative 버튼 기능 작성
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel(); // 다이얼로그 취소
@@ -551,8 +551,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                     public boolean onMarkerClick(Marker marker) {
                         Log.d("markerTitle = ",marker.getTitle());
 
-                        if(!marker.getTitle().equals(userPreferences.getUserName()) && !marker.getTitle().equals("현재위치") && !marker.getTitle().equals("선생님") && !marker.getTitle().equals("김봉춘")){
-                            Log.d("김봉춘 체크 = ","김봉춘체크");
+                        if(!marker.getTitle().equals(userPreferences.getUserName()) && !marker.getTitle().equals(getString(R.string.now)) && !marker.getTitle().equals(getString(R.string.teacher))){
+
                             placeNum = marker.getTitle();
                             if (isPageOpen) {
                                 //slidingPage01.startAnimation(translateRightAnim);
@@ -759,7 +759,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             myMarker = mMap.addMarker(new MarkerOptions()
                     .position(myLatLng)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mymarkerd)) // change the color of marker(red)
-                    .title("현재위치"));
+                    .title(getString(R.string.now)));
 
             //지도 상에서 보여주는 영역 이동
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
@@ -815,8 +815,8 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
 
             // GPS OFF 일때 Dialog 표시
             AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
-            gsDialog.setTitle("위치 서비스 설정");
-            gsDialog.setMessage("무선 네트워크 사용, GPS 위성 사용을 모두 체크하셔야 정확한 위치 서비스가 가능합니다.\n위치 서비스 기능을 설정하시겠습니까?");
+            gsDialog.setTitle(getString(R.string.location_setting));
+            gsDialog.setMessage(getString(R.string.location_setting_message));
             gsDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // GPS설정 화면으로 이동
@@ -944,7 +944,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
         mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.boyd))
-                .title("김봉춘")
+                .title(getString(R.string.bongchun))
         );
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
@@ -956,7 +956,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
         mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(hsv[0]))
-                .title("선생님")
+                .title(getString(R.string.teacher))
         );
 
     }

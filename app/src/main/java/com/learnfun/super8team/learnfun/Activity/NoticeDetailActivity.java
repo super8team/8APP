@@ -82,16 +82,16 @@ public class NoticeDetailActivity extends AppCompatActivity {
                     }
                     if(confirmFlag) { // true, 동의상태 -> 비동의로 수정
                         Log.i(TAG, "비동의함");
-                        json.put("respond", "비동의");
+                        json.put("respond", getString(R.string.disagree));
                         request = new NetworkAsync(context, uri, NetworkAsync.POST, json);
-                        respond.setText("비동의");
-                        confirmBtn.setText("동의");
+                        respond.setText(getString(R.string.disagree));
+                        confirmBtn.setText(getString(R.string.agree));
                         confirmFlag = false;
                     } else { // false, 비동의상태 -> 동의로 수정
                         Log.i(TAG, "동의함");
-                        json.put("respond", "동의");
-                        respond.setText("동의");
-                        confirmBtn.setText("비동의");
+                        json.put("respond", getString(R.string.agree));
+                        respond.setText(getString(R.string.agree));
+                        confirmBtn.setText(getString(R.string.disagree));
                         request = new NetworkAsync(context, uri, NetworkAsync.POST, json);
                         confirmFlag = true;
                     }
@@ -114,11 +114,11 @@ public class NoticeDetailActivity extends AppCompatActivity {
             writer.setText((String) notice.get("writer"));
             date.setText((String) notice.get("date"));
             respond.setText((String) notice.get("respond"));
-            if(respond.getText().equals(new String("동의"))) {
-                confirmBtn.setText("비동의");
+            if(respond.getText().equals(new String(getString(R.string.agree)))) {
+                confirmBtn.setText(getString(R.string.disagree));
                 confirmFlag = true;
             } else {
-                confirmBtn.setText("동의");
+                confirmBtn.setText(getString(R.string.agree));
                 confirmFlag = false;
             }
         } catch (JSONException e) {

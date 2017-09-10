@@ -61,7 +61,7 @@ public class StudentListActivity extends AppCompatActivity {
 
         for(int i =0; i < classes.size();i++){
             mClassStudent = new ArrayList<String>();
-            mGroupList.add(classes.get(i)+"반");
+            mGroupList.add(classes.get(i)+getString(R.string.className));
 
             for(int j =0; j < student.size();j++){
                 if(classes.get(i) == student.get(j).className ){

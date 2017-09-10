@@ -1,0 +1,59 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorBlack</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="initWidthNHeight">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InputForLogin" parent="initWidthNHeight">
+        <item name="android:textColorHint">@color/hint</item>
+        <item name="android:colorControlActivated">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="InputId" parent="InputForLogin">
+        <item name="android:hint">@string/id_hint</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="InputPw" parent="InputForLogin">
+        <item name="android:hint">@string/pw_hint</item>
+        <item name="android:focusable">false</item>
+
+    </style>
+
+    <style name="menuHalf" parent="initWidthNHeight">
+        <item name="android:weightSum">1</item>
+    </style>
+
+    <style name="btnMainMenus" parent="initWidthNHeight">
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:layout_height">80dp</item>
+    </style>
+
+    <style name="btnMainMenusHalf" parent="btnMainMenus">
+        <item name="android:layout_weight">0.5</item>
+    </style>
+
+    <style name="table" parent="initWidthNHeight">
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+</resources>

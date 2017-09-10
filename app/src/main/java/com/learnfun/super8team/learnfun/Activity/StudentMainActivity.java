@@ -44,7 +44,7 @@ public class StudentMainActivity extends AppCompatActivity {
         userPreferences = UserPreferences.getUserPreferences(this);
 
         welcome = (TextView)findViewById(R.id.user_main_name);
-        welcome.setText(userPreferences.getUserName()+" 학생 반갑습니다.");
+        welcome.setText(userPreferences.getUserName()+" "+getString(R.string.hello_student));
 
         View view = getWindow().getDecorView();
 

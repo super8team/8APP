@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                         login();
                     } else { // 실패했으면 user객체 초기화
                         Log.i(TAG, "login Fail");
-                        Toast.makeText(LoginActivity.this, "로그인에 실패했습니다! 아이디와 비밀번호를 확인해주세요!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.login_fail), Toast.LENGTH_LONG).show();
                         user = null;
                     }
                 } catch (JSONException e) {
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                     login();
                 } else { // 실패했으면 user객체 초기화
                     Log.i(TAG, "login Fail");
-                    Toast.makeText(LoginActivity.this, "로그인에 실패했습니다! 아이디와 비밀번호를 확인해주세요!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.login_fail), Toast.LENGTH_LONG).show();
                     user = null;
                 }
             } catch (JSONException e) {
@@ -178,11 +178,11 @@ public class LoginActivity extends AppCompatActivity {
 
         // 아이디, 패스워드가 입력되지 않은 경우
         if(inputID.equals("")) {
-            Toast.makeText(LoginActivity.this, "아이디를 입력해주세요!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, getString(R.string.id_hint), Toast.LENGTH_SHORT).show();
             return false;
         }
         if(inputPASS.equals("")) {
-            Toast.makeText(LoginActivity.this, "패스워드를 입력해주세요!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, getString(R.string.pw_hint), Toast.LENGTH_SHORT).show();
             return false;
         }
 

@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="콘텐츠를 평가해주세요"
+        android:text="@string/servey_mission"
         android:textColor="@color/colorBlack"
         android:textSize="20dp"
         android:layout_gravity="center"/>
@@ -35,5 +35,5 @@
         android:textSize="20dp"
         android:textColor="@color/colorBlack"
         android:layout_gravity="center"
-        android:text="확인"/>
+        android:text="@string/close"/>
 </LinearLayout>

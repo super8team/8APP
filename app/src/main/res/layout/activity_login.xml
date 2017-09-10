@@ -64,7 +64,7 @@
             android:layout_weight="1"
             android:layout_margin="5dp"
             android:background="@drawable/button_corner_menu"
-            android:text="교사로 로그인" />
+            android:text="@string/teacher_login" />
 
         <Button
             android:id="@+id/quickParents"
@@ -73,7 +73,7 @@
             android:layout_weight="1"
             android:layout_margin="5dp"
             android:background="@drawable/button_corner_menu"
-            android:text="학부모로 로그인" />
+            android:text="@string/parent_login" />
 
         <Button
             android:id="@+id/quickStudent"
@@ -82,6 +82,6 @@
             android:layout_weight="1"
             android:layout_margin="5dp"
             android:background="@drawable/button_corner_menu"
-            android:text="학생으로 로그인" />
+            android:text="@string/student_login" />
     </LinearLayout>
 </LinearLayout>

@@ -31,7 +31,7 @@ public class StarRating extends AppCompatActivity {
         ratingBar.setStepSize((float) 0.5);
         ratingBar.setRating(3);
         ratingBar.setIsIndicator(false);
-        tv.setText(ratingBar.getRating()*2+" 점");
+        tv.setText(ratingBar.getRating()*2+getString(R.string.point));
 
         Intent getintent = getIntent();
 
@@ -43,7 +43,7 @@ public class StarRating extends AppCompatActivity {
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                tv.setText(rating*2+" 점");
+                tv.setText(rating*2+getString(R.string.point));
                 intent.removeExtra("score");
                 intent.putExtra("score",(int) (rating*2));
                 setResult(9191,intent);

@@ -212,7 +212,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                    // Toast.makeText(parent.getContext(),"선택한것은"+parent.getItemAtPosition(position),Toast.LENGTH_SHORT).show();
                     mMap.clear();
 
-                    if(parent.getItemAtPosition(position).equals("1반")){
+                    if(parent.getItemAtPosition(position).equals(getString(R.string.class1))){
                         Log.e("planResult", "1반 받았나!@");
                         classOneMarker.clear();
 
@@ -224,7 +224,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                         }
 
 
-                    }else if(parent.getItemAtPosition(position).equals("2반")){
+                    }else if(parent.getItemAtPosition(position).equals(getString(R.string.class2))){
                         classTwoMarker.clear();
 
                         spinnerChoice=2;
@@ -266,7 +266,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(TodayActivity.this); // 빌더 얻기
 
             // 제목 설정
-            alertDialogBuilder.setTitle("로그");
+            alertDialogBuilder.setTitle(getString(R.string.log));
             String dump = "04:00 영진전문대학에서 출발하였습니다.\n" +
                     "07:00 국립경주박물관에 도착하였습니다.\n" +
                     "08:30 국립경주박물관에서 출발하였습니다.\n" +
@@ -280,7 +280,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                     //.setMessage(getLog())
                     .setMessage(dump)
                     .setCancelable(false)
-                    .setNegativeButton("취소", //Negative 버튼 기능 작성
+                    .setNegativeButton(getString(R.string.close) , //Negative 버튼 기능 작성
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel(); // 다이얼로그 취소
@@ -328,7 +328,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         @Override
         public void onClick(View v) {
             final EditText etEdit = new EditText(TodayActivity.this);
-            etEdit.setText("7시까지 판도라로 집합!");
+            etEdit.setText(getString(R.string.send_notice));
             AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(TodayActivity.this); // 빌더 얻기
 
 
@@ -338,7 +338,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             // 다이얼로그 메세지 생성 setMessage에 서버에서 로그 기록을 가지고 와서 뿌려줘야함
             DialogBuilder
-                    .setPositiveButton("전송", //Negative 버튼 기능 작성
+                    .setPositiveButton(getString(R.string.send), //Negative 버튼 기능 작성
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     String inputValue = etEdit.getText().toString();
@@ -364,7 +364,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                                 }
                             })
                     .setCancelable(false)
-                    .setNegativeButton("취소", //Negative 버튼 기능 작성
+                    .setNegativeButton(getString(R.string.close), //Negative 버튼 기능 작성
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel(); // 다이얼로그 취소
@@ -391,8 +391,8 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             // GPS OFF 일때 Dialog 표시
             AlertDialog.Builder gsDialog = new AlertDialog.Builder(this);
-            gsDialog.setTitle("위치 서비스 설정");
-            gsDialog.setMessage("무선 네트워크 사용, GPS 위성 사용을 모두 체크하셔야 정확한 위치 서비스가 가능합니다.\n위치 서비스 기능을 설정하시겠습니까?");
+            gsDialog.setTitle(getString(R.string.location_setting));
+            gsDialog.setMessage(getString(R.string.location_setting_message));
             gsDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // GPS설정 화면으로 이동
@@ -421,7 +421,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
             mSwc = isChecked;
             if(isChecked == true){ //히스토리화면
-                histroySwitch.setText("발자취");
+                histroySwitch.setText(getString(R.string.foot_print));
                 mMap.clear();
 
                 spinner.setVisibility(View.INVISIBLE); // 화면에 안보임
@@ -436,7 +436,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                     @Override
                     public boolean onMarkerClick(Marker marker) {
 
-                        if(!marker.getTitle().equals("현재위치")) {
+                        if(!marker.getTitle().equals(getString(R.string.now))) {
                             placeNum = marker.getTitle();
                             if (isPageOpen) {
                                 //slidingPage01.startAnimation(translateRightAnim);
@@ -562,7 +562,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
             } else{// 학생화면
-                histroySwitch.setText("학생위치");
+                histroySwitch.setText(getString(R.string.student_location));
                 mMap.clear();
                 spinner.setVisibility(View.VISIBLE); // 화면에보임
                 if(myMarker!=null) addMyMarker();
@@ -677,11 +677,11 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                             }else{
                                 Log.d("마커생", "마커를생성하려시도중");
                                 if(obj.getString("class").equals("1") || spinnerChoice==1){
-                                    addStudentMarker(obj, "1반");
+                                    addStudentMarker(obj, getString(R.string.class1));
                                 }else if(obj.getString("class").equals("2") || spinnerChoice==2){
-                                    addStudentMarker(obj,"2반");
+                                    addStudentMarker(obj, getString(R.string.class2));
                                 }else{
-                                    addStudentMarker(obj,"3반");
+                                    addStudentMarker(obj, getString(R.string.class3));
 
                                 }
                             }
@@ -1044,7 +1044,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             myMarker = mMap.addMarker(new MarkerOptions()
                     .position(myLatLng)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.mymarkerd)) // change the color of marker(red)
-                    .title("현재위치"));
+                    .title(getString(R.string.now)));
 
             //지도 상에서 보여주는 영역 이동
             mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
@@ -1061,7 +1061,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         try{
             gps.put("id", "dicta");
             gps.put("name", name);
-            gps.put("schoolName","영진고등학교");
+            gps.put("schoolName","栄進高等学");
             gps.put("grade","1");
             gps.put("class",classNo);
             gps.put("lat",lat);
@@ -1123,10 +1123,10 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             );
 
             studentMarkerArray.add(studentObj.getString("name"));
-            if(className.equals("1반")){
+            if(className.equals(getString(R.string.class1))){
 
                 classOneMarker.add(studentMarker);
-            }else if(className.equals("2반")){
+            }else if(className.equals(getString(R.string.class2))){
 
                 classTwoMarker.add(studentMarker);
             }else{
