@@ -328,7 +328,9 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
         @Override
         public void onClick(View v) {
             final EditText etEdit = new EditText(TodayActivity.this);
+
             etEdit.setText(getString(R.string.send_notice));
+
             AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(TodayActivity.this); // 빌더 얻기
 
 
