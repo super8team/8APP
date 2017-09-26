@@ -38,7 +38,7 @@ public class NetworkAsync extends AsyncTask<String, Integer, String> {
 
     Context context = null;
     // 서비스도메인
-    String urlAddr = "http://163.44.166.91/8server/public/app/";
+    String urlAddr = "http://learnfun8.xyz/app/";
     JSONObject jsonObject = new JSONObject();
     String httpMethod;
 
