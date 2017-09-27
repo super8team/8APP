@@ -72,6 +72,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     UserPreferences userPreferences;
     LatLng DEAGU = new LatLng(35.896687, 128.620512);
     LatLng GYUNGZOO = new LatLng(35.789932, 129.331438);
+    LatLng HUKUOKA = new LatLng(33.589056, 130.354911);
     NetworkAsync requestNetwork;
     JSONObject sendData,planGPS;
     Animation translateLeftAnim;
@@ -254,7 +255,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
             Log.d("TAG", "onLocationChanged에 들어왔다");
 
             //myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            myLatLng = new LatLng(35.789932, 129.331438); //시연용 경주 불국사
+            myLatLng = new LatLng(33.589362, 130.354891); //시연용 후쿠오카
             JSONObject gps = new JSONObject();
             Log.d("TAG", "로케이션안에 들어옴");
             Log.d("TAG", String.valueOf(location));
@@ -470,7 +471,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
                             Double lat = teacherObject.getDouble("lat");
                             Double lng = teacherObject.getDouble("lng");
                             //LatLng latLng = new LatLng(lat, lng);
-                            LatLng latLng = new LatLng(35.789653, 129.331266);//시연용 경주 불국사
+                            LatLng latLng = new LatLng(33.589362, 130.354891);//시연용 후쿠오카
 
                             if (cMarker == null) {
                                 cMarker = mMap.addMarker(new MarkerOptions()
@@ -526,7 +527,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(GYUNGZOO));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(HUKUOKA));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
 
@@ -940,7 +941,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     }
 
     public void forKidsInspection(){
-        LatLng latLng = new LatLng(35.789653, 129.331266);//시연용 경주 불국사
+        LatLng latLng = new LatLng(33.589464, 130.355159);//시연용 경주 불국사
         mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.boyd))
@@ -952,7 +953,7 @@ public class HistoryDetailActivity extends FragmentActivity implements OnMapRead
     public void forTeacherInspection(){
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor("#0732f2"), hsv);
-        LatLng latLng = new LatLng(35.789331, 129.330794);//시연용 경주 불국사
+        LatLng latLng = new LatLng(33.589464, 130.355159);//시연용 경주 불국사
         mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(hsv[0]))

@@ -86,6 +86,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
     LatLng DEAGU = new LatLng(35.896687, 128.620512);
     LatLng GYUNGZOO = new LatLng(35.789932, 129.331438);
+    LatLng HUKUOKA = new LatLng(33.589056, 130.354911);
     Marker myMarker=null;
     JSONObject sendData,planGPS;
     UserPreferences userPreferences;
@@ -217,7 +218,12 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                         classOneMarker.clear();
 
                         spinnerChoice = 1;
-                        String name[] = {"문수연" , "손은택" , "김현정" , "김은서" ,"강희원"};
+                        String name[] = {"吉本 春香" , "原田 稔" , "渚 くみ子" , "石田 里佳" ,"青山 浩"};
+
+
+
+
+
 
                         for(int i =0 ; i < name.length; i++){
                             createStudent(name[i],"1");
@@ -230,7 +236,8 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
                         spinnerChoice=2;
 
                         spinnerChoice = 1;
-                        String name[] = {"한성은", "임은경" , "송희경" , "홍진수" , "홍재혁"};
+                        String name[] = {"喜嶋 修平", "山田 淳" , "江古田 零" , "笹田 涼平" , "廣川 晃"};
+
                         for(int i =0 ; i < name.length; i++){
                             createStudent(name[i],"2");
                         }
@@ -240,7 +247,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
 
                         spinnerChoice=3;
                         spinnerChoice = 1;
-                        String name[] = { "류성미" , "강서준" , "최수원" , "서예지" , "조지우"};
+                        String name[] = { "山岸 知実" , "吉田 加奈" , "浜田 拓真" , "宇野 康弘" , "工藤 桃子"};
 
                         for(int i =0 ; i < name.length; i++){
                             createStudent(name[i],"3");
@@ -781,7 +788,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(GYUNGZOO));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(HUKUOKA));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -904,7 +911,7 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
             //Log.d("TAG", "onLocationChanged에 들어왔다");
 
             //myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            myLatLng = new LatLng(35.789932, 129.331438); //시연용 경주 불국사
+            myLatLng = new LatLng(33.589464, 130.355159); //시연용 후쿠오카
 
             if(myMarker==null){
                 addMyMarker();
@@ -1057,8 +1064,10 @@ public class TodayActivity extends FragmentActivity implements OnMapReadyCallbac
     public void createStudent(String name,String classNo){
         JSONObject gps = new JSONObject();
 
-        Double lat = random(35.788974,35.790645,6);
-        Double lng = random(129.330215,129.332768,6);
+//        Double lat = random(35.788974,35.790645,6); //경주용
+//        Double lng = random(129.330215,129.332768,6);
+        Double lat = random(33.589241,33.589614,6);
+        Double lng = random(130.354321,130.355722,6);
         System.out.println("lat= " + lat+"lng = " + lng);
         try{
             gps.put("id", "dicta");
